@@ -1,0 +1,22 @@
+{
+  "name": "centralis",
+  "version": "1.0.0",
+  "description": "CSCI 401 How Would You Handle This?",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pudgie/centralis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pudgie/centralis/issues"
+  },
+  "homepage": "https://github.com/Pudgie/centralis#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
