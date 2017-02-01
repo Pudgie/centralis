@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/Pudgie/centralis#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "body-parser": "^1.16.0",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.22",
+    "mongoose": "^4.7.8"
   }
 }
