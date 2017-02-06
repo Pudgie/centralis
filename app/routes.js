@@ -5,11 +5,28 @@ module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
+		res.render('main.ejs', {message: req.flash('loginMessage')});
+	});
+
+	app.get('/adminlogin', function(req, res) {
+		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 
-	// process the login form
-  app.post('/login', passport.authenticate('local', {
+	app.get('/studentlogin', function(req, res) {
+		//res.sendFile(path.resolve(url + 'index.html'));
+		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
+	});
+
+	// process the admin login form
+  	app.post('/login', passport.authenticate('local', {
+		successRedirect: '/admin',
+		failureRedirect: '/',
+		failureFlash: true
+	}));
+
+	// process the student login form **CHANGE THIS**
+  	app.post('/studentlogin', passport.authenticate('local', {
 		successRedirect: '/admin',
 		failureRedirect: '/',
 		failureFlash: true
