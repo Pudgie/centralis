@@ -1,19 +1,46 @@
 var express = require("express");
 var app = express();
 var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('connect-flash');
+var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var User = require('./app/models/user');
+
 // mlab login:centralis password:centaur1
 mongoose.connect('mongodb://user:password@ds129459.mlab.com:29459/centralis');
 
-// // Sample model
-// var yang = new User({
-//   name: 'Yang',
-//   role: 'waterboy',
-//   room: 445
+require('./config/passport.js')(passport);
+
+// set up express application
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.set('view engine', 'ejs'); // set up ejs for templating
+
+// required for passport
+app.use(session({secret: 'howwouldyouhandlethis', resave: false, saveUninitialized: false}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// sample user
+// var bob = new User({
+//   email: 'bob@gmail.com',
+//   password: 'imcool'
 // });
-// yang.save(function(err) {
+// bob.save(function(err) {
 //   if (err) throw err;
-//   console.log('User saved successfully!');
+//   console.log('User saved succesfully');
 // });
 
 // routes ========================================
-require('./app/routes.js')(app);
+require('./app/routes.js')(app, passport);
+
+// start application
+app.listen(3000);
+console.log('App running on port 3000');
