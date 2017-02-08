@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+  <style>
+    form {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .alert {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <% if (message.length > 0) { %>
+      <h2 class="alert"><%= message %></h2>
+  <% } %>
+  <form action="/login" method="post">
+      <div>
+          <label>Email:</label>
+          <input type="text" name="email"/>
+      </div>
+
+      <div>
+          <label>Password:</label>
+          <input type="password" name="password"/>
+      </div>
+      <div>
+          <input type="submit" value="Log In"/>
+      </div>
+  </form>
+
+</body>
+</html>
