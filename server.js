@@ -7,7 +7,7 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var User = require('./app/models/user');
+var User = require('./app/models/admin');
 
 // mlab login:centralis password:centaur1
 mongoose.connect('mongodb://user:password@ds129459.mlab.com:29459/centralis');

@@ -1,5 +1,5 @@
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('../app/models/user');
+var Admin = require('../app/models/admin');
 
 module.exports = function(passport) {
   // ======================
@@ -13,7 +13,7 @@ module.exports = function(passport) {
 
   //deserialize the user
   passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+    Admin.findById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -30,7 +30,7 @@ module.exports = function(passport) {
   },
   function(req, email, password, done) { // callback with email and password
     // find a user with same email as the forms email
-    User.findOne({'email': email}, function(err, user) {
+    Admin.findOne({'email': email}, function(err, user) {
       if (err)
         return done(err);
       // if no user is found, return a message
