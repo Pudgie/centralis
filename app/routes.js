@@ -21,7 +21,7 @@ module.exports = function(app, passport) {
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/admin',
-		failureRedirect: '/',
+		failureRedirect: '/adminLogin',
 		failureFlash: true
 	}));
 
@@ -47,9 +47,14 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
-	// app.listen(3000, function(){
-	// 	console.log('Server running at Port 3000');
-	// });
+	app.get('/createExercise', function(req, res) {
+		res.render('exercises.ejs');
+	});
+
+	app.post('/create', function(req, res) {
+		console.log("HELLO");
+	});
+
 };
 
 // route middleware to make sure user is logged in
