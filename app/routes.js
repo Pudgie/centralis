@@ -28,7 +28,7 @@ module.exports = function(app, passport) {
 	// process the student login form **CHANGE THIS**
   	app.post('/studentlogin', passport.authenticate('local', {
 		successRedirect: '/admin',
-		failureRedirect: '/',
+		failureRedirect: '/studentlogin',
 		failureFlash: true
 	}));
 
@@ -51,8 +51,12 @@ module.exports = function(app, passport) {
 		res.render('exercises.ejs');
 	});
 
-	app.post('/create', function(req, res) {
-		console.log("HELLO");
+	app.post('/createRoles', function(req, res) {
+		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
+	});
+
+	app.post('/createScenarios', function(req, res) {
+		console.log(req.body.role1);
 	});
 
 };

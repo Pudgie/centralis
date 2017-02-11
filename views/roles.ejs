@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Roles</title>
+</head>
+<body>
+	<h1>Exercise Name: <%= name %></h1><br>
+	Write the type of roles (The first role will be typing for team decision)<br>
+	<form action="/createScenarios" method="post">
+		<% 
+		var numRoles = roles;
+		for (var i = 1; i <= numRoles; i++) {
+			var roleName = "role" + i;
+			%><p>Role <%=i%>: <input type="text" name= <%= roleName%>> </p><%
+		}
+		%>
+	 	<input type="submit" value="Add Scenarios">
+ 	</form>
+</body>
+</html>
