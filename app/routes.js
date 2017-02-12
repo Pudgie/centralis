@@ -3,7 +3,7 @@ module.exports = function(app, passport) {
 	var url = __dirname + '/../views/';
 	var path = require('path');
 	var Exercise = require('./models/exercise');
-
+	var Scenario = require('./models/scenario');
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
@@ -64,8 +64,37 @@ module.exports = function(app, passport) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
+
+		res.render('createScenario.ejs');
 	});
 
+	// app.post('/getScenario', function(req, res) {
+	// 	var scenario = new Scenario({
+	// 		videoURL: req.body.video,
+	// 		text: req.body.text,
+	// 		question: req.body.question,
+	// 		survey: null
+	// 	});
+	// 	Exercise.nextCount(function(err, count) {
+	// 		var exerciseID = count - 1;
+	// 		console.log(exerciseID);
+	// 		Exercise.findByIdAndUpdate(
+	// 	    exerciseID,
+	// 	    {$push: {scenarios: scenario}},
+	// 	    {safe: true, upsert: true},
+	// 	    function(err, model) {
+	// 	        console.log(err);
+	// 	    }
+	// 		);
+	// 		res.render('survey.ejs', {number: req.body.survey});
+	// 	});
+	// });
+
+	app.post('/addSurvey', function(err, res) {
+		var survey = new Survey({
+
+		});
+	});
 };
 
 // route middleware to make sure user is logged in

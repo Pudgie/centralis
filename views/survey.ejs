@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form action="/addSurvey" method="post">
+  		<p>Enter survey questions</p>
+  		<%
+  		for (var i = 1; i <= number; i++) {
+  			%><input type="text" name= "surveys"> </p><%
+  		}
+  		%>
+  	 	<input type="submit" value="Add Survey">
+   	</form>
+  </body>
+</html>
