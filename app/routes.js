@@ -55,13 +55,8 @@ module.exports = function(app, passport) {
 	app.post('/createScenarios', function(req, res) {
 		var n = req.body.numOfRoles;
 		var titles = req.body.roles;
-		// for (var i = 1; i <= n; i++) {
-		// 	var roleNames = "role" + i;
-		// 	titles.push(req.body.roles);
-		// }
 		var exercise = new Exercise({
 			roles: titles,
-			id: 1,
 			name: req.body.exerciseName,
 			scenarios: [],
 			answerer: req.body.role1
