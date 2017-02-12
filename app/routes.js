@@ -2,6 +2,7 @@
 module.exports = function(app, passport) {
 	var url = __dirname + '/../views/';
 	var path = require('path');
+	var Exercise = require('./models/exercise');
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -34,10 +35,6 @@ module.exports = function(app, passport) {
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
-		// res.render('admin.ejs', {
-		// 	user : req.user // get the user our of session and pass to template
-		// });
-		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('admin.ejs', {user: req.user})
 	});
 
@@ -56,7 +53,23 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		console.log(req.body.role1);
+		var n = req.body.numOfRoles;
+		var titles = req.body.roles;
+		// for (var i = 1; i <= n; i++) {
+		// 	var roleNames = "role" + i;
+		// 	titles.push(req.body.roles);
+		// }
+		var exercise = new Exercise({
+			roles: titles,
+			id: 1,
+			name: req.body.exerciseName,
+			scenarios: [],
+			answerer: req.body.role1
+		});
+		exercise.save(function(err) {
+			if (err) throw err;
+			console.log('Exercise saved succesfully');
+		});
 	});
 
 };
