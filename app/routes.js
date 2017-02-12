@@ -68,27 +68,51 @@ module.exports = function(app, passport) {
 		res.render('createScenario.ejs');
 	});
 
-	// app.post('/getScenario', function(req, res) {
-	// 	var scenario = new Scenario({
-	// 		videoURL: req.body.video,
-	// 		text: req.body.text,
-	// 		question: req.body.question,
-	// 		survey: null
-	// 	});
-	// 	Exercise.nextCount(function(err, count) {
-	// 		var exerciseID = count - 1;
-	// 		console.log(exerciseID);
-	// 		Exercise.findByIdAndUpdate(
-	// 	    exerciseID,
-	// 	    {$push: {scenarios: scenario}},
-	// 	    {safe: true, upsert: true},
-	// 	    function(err, model) {
-	// 	        console.log(err);
-	// 	    }
-	// 		);
-	// 		res.render('survey.ejs', {number: req.body.survey});
-	// 	});
-	// });
+	// app.post('/getScenario', function (req, res) {
+	// 		var scenario = new Scenario({
+	// 			videoURL: req.body.video,
+	// 			text: req.body.text,
+	// 			question: req.body.question,
+	// 			survey: null
+	// 		});
+	// 		scenario.save(function(err) {
+	// 			if (err) throw err;
+	// 			console.log("Scenario saved successfully");
+	// 			Exercise.nextCount(function(err, count) {
+	// 				var exerciseID = count - 1;
+	// 				var scenarioID = scenario._id;
+	// 				console.log(exerciseID);
+	// 				console.log(scenarioID);
+	// 				Exercise.findOne({"_id": exerciseID}, function(err, exercise) {
+	// 					if (err) throw err;
+	// 					exercise.scenarios.push(mongoose.Types.Object);
+	// 				})
+	// 			});
+	// 		});
+	//
+	// })
+
+	app.post('/getScenario', function(req, res) {
+		var scenario = new Scenario({
+			videoURL: req.body.video,
+			text: req.body.text,
+			question: req.body.question,
+			survey: null
+		});
+		Exercise.nextCount(function(err, count) {
+			var exerciseID = count - 1;
+			console.log(exerciseID);
+			Exercise.findByIdAndUpdate(
+		    exerciseID,
+		    {$push: {scenarios: scenario}},
+		    {safe: true, upsert: true},
+		    function(err, model) {
+		        console.log(err);
+		    }
+			);
+			res.render('survey.ejs', {number: req.body.survey});
+		});
+	});
 
 	app.post('/addSurvey', function(err, res) {
 		var survey = new Survey({
