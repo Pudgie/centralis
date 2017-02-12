@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
-var Scenario = require('./survey');
+var Survey = require('./survey');
 
 var scenarioSchema = new Schema({
 	videoURL: String,
