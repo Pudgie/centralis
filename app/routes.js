@@ -53,7 +53,6 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		var n = req.body.numOfRoles;
 		var titles = req.body.roles;
 		var exercise = new Exercise({
 			roles: titles,

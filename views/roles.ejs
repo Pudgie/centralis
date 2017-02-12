@@ -8,11 +8,9 @@
 	Write the type of roles (The first role will be typing for team decision)<br>
 	<form action="/createScenarios" method="post">
 		<input type="hidden" name="exerciseName" value= <%=name%> />
-		<input type="hidden" name="numOfRoles" value= <%=roles%> />
 		<% 
 		var numRoles = roles;
 		for (var i = 1; i <= numRoles; i++) {
-			var roleName = "role" + i;
 			%><p>Role <%=i%>: <input type="text" name= "roles"> </p><%
 		}
 		%>
