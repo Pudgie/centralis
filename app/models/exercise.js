@@ -7,7 +7,7 @@ var autoIncrement = require('mongoose-auto-increment');
 var exerciseSchema = new Schema({
 	name: String,
 	roles: [String],
-	scenarios: [{type: Schema.ObjectId, ref: 'Exercise'}],
+	scenarios: [],
 	answerer: String
 });
 
