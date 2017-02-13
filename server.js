@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 var passport = require('passport');
 var flash = require('connect-flash');
 var morgan = require('morgan');
@@ -10,7 +11,9 @@ var session = require('express-session');
 var User = require('./app/models/admin');
 
 // mlab login:centralis password:centaur1
-mongoose.connect('mongodb://user:password@ds129459.mlab.com:29459/centralis');
+var connection = mongoose.connect('mongodb://user:password@ds129459.mlab.com:29459/centralis');
+
+autoIncrement.initialize(connection);
 
 require('./config/passport.js')(passport);
 

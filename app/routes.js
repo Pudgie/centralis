@@ -2,6 +2,8 @@
 module.exports = function(app, passport) {
 	var url = __dirname + '/../views/';
 	var path = require('path');
+	var Exercise = require('./models/exercise');
+	var Scenario = require('./models/scenario');
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -21,23 +23,19 @@ module.exports = function(app, passport) {
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/admin',
-		failureRedirect: '/',
+		failureRedirect: '/adminLogin',
 		failureFlash: true
 	}));
 
 	// process the student login form **CHANGE THIS**
   	app.post('/studentlogin', passport.authenticate('local', {
 		successRedirect: '/admin',
-		failureRedirect: '/',
+		failureRedirect: '/studentlogin',
 		failureFlash: true
 	}));
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
-		// res.render('admin.ejs', {
-		// 	user : req.user // get the user our of session and pass to template
-		// });
-		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('admin.ejs', {user: req.user})
 	});
 
@@ -47,9 +45,67 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
-	// app.listen(3000, function(){
-	// 	console.log('Server running at Port 3000');
-	// });
+	app.get('/createExercise', function(req, res) {
+		res.render('exercises.ejs');
+	});
+
+	app.post('/createRoles', function(req, res) {
+		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
+	});
+
+	app.post('/createScenarios', function(req, res) {
+		var titles = req.body.roles;
+		var answerer;
+		console.log(req.body.numRoles);
+		if (req.body.numRoles == 1) {
+			answerer = titles;
+		} else {
+			answerer = titles[0];
+		}
+		var exercise = new Exercise({
+			roles: titles,
+			name: req.body.exerciseName,
+			scenarios: [],
+			answerer: answerer
+		});
+		exercise.save(function(err) {
+			if (err) throw err;
+			console.log('Exercise saved succesfully');
+		});
+
+		res.render('createScenario.ejs');
+	});
+
+	app.post('/getScenario', function(req, res) {
+		var scenario = new Scenario({
+			videoURL: req.body.video,
+			text: req.body.text,
+			question: req.body.question,
+			survey: null
+		});
+		console.log(scenario.text);
+		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+	});
+
+	app.post('/addSurvey', function(req, res) {
+		var scenario = new Scenario({
+			videoURL: req.body.videoURL,
+			text: req.body.text,
+			question: req.body.question,
+			survey: req.body.surveys
+		});
+		Exercise.nextCount(function(err, count) {
+			var exerciseID = count - 1;
+			Exercise.findByIdAndUpdate(
+		    exerciseID,
+		    {$push: {scenarios: scenario}},
+		    {safe: true, upsert: true},
+			    function(err, model) {
+			        if (err) throw err;
+			    }
+			);
+		});
+	});
 };
 
 // route middleware to make sure user is logged in
