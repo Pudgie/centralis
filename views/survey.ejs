@@ -6,6 +6,9 @@
   </head>
   <body>
     <form action="/addSurvey" method="post">
+      <input type="hidden" name="videoURL" value="<%= scenario.videoURL %>" />
+      <input type="hidden" name="text" value="<%= scenario.text %>" />
+      <input type="hidden" name="question" value="<%=scenario.question%>" />
   		<p>Enter survey questions</p>
   		<%
   		for (var i = 1; i <= number; i++) {

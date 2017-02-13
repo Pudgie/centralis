@@ -4,6 +4,7 @@ module.exports = function(app, passport) {
 	var path = require('path');
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
+
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
@@ -68,30 +69,6 @@ module.exports = function(app, passport) {
 		res.render('createScenario.ejs');
 	});
 
-	// app.post('/getScenario', function (req, res) {
-	// 		var scenario = new Scenario({
-	// 			videoURL: req.body.video,
-	// 			text: req.body.text,
-	// 			question: req.body.question,
-	// 			survey: null
-	// 		});
-	// 		scenario.save(function(err) {
-	// 			if (err) throw err;
-	// 			console.log("Scenario saved successfully");
-	// 			Exercise.nextCount(function(err, count) {
-	// 				var exerciseID = count - 1;
-	// 				var scenarioID = scenario._id;
-	// 				console.log(exerciseID);
-	// 				console.log(scenarioID);
-	// 				Exercise.findOne({"_id": exerciseID}, function(err, exercise) {
-	// 					if (err) throw err;
-	// 					exercise.scenarios.push(mongoose.Types.Object);
-	// 				})
-	// 			});
-	// 		});
-	//
-	// })
-
 	app.post('/getScenario', function(req, res) {
 		var scenario = new Scenario({
 			videoURL: req.body.video,
@@ -99,24 +76,27 @@ module.exports = function(app, passport) {
 			question: req.body.question,
 			survey: null
 		});
+		console.log(scenario.text);
+		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+	});
+
+	app.post('/addSurvey', function(req, res) {
+		var scenario = new Scenario({
+			videoURL: req.body.videoURL,
+			text: req.body.text,
+			question: req.body.question,
+			survey: req.body.surveys
+		});
 		Exercise.nextCount(function(err, count) {
 			var exerciseID = count - 1;
-			console.log(exerciseID);
 			Exercise.findByIdAndUpdate(
 		    exerciseID,
 		    {$push: {scenarios: scenario}},
 		    {safe: true, upsert: true},
-		    function(err, model) {
-		        console.log(err);
-		    }
+			    function(err, model) {
+			        if (err) throw err;
+			    }
 			);
-			res.render('survey.ejs', {number: req.body.survey});
-		});
-	});
-
-	app.post('/addSurvey', function(err, res) {
-		var survey = new Survey({
-
 		});
 	});
 };
