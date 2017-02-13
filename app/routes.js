@@ -1,4 +1,6 @@
 // app/routes.js
+
+
 module.exports = function(app, passport) {
 	var url = __dirname + '/../views/';
 	var path = require('path');
@@ -16,6 +18,17 @@ module.exports = function(app, passport) {
 	app.get('/studentlogin', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
+	});
+	
+	app.get('/createSession', function(req, res) {
+		res.render('createSession.ejs', {message: req.flash('sessionMessage')});
+
+	});
+	
+	app.post('/createSession', function(req, res) {
+		var sessionID = Math.random() * (999999 - 100000) + 100000;
+		sessionID = Math.round(sessionID);
+		console.log(sessionID);
 	});
 
 	// process the admin login form

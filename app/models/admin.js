@@ -15,7 +15,7 @@ adminSchema.methods.generateHash = function(password) {
 // checking if password is valid
 adminSchema.methods.validPassword = function(password) {
     return password === this.password;
-};
+}
 
 var Admin = mongoose.model('Admin', adminSchema);
 module.exports = Admin;

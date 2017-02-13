@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Session</title>
+	<style>
+	form {
+		text-align:center;
+		margin-top: 20px;
+	}
+	.alert {
+		text-align:center;
+	}
+	</style>
+</head>
+<body>
+	<% if (message.length > 0) { %>
+		<h2><%= message %></h2>
+	<% } %>
+	<form action="/createSession" method="post">
+		<div>
+			<input type="submit" value="Create Session"/>
+		</div>
+	</form>
+</body>
+</html>
