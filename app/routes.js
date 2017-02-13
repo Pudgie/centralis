@@ -55,11 +55,18 @@ module.exports = function(app, passport) {
 
 	app.post('/createScenarios', function(req, res) {
 		var titles = req.body.roles;
+		var answerer;
+		console.log(req.body.numRoles);
+		if (req.body.numRoles == 1) {
+			answerer = titles;
+		} else {
+			answerer = titles[0];
+		}
 		var exercise = new Exercise({
 			roles: titles,
 			name: req.body.exerciseName,
 			scenarios: [],
-			answerer: req.body.role1
+			answerer: answerer
 		});
 		exercise.save(function(err) {
 			if (err) throw err;
