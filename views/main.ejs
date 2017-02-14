@@ -4,6 +4,7 @@
   <title>How Would You Handle This?</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <meta http-equiv="refresh" content="5">
   <style>
     form {
       text-align: center;
@@ -11,17 +12,28 @@
     }
     .alert {
       text-align: center;
+      color: black;
     }
-    .buttonHolder {
+    body {
+      background-position: center;
+      margin-top: 150px;
+    }
+    .totalForm {
       text-align: center;
+      position: relative;
+      background-color: white;
+      padding-bottom: 20px;
+      display: table;
+      left: 42%;
+      top: 140px;
     }
   </style>
 </head>
-<body>
-  <h4 class="alert">Please Sign In</h4>
-    <div class="buttonHolder">
-      <input type="button" value="Admin" onclick="location.href = '/adminlogin'" />
-      <input type="button" value="Student" onclick="location.href = '/studentlogin'" />
-    </div>
+<body background="http://www.usctrojanrugby.org/wp-content/uploads/2014/10/179_1tommy_trojan_usc.jpg">
+  <div class="totalForm">
+    <h1 class="alert">Please Sign In</h1>
+    <button type="button" class="btn btn-primary btn-md" onclick="location.href = '/adminlogin'">Admin</button>
+    <button type="button" class="btn btn-primary btn-md" onclick="location.href = '/studentlogin'">Student</button>
+  </div>
 </body>
 </html>
