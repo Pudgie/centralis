@@ -2,8 +2,15 @@
 
 
 module.exports = function(app, passport) {
+	var mongoose = require('mongoose');
+	var conn = mongoose.connection;
 	var url = __dirname + '/../views/';
 	var path = require('path');
+	var fs = require('fs');
+	var multer = require('multer');
+	var upload = multer({ dest: 'uploads/' });
+	var Grid = require('gridfs-stream');
+	var videoPath = path.join(__dirname, '../uploads/');
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 
@@ -21,12 +28,12 @@ module.exports = function(app, passport) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
 	});
-	
+
 	app.get('/createSession', function(req, res) {
 		res.render('createSession.ejs', {message: req.flash('sessionMessage')});
 
 	});
-	
+
 	app.post('/createSession', function(req, res) {
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
@@ -67,26 +74,26 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		var titles = req.body.roles;
-		var answerer;
-		console.log(req.body.numRoles);
-		if (req.body.numRoles == 1) {
-			answerer = titles;
-		} else {
-			answerer = titles[0];
-		}
-		var exercise = new Exercise({
-			roles: titles,
-			name: req.body.exerciseName,
-			scenarios: [],
-			answerer: answerer
-		});
-		exercise.save(function(err) {
-			if (err) throw err;
-			console.log('Exercise saved succesfully');
-		});
+		// var titles = req.body.roles;
+		// var answerer;
+		// console.log(req.body.numRoles);
+		// if (req.body.numRoles == 1) {
+		// 	answerer = titles;
+		// } else {
+		// 	answerer = titles[0];
+		// }
+		// var exercise = new Exercise({
+		// 	roles: titles,
+		// 	name: req.body.exerciseName,
+		// 	scenarios: [],
+		// 	answerer: answerer
+		// });
+		// exercise.save(function(err) {
+		// 	if (err) throw err;
+		// 	console.log('Exercise saved succesfully');
+		// });
 
-		res.render('createScenario.ejs');
+		res.render('uploadVideo.ejs');
 	});
 
 	app.post('/getScenario', function(req, res) {
@@ -119,7 +126,48 @@ module.exports = function(app, passport) {
 			);
 		});
 	});
+	// VIDEO UPLOAD ===============
+	Grid.mongo = mongoose.mongo;
+	conn.once('open', function() {
+		console.log('connection open');
+		// uploading video
+		app.post('/upload', upload.single('myVideo'), function(req, res) {
+			//res.send(req.file.filename);
+			videoPath = videoPath + req.file.filename;
+			console.log(videoPath);
+			// create write stream
+			var gfs = Grid(conn.db);
+			var writeStream = gfs.createWriteStream({
+				filename: 'test1.mp4'
+			});
+			// create read stream with file path and pipe into database
+			fs.createReadStream(videoPath).pipe(writeStream);
+			writeStream.on('close', function(file) {
+				console.log(file.filename + ' written to DB');
+			});
+			res.render('test.ejs');
+		});
+
+		// retrieving video
+		app.post('/getVideo', function(req, res) {
+			var gfs = Grid(conn.db);
+			// write content to this path
+			var writeStream = fs.createWriteStream(path.join(__dirname, '../videos/test4.mp4'));
+			//create read stream from mongodb
+			var readStream = gfs.createReadStream({
+				filename: 'test1.mp4'
+			});
+
+			//pipe the read stream into the write stream
+			readStream.pipe(writeStream);
+			writeStream.on('close', function() {
+				console.log('File has been written to videos folder');
+			});
+
+		})
+	});
 };
+
 
 // route middleware to make sure user is logged in
 function isLoggedIn(req, res, next) {
