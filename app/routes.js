@@ -20,6 +20,18 @@ module.exports = function(app, passport) {
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
 	});
 
+
+
+	//fail to login - 
+	app.get('/failure', function(req,res){
+		res.render('failure.ejs', {message: req.flash('loginMessage')})
+	})
+
+	app.get('/createRoles', function(req, res) {
+		res.render('roles.ejs');
+	});
+
+
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/admin',
@@ -28,8 +40,8 @@ module.exports = function(app, passport) {
 	}));
 
 	// process the student login form **CHANGE THIS**
-  	app.post('/studentlogin', passport.authenticate('local', {
-		successRedirect: '/admin',
+  	app.post('/studentlogin', passport.authenticate('local-student', {
+		successRedirect: '/createRoles',
 		failureRedirect: '/studentlogin',
 		failureFlash: true
 	}));
@@ -37,6 +49,11 @@ module.exports = function(app, passport) {
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
 		res.render('admin.ejs', {user: req.user})
+	});
+
+
+	app.get('/session', isLoggedIn, function(req, res) {
+		res.render('student.ejs', {user: req.user})
 	});
 
 	// logout
@@ -48,6 +65,8 @@ module.exports = function(app, passport) {
 	app.get('/createExercise', function(req, res) {
 		res.render('exercises.ejs');
 	});
+
+
 
 	app.post('/createRoles', function(req, res) {
 		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
