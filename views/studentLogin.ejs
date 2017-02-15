@@ -17,19 +17,15 @@
       <h2 class="alert"><%= message %></h2>
   <% } %>
   <form action="/studentlogin" method="post">
-      <div>
-          <label>Email:</label>
-          <input type="text" name="email"/>
-      </div>
 
       <div>
-          <label>Password:</label>
-          <input type="password" name="password"/>
+          <label>Room Number:</label>
+          <input type="text" name="roomNumber"/>
       </div>
 
-      <div>
-          <label>Session ID:</label>
-          <input type="sessionID" name="sessionID"/>
+        <div>
+          <label>Active Session ID:</label>
+          <input type="password" name="activeSessionID"/>
       </div>
       <div>
           <input type="submit" value="Log In"/>
