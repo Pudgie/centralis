@@ -13,12 +13,10 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/adminlogin', function(req, res) {
-		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 
 	app.get('/studentlogin', function(req, res) {
-		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
 	});
 	
@@ -68,8 +66,8 @@ module.exports = function(app, passport) {
 
 	app.post('/createScenarios', function(req, res) {
 		var titles = req.body.roles;
+		var descriptions = req.body.descriptions;
 		var answerer;
-		console.log(req.body.numRoles);
 		if (req.body.numRoles == 1) {
 			answerer = titles;
 		} else {
@@ -77,6 +75,7 @@ module.exports = function(app, passport) {
 		}
 		var exercise = new Exercise({
 			roles: titles,
+			descriptions: descriptions,
 			name: req.body.exerciseName,
 			scenarios: [],
 			answerer: answerer
@@ -96,7 +95,7 @@ module.exports = function(app, passport) {
 			question: req.body.question,
 			survey: null
 		});
-		console.log(scenario.text);
+
 		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
 	});
 
@@ -118,6 +117,15 @@ module.exports = function(app, passport) {
 			    }
 			);
 		});
+		res.render('finishCreateExercise.ejs');
+	});
+
+	app.get('/scenarioRedirect', function(req, res) {
+		res.render('createScenario.ejs');
+	});
+
+	app.get('/homeRedirect', function(req, res) {
+		res.redirect('/admin');
 	});
 };
 

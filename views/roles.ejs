@@ -11,7 +11,8 @@
 		<% 
 		var numRoles = roles;
 		for (var i = 1; i <= numRoles; i++) {
-			%><p>Role <%=i%>: <input type="text" name= "roles"> </p><%
+			%><p>Role <%=i%>: <input type="text" name= "roles"> </p>
+			</p>Description: <input type="text" name="descriptions"> </p><%
 		}
 		%>
 		<input type="hidden" name="numRoles" value= "<%=numRoles%>" />
