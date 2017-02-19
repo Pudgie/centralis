@@ -8,9 +8,9 @@ module.exports = function(app, passport) {
 	var path = require('path');
 	var fs = require('fs');
 	var multer = require('multer');
-	var upload = multer({ dest: 'uploads/' });
+	var upload = multer({ dest: 'public/' });
 	var Grid = require('gridfs-stream');
-	var videoPath = path.join(__dirname, '../uploads/');
+	var videoPath = path.join(__dirname, '../public/');
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 
@@ -111,6 +111,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/addSurvey', function(req, res) {
+		var range = "1";
 		var scenario = new Scenario({
 			videoURL: req.body.videoURL,
 			text: null,
@@ -128,7 +129,10 @@ module.exports = function(app, passport) {
 			    }
 			);
 		});
+		var file = path.join(__dirname, scenario.videoURL);
+		res.render('video.ejs', {file: scenario.videoURL});
 	});
+		//res.render('video.ejs');
 	// VIDEO UPLOAD INTO DATABASE===============
 	// Grid.mongo = mongoose.mongo;
 	// conn.once('open', function() {
@@ -170,12 +174,12 @@ module.exports = function(app, passport) {
 	// 	})
 	// });
 
-	// uploading video locally
+	// UPLOAD VIDEO LOCALLY===============
 	app.post('/upload', upload.single('myVideo'), function(req, res) {
 		//res.send(req.file.filename);
 		videoPath = videoPath + req.file.filename;
 		var scenario = new Scenario({
-			videoURL: '../uploads/'+req.file.originalname,
+			videoURL: req.file.filename,
 			text: null,
 			question: req.body.question,
 			survey: null
