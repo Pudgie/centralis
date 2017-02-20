@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<style>
+		body {
+			background-color: #FFCC00;
+		}
+		.mainForm {
+			margin-top: 230px;
+			text-align: center;
+		}
+		.inputForms {
+			border-radius: 5px;
+		}
+	</style>
   <title>Create Exercise</title>
 </head>
 <body>
-  	<form action="/createRoles" method="post">
-		Exercise Name:<br>
-		<input type="text" name="exerciseName"><br>
-		Number of Roles:<br>
-		<input type ="number" name="roles" min="1" max="10" step="1" value="1" size="20">
-	 	<input type="submit" value="Next">
-	</form>
+	<div class="mainForm">
+		<h2> <strong> Specify the Exercise and number of roles: </strong> </h2>
+		<br>
+	  	<form action="/createRoles" method="post">
+			<strong>Exercise Name:</strong><br>
+			<input class="inputForms" type="text" name="exerciseName"><br><br><br>
+			<strong>Number of Roles:</strong><br>
+			<input class="inputForms" type ="number" name="roles" min="1" max="10" step="1" value="1" size="20">
+		 	<button type="submit" class="btn btn-primary btn-md">Next</button>
+		</form>
+	</div>
 </body>
 </html>
