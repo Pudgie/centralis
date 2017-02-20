@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Page Title</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <meta http-equiv="refresh" content="5">
+  <title>Student Login</title>
   <style>
-    form {
-      text-align: center;
-      margin-top: 20px;
+    body {
+      background-color: #990000;
     }
     .alert {
       text-align: center;
+    }
+    .completeForm {
+      background-color: white;
+      padding-top: 5px;
+      padding-bottom: 20px;
+      text-align: center;
+      margin-top: 155px;
+    }
+    table {
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .paddingTD {
+      padding-bottom: 2em;
+    }
+    .roundTF {
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -17,23 +36,29 @@
       <h2 class="alert"><%= message %></h2>
   <% } %>
   <form action="/studentlogin" method="post">
-      <div>
-          <label>Email:</label>
-          <input type="text" name="email"/>
-      </div>
-
-      <div>
-          <label>Password:</label>
-          <input type="password" name="password"/>
-      </div>
-
-      <div>
-          <label>Session ID:</label>
-          <input type="sessionID" name="sessionID"/>
-      </div>
-      <div>
-          <input type="submit" value="Log In"/>
-      </div>
+    <div class="completeForm">
+      <h2><strong>Student Login</strong></h2>
+      <table>
+        <tbody>
+        <tr>
+          <td class="paddingTD"><label>Email:</label></td>
+          <td class="paddingTD"><input class="roundTF" type="text" name="email"/></td>
+        </tr>
+        <br>
+        <tr>
+            <td class="paddingTD"><label>Password:</label></td>
+            <td class="paddingTD"><input class="roundTF" type="password" name="password"/></td>
+        </tr>
+        <br>
+        <tr>
+            <td class="paddingTD"><label>Session ID:</label></td>
+            <td class="paddingTD"><input class="roundTF" type="sessionID" name="sessionID"/></td>
+        </tr>
+        <br>
+        </tbody>
+      </table>
+      <button type="button" class="btn btn-primary btn-md">Login</button>
+    </div>
   </form>
 
 </body>
