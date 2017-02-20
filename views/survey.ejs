@@ -2,20 +2,38 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Survey Questions</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+      body {
+        background-color: #FFCC00;
+      }
+      #wholeForm {
+        margin-top: 250px;
+        text-align: center;
+      }
+      .indForms {
+        border-radius: 5px;
+      }
+    </style>
   </head>
   <body>
-    <form action="/addSurvey" method="post">
-      <input type="hidden" name="videoURL" value="<%= scenario.videoURL %>" />
-      <input type="hidden" name="text" value="<%= scenario.text %>" />
-      <input type="hidden" name="question" value="<%=scenario.question%>" />
-  		<p>Enter survey questions</p>
-  		<%
-  		for (var i = 1; i <= number; i++) {
-  			%><input type="text" name= "surveys"> </p><%
-  		}
-  		%>
-  	 	<input type="submit" value="Add Survey">
-   	</form>
+    <div id="wholeForm">
+      <form action="/addSurvey" method="post">
+        <input type="hidden" name="videoURL" value="<%= scenario.videoURL %>" />
+        <input type="hidden" name="text" value="<%= scenario.text %>" />
+        <input type="hidden" name="question" value="<%=scenario.question%>" />
+    		<p><strong>Enter survey questions</strong></p>
+    		<%
+    		for (var i = 1; i <= number; i++) {
+    			%><input class="indForms" type="text" name= "surveys"> </p><%
+    		}
+    		%>
+        <br> <br>
+        <button type="submit" class="btn btn-primary btn-md">Add Survey</button>
+     	</form>
+    </div>
   </body>
 </html>
