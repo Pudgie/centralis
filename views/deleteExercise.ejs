@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Delete Exercise</title> 
+</head>
+<body>
+	<h1>Select the exercises you would like to delete:</h1>
+	<form action = "/deleteExercise" method = "post">
+		<%
+			for (var ii = 0; ii < exercises.length; ii++) {
+				%>
+					<input type = "checkbox" name = "exerciseChecks" value = "<%= exercises[ii]._id %>"/> <%= exercises[ii].name %> <br>
+				<%
+			}
+		%>
+		<input type="submit" value="Select">
+	</form>
+</body>
+</html>
