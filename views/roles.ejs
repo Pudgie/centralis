@@ -24,7 +24,7 @@
 </head>
 <body>
 	<div id="mainForm">
-		<h1><strong>Exercise Name: <%= name %></strong></p></h1><br>
+		<h1><strong>Exercise Name: <%= exName %></strong></p></h1><br>
 		<em>Write the type of roles (The first role will be typing for team decision)</em><br>
 		<form action="/createScenarios" method="post">
 			<input type="hidden" name="exerciseName" value= "<%=name%>" />

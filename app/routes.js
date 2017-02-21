@@ -54,7 +54,11 @@ module.exports = function(app, passport) {
 
 
 	app.get('/createRoles', function(req, res) {
-		res.render('roles.ejs');
+		var id = req.body.exerciseButtons;
+		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+			res.render('roles.ejs', {exName: results.name, exId: id});
+		});
+		
 	});
 
 
