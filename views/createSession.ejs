@@ -13,13 +13,10 @@
 	</style>
 </head>
 <body>
-	<% if (message.length > 0) { %>
-		<h2><%= message %></h2>
-	<% } %>
-	<form action="/createSession" method="post">
-		<div>
-			<input type="submit" value="Create Session"/>
-		</div>
+	<h1>You have selected exercise <%=exName%></h1>
+	<form action="/session" method="post">
+		<input type = "hidden" name = "exId" value = "<%=exId%>" />
+		<input type="submit" value="Create Session"/>
 	</form>
 </body>
 </html>
