@@ -36,29 +36,28 @@
       <h2 class="alert"><%= message %></h2>
   <% } %>
   <form action="/studentlogin" method="post">
+
     <div class="completeForm">
       <h2><strong>Student Login</strong></h2>
       <table>
         <tbody>
         <tr>
-          <td class="paddingTD"><label>Email:</label></td>
-          <td class="paddingTD"><input class="roundTF" type="text" name="email"/></td>
+          <td class="paddingTD"><label>Room Number:</label></td>
+          <td class="paddingTD"><input class="roundTF" type="text" name="roomNumber"/></td>
         </tr>
         <br>
         <tr>
-            <td class="paddingTD"><label>Password:</label></td>
-            <td class="paddingTD"><input class="roundTF" type="password" name="password"/></td>
+            <td class="paddingTD"><label>Active Session ID:</label></td>
+            <td class="paddingTD"><input class="roundTF" type="password" name="activeSessionID"/></td>
         </tr>
         <br>
-        <tr>
-            <td class="paddingTD"><label>Session ID:</label></td>
-            <td class="paddingTD"><input class="roundTF" type="sessionID" name="sessionID"/></td>
-        </tr>
+       
         <br>
         </tbody>
       </table>
-      <button type="button" class="btn btn-primary btn-md">Login</button>
+      <button type="submit" class="btn btn-primary btn-md">Login</button>
     </div>
+
   </form>
 
 </body>
