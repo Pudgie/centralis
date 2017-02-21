@@ -2,8 +2,15 @@
 
 
 module.exports = function(app, passport) {
+	var mongoose = require('mongoose');
+	var conn = mongoose.connection;
 	var url = __dirname + '/../views/';
 	var path = require('path');
+	var fs = require('fs');
+	var multer = require('multer');
+	var upload = multer({ dest: 'public/' });
+	var Grid = require('gridfs-stream');
+	var videoPath = path.join(__dirname, '../public/');
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
@@ -23,14 +30,13 @@ module.exports = function(app, passport) {
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
 	});
 
-
 	app.post('/createSession', function(req, res) {
 		var id = req.body.exerciseButtons;
 		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
 			res.render('createSession.ejs', {exName: results.name, exId: id});
 		});
 	});
-	
+
 	app.post('/session', function(req, res) {
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
@@ -118,13 +124,14 @@ module.exports = function(app, passport) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
-
 		res.render('createScenario.ejs');
 	});
 
-	app.post('/getScenario', function(req, res) {
+	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
+		//res.send(req.file.filename);
+		videoPath = videoPath + req.file.filename;
 		var scenario = new Scenario({
-			videoURL: req.body.video,
+			videoURL: req.file.filename,
 			text: req.body.text,
 			question: req.body.question,
 			survey: null
@@ -134,9 +141,10 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/addSurvey', function(req, res) {
+		var range = "1";
 		var scenario = new Scenario({
 			videoURL: req.body.videoURL,
-			text: req.body.text,
+			text: null,
 			question: req.body.question,
 			survey: req.body.surveys
 		});
@@ -151,8 +159,66 @@ module.exports = function(app, passport) {
 			    }
 			);
 		});
+		var file = path.join(__dirname, scenario.videoURL);
+		res.render('video.ejs', {file: scenario.videoURL});
 	});
+		//res.render('video.ejs');
+	// VIDEO UPLOAD INTO DATABASE===============
+	// Grid.mongo = mongoose.mongo;
+	// conn.once('open', function() {
+	// 	console.log('connection open');
+	// 	// uploading video
+	// 	app.post('/upload', upload.single('myVideo'), function(req, res) {
+	// 		//res.send(req.file.filename);
+	// 		videoPath = videoPath + req.file.filename;
+	// 		console.log(videoPath);
+	// 		// create write stream
+	// 		var gfs = Grid(conn.db);
+	// 		var writeStream = gfs.createWriteStream({
+	// 			filename: 'test1.mp4'
+	// 		});
+	// 		// create read stream with file path and pipe into database
+	// 		fs.createReadStream(videoPath).pipe(writeStream);
+	// 		writeStream.on('close', function(file) {
+	// 			console.log(file.filename + ' written to DB');
+	// 		});
+	// 		res.render('test.ejs');
+	// 	});
+	//
+	// 	// retrieving video
+	// 	app.post('/getVideo', function(req, res) {
+	// 		var gfs = Grid(conn.db);
+	// 		// write content to this path
+	// 		var writeStream = fs.createWriteStream(path.join(__dirname, '../videos/test4.mp4'));
+	// 		//create read stream from mongodb
+	// 		var readStream = gfs.createReadStream({
+	// 			filename: 'test1.mp4'
+	// 		});
+	//
+	// 		//pipe the read stream into the write stream
+	// 		readStream.pipe(writeStream);
+	// 		writeStream.on('close', function() {
+	// 			console.log('File has been written to videos folder');
+	// 		});
+	//
+	// 	})
+	// });
+
+	// UPLOAD VIDEO LOCALLY===============
+	// app.post('/upload', upload.single('myVideo'), function(req, res) {
+	// 	//res.send(req.file.filename);
+	// 	videoPath = videoPath + req.file.filename;
+	// 	var scenario = new Scenario({
+	// 		videoURL: req.file.filename,
+	// 		text: null,
+	// 		question: req.body.question,
+	// 		survey: null
+	// 	});
+	// 	//res.download(videoPath, req.file.originalname);
+	// 	res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+	// });
 };
+
 
 // route middleware to make sure user is logged in
 function isLoggedIn(req, res, next) {
