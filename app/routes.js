@@ -6,6 +6,7 @@ module.exports = function(app, passport) {
 	var path = require('path');
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
+	var Session = require('./models/session');
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -21,16 +22,33 @@ module.exports = function(app, passport) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('studentLogin.ejs', {message: req.flash('loginMessage')});
 	});
-	
-	app.get('/createSession', function(req, res) {
-		res.render('createSession.ejs', {message: req.flash('sessionMessage')});
 
+	app.post('/createSession', function(req, res) {
+		var id = req.body.exerciseButtons;
+		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+			res.render('createSession.ejs', {exName: results.name, exId: id});
+		});
 	});
 	
-	app.post('/createSession', function(req, res) {
+	app.post('/session', function(req, res) {
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
-		console.log(sessionID);
+		var session = new Session ({
+			activeSessionID: sessionID,
+			exerciseID: req.body.exId
+		});
+		session.save(function(err) {
+			if (err) { throw err; }
+			console.log("Session saved succesfully");
+
+		});
+		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
+	});
+
+	app.get('/selectExercise', function(req, res) {
+		Exercise.find().lean().exec( function(err, results) {
+			res.render('selectExercise.ejs', {exercises: results});
+		});
 	});
 
 	// process the admin login form

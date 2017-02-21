@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+	<h1>Select an exercise:</h1>
+	<form action = "/createSession" method = "post">
+		<%
+			for (var i = 0; i < exercises.length; i++) {
+			%>
+				<input type = "radio" id = "<%i%>" value = "<%=exercises[i]._id%>" name = "exerciseButtons" /> <%= exercises[i].name %> <br>
+			<%
+			}
+		%>
+		<input type= "submit" value="Select" />
+	</form>
+</body>
+</html>
