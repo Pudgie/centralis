@@ -92,16 +92,14 @@ module.exports = function(app, passport) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
-		if (req.body.submit == "Add Text-based Scenario") {
-			res.render('createScenario.ejs');
-		} else {
-			res.render('uploadVideo.ejs')
-		}
+		res.render('createScenario.ejs');
 	});
 
-	app.post('/getScenario', function(req, res) {
+	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
+		//res.send(req.file.filename);
+		videoPath = videoPath + req.file.filename;
 		var scenario = new Scenario({
-			videoURL: req.body.video,
+			videoURL: req.file.filename,
 			text: req.body.text,
 			question: req.body.question,
 			survey: null
@@ -175,18 +173,18 @@ module.exports = function(app, passport) {
 	// });
 
 	// UPLOAD VIDEO LOCALLY===============
-	app.post('/upload', upload.single('myVideo'), function(req, res) {
-		//res.send(req.file.filename);
-		videoPath = videoPath + req.file.filename;
-		var scenario = new Scenario({
-			videoURL: req.file.filename,
-			text: null,
-			question: req.body.question,
-			survey: null
-		});
-		//res.download(videoPath, req.file.originalname);
-		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
-	});
+	// app.post('/upload', upload.single('myVideo'), function(req, res) {
+	// 	//res.send(req.file.filename);
+	// 	videoPath = videoPath + req.file.filename;
+	// 	var scenario = new Scenario({
+	// 		videoURL: req.file.filename,
+	// 		text: null,
+	// 		question: req.body.question,
+	// 		survey: null
+	// 	});
+	// 	//res.download(videoPath, req.file.originalname);
+	// 	res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+	// });
 };
 
 
