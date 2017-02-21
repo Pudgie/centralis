@@ -18,6 +18,7 @@ autoIncrement.initialize(connection);
 require('./config/passport.js')(passport);
 
 // set up express application
+app.use(express.static('public'));
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
