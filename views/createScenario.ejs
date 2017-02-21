@@ -34,18 +34,17 @@
         font-weight: bold;
         text-align: center;
       }
-    </style>    
+    </style>
   </head>
   <body>
-<<<<<<< HEAD
   <h2> Specify Videos and Questions </h2>
-  <div id="wholeForm">  
-    <form id="formStyle" action="/getScenario" method="post">
+  <div id="wholeForm">
+    <form id="formStyle" action="/getScenario" method="post" enctype="multipart/form-data">
       <table>
       <tbody>
         <tr>
           <td class="paddingTD"><label>Video URL: </label> </td>
-          <td class="paddingTD"><input class="indForms" type="text" name="video"></td>
+          <td class="paddingTD"><input class="indForms" type="file" name="myVideo"></td>
           <br>
         </tr>
         <tr>
@@ -53,7 +52,7 @@
           <td class="paddingTD"><textarea rows="4" cols="50" name="text">Type follow up text</textarea></td>
         </tr>
         <tr>
-          <td class="paddingTD"><label>Team-based Question:</label></td> 
+          <td class="paddingTD"><label>Team-based Question:</label></td>
           <td class="paddingTD"><input class="indForms" type="text" name="question" size="50"></td>
         </tr>
         <tr>
@@ -65,16 +64,7 @@
       <br><br>
       <button type="submit" class="btn btn-primary btn-md">Submit</button>
     </form>
-    
+
   </div>
-=======
-    <form action="/getScenario" method="post" enctype="multipart/form-data">
-      <input type="file" name="myVideo"/> </br>
-      Text: <textarea rows="4" cols="50" name="text">Type follow up text</textarea><br/>
-      Team-based Question: <input type="text" name="question" size="50"><br/>
-      Survey Questions: <input type ="number" name="survey" min="1" max="10" step="1" value="1" size="20">
-      <input type="submit" value="Submit">
-</form>
->>>>>>> video
   </body>
 </html>

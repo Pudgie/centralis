@@ -159,8 +159,8 @@ module.exports = function(app, passport) {
 			    }
 			);
 		});
-		var file = path.join(__dirname, scenario.videoURL);
-		res.render('video.ejs', {file: scenario.videoURL});
+		// var file = path.join(__dirname, scenario.videoURL);
+		// res.render('video.ejs', {file: scenario.videoURL});
 	});
 		//res.render('video.ejs');
 	// VIDEO UPLOAD INTO DATABASE===============
