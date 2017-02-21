@@ -2,9 +2,28 @@
 <html>
 <head>
   <title>Select Roles</title>
+  
 </head>
 <body>
-	<h1>Exercise Name: //needs to pull the exercise down from the database</p></h1><br>
+	
+     <script type="text/javascript">
+		function getExercise(){
+			var mongoose = require('mongoose');
+			var Exercise = mongoose.model('Exercise', exerciseSchema);
+			var currentExercise = Exercise[0];
+			var roles = currentExercise.roles;
+			console.log("TEST");
+			for(int i = 0 ; i < roles.size();i++){
+				process.stdout.write("hello: ");
+			}
+
+			
+		}
+		
+		window.onload = getExercise();
+
+	</script>
+	<h1>Exercise Name: blah blah//needs to pull the exercise down from the database</p></h1><br>
 	Write the type of roles (The first role will be typing for team decision)<br>
 
 </body>
