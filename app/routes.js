@@ -14,6 +14,7 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var currentExercise = null;
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -45,7 +46,6 @@ module.exports = function(app, passport) {
 		session.save(function(err) {
 			if (err) { throw err; }
 			console.log("Session saved succesfully");
-
 		});
 		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
 	});
@@ -56,6 +56,49 @@ module.exports = function(app, passport) {
 		});
 	});
 
+	app.get('/selectRoles', function(req, res) {
+		// console.log("password: before req sent");
+		// var password = req.query.activeSessionID;
+		// console.log("password: " + password);
+		Session.find({}).lean().exec( function(err, results) {
+			//get the session
+			var id = results[0].exerciseID; //pull out exercise ID for that session
+			console.log("my current ID is: " + id);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				//find session ID;
+				currentExercise = exercise;
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles});
+			});
+		});
+
+	});
+
+	app.post('/mainPlay', function (req, res) {
+		// Session.find({}).lean().exec( function(err, results) {
+		// 	//get the session
+		// 	var id = results[0].exerciseID; //pull out exercise ID for that session
+		// 	console.log("my current ID is: " + id);
+		// 	Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+		// 		//find session ID;
+		// 		if (exercise.scenarios[0].text == null) {
+		// 			res.render('video.ejs', {file: exercise.scenarios[0].videoURL});
+		// 		} else {
+		// 			res.render('text.ejs', {question: exercise.scenarios[0].text});
+		// 		}
+		// 	});
+		// });
+		if (currentExercise.scenarios[0].text == null) {
+			res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
+		} else {
+			res.render('text.ejs', {question: currentExercise.scenarios[0].text});
+		}
+
+	});
+
+	app.get('/response', function(req, res) {
+		// res.render('response.ejs', {question: currentExercise.scenarios[0].text});
+		res.render('response.ejs', {question: currentExercise.scenarios[0].question});
+	});
 
 	app.get('/createRoles', function(req, res) {
 		res.render('roles.ejs');
@@ -72,7 +115,7 @@ module.exports = function(app, passport) {
 
 	// process the student login form **CHANGE THIS**
   	app.post('/studentlogin', passport.authenticate('local-student', {
-		successRedirect: '/createRoles',
+		successRedirect: '/selectRoles',
 		failureRedirect: '/studentlogin',
 		failureFlash: true
 	}));
