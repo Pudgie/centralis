@@ -53,10 +53,18 @@ module.exports = function(app, passport) {
 	});
 
 
-	app.get('/createRoles', function(req, res) {
-		var id = req.body.exerciseButtons;
-		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
-			res.render('roles.ejs', {exName: results.name, exId: id});
+	app.get('/selectRoles', function(req, res) {
+		// console.log("password: before req sent");
+		// var password = req.query.activeSessionID;
+		// console.log("password: " + password);
+		Session.find({}).lean().exec( function(err, results) {
+			//get the session 
+			var id = results[0].exerciseID; //pull out exercise ID for that session
+			console.log("my current ID is: " + id);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+				//find session ID;
+				res.render('studentRoles.ejs', {exName: results.name, exId: id, roles: results.roles});
+			});
 		});
 		
 	});
@@ -65,14 +73,16 @@ module.exports = function(app, passport) {
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
+
 		successRedirect: '/admin',
 		failureRedirect: '/adminLogin',
 		failureFlash: true
 	}));
 
-	// process the student login form **CHANGE THIS**
+	// process the student login form **DONE**
   	app.post('/studentlogin', passport.authenticate('local-student', {
-		successRedirect: '/createRoles',
+
+		successRedirect: '/selectRoles',
 		failureRedirect: '/studentlogin',
 		failureFlash: true
 	}));
@@ -100,6 +110,11 @@ module.exports = function(app, passport) {
 
 
 	app.post('/createRoles', function(req, res) {
+		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
+	});
+
+
+	app.post('/selectRoles', function(req, res) {
 		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
 	});
 
