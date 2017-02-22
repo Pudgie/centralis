@@ -5,6 +5,15 @@
     <title></title>
   </head>
   <body>
-    <p>Question: <%= question %></p>
+    <form action="/collect" method="post">
+      <p>Question: <%= question %></p>
+      <input type="text" name="question">
+      <% for (var i = 0; i < survey.length; i++) { %>
+        <p><%= survey[i] %></p>
+        <input type="text" name="<%=survey[i]%>"/>
+      <% } %>
+      </br>
+      <input type="submit" name="Submit">
+    </form>
   </body>
 </html>

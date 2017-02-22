@@ -94,10 +94,14 @@ module.exports = function(app, passport) {
 		}
 
 	});
-
+	// show questions to students
 	app.get('/response', function(req, res) {
 		// res.render('response.ejs', {question: currentExercise.scenarios[0].text});
-		res.render('response.ejs', {question: currentExercise.scenarios[0].question});
+		res.render('response.ejs', {question: currentExercise.scenarios[0].question, survey: currentExercise.scenarios[0].survey});
+	});
+	// collect student responses
+	app.post('/collect', function(req, res) {
+
 	});
 
 	app.get('/createRoles', function(req, res) {
@@ -114,11 +118,31 @@ module.exports = function(app, passport) {
 	}));
 
 	// process the student login form **CHANGE THIS**
-  	app.post('/studentlogin', passport.authenticate('local-student', {
-		successRedirect: '/selectRoles',
-		failureRedirect: '/studentlogin',
-		failureFlash: true
-	}));
+  // 	app.post('/studentlogin', passport.authenticate('local-student', {
+	// 	successRedirect: '/selectRoles',
+	// 	failureRedirect: '/studentlogin',
+	// 	failureFlash: true
+	// }));
+
+	app.post('/studentlogin', function(req, res, next) {
+passport.authenticate('local-student', function(err, user, info) {
+	if (err) { return next(err); }
+	if (!user) { return res.redirect('/studentlogin'); }
+	req.logIn(user, function(err) {
+		Session.findOne({'activeSessionID': user.activeSessionID}).lean().exec( function(err, result) {
+			//get the session
+			var id = result.exerciseID; //pull out exercise ID for that session
+			console.log("my current ID is: " + id);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				//find session ID;
+				currentExercise = exercise;
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles});
+			});
+		});
+	});
+})(req, res, next);
+});
+
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
