@@ -53,7 +53,7 @@ module.exports = function(passport) {
   },
   function(req, roomNumber, activeSessionID, done) { // callback with email and password
     // find a user with same email as the forms email
-    Session.findOne({'activeSessionID': activeSessionID}, function(err, user) {
+    Session.findOne({'roomNumber': roomNumber, 'activeSessionID': activeSessionID}, function(err, user) {
       if (err)
         return done(err);
       // if no user is found, return a message

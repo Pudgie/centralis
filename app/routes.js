@@ -14,7 +14,10 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var currentSession = null;
 	var currentExercise = null;
+	var currentRoom = null;
+	var currentSessionID = null;
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -37,16 +40,20 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/session', function(req, res) {
+		var rooms = ['A', 'B', 'C', 'D'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
-		var session = new Session ({
-			activeSessionID: sessionID,
-			exerciseID: req.body.exId
-		});
-		session.save(function(err) {
-			if (err) { throw err; }
-			console.log("Session saved succesfully");
-		});
+		for (var i = 0; i < rooms.length; i++) {
+			var session = new Session ({
+				roomNumber: rooms[i],
+				activeSessionID: sessionID,
+				exerciseID: req.body.exId
+			});
+			session.save(function(err) {
+				if (err) { throw err; }
+				console.log("Session saved succesfully");
+			});
+		}
 		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
 	});
 
@@ -73,26 +80,41 @@ module.exports = function(app, passport) {
 	//
 	// });
 
-	app.post('/mainPlay', function (req, res) {
-		// Session.find({}).lean().exec( function(err, results) {
-		// 	//get the session
-		// 	var id = results[0].exerciseID; //pull out exercise ID for that session
-		// 	console.log("my current ID is: " + id);
-		// 	Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
-		// 		//find session ID;
-		// 		if (exercise.scenarios[0].text == null) {
-		// 			res.render('video.ejs', {file: exercise.scenarios[0].videoURL});
-		// 		} else {
-		// 			res.render('text.ejs', {question: exercise.scenarios[0].text});
-		// 		}
-		// 	});
-		// });
-		if (currentExercise.scenarios[0].text == null) {
-			res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
-		} else {
-			res.render('text.ejs', {question: currentExercise.scenarios[0].text});
-		}
+	app.get('/selectRoles', function(req, res) {
+		Session.findOne({'roomNumber': currentRoom, 'activeSessionID': currentSessionID}).lean().exec( function(err, result) {
+			//get the session
+			currentSession = result;
+			var id = result.exerciseID; //pull out exercise ID for that session
+			console.log("my current ID is: " + id);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				//find session ID;
+				currentExercise = exercise;
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles});
+			});
+		});
+	});
 
+	app.post('/wait', function (req, res) {
+		var taken = currentSession.activeRoles;
+		if (taken.includes(req.body.selectButtons)) {
+			res.redirect('/selectRoles');
+		} else {
+			Session.findOneAndUpdate(
+				{roomNumber: currentRoom},
+				{$push: {activeRoles: req.body.selectButtons}},
+				{safe: true, upsert: true},
+					function(err, model) {
+							if (err) throw err;
+					}
+			);
+			console.log(currentSession.activeRoles);
+			res.render('wait.ejs', {players: currentSession.activeRoles});
+		}
+		// if (currentExercise.scenarios[0].text == null) {
+		// 	res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
+		// } else {
+		// 	res.render('text.ejs', {question: currentExercise.scenarios[0].text});
+		// }
 	});
 	// show questions to students
 	app.get('/response', function(req, res) {
@@ -129,16 +151,10 @@ module.exports = function(app, passport) {
 			if (err) { return next(err); }
 			if (!user) { return res.redirect('/studentlogin'); }
 			req.logIn(user, function(err) {
-				Session.findOne({'activeSessionID': user.activeSessionID}).lean().exec( function(err, result) {
-					//get the session
-					var id = result.exerciseID; //pull out exercise ID for that session
-					console.log("my current ID is: " + id);
-					Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
-						//find session ID;
-						currentExercise = exercise;
-						res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles});
-					});
-				});
+				if (err) { return next(err); }
+				currentRoom = user.roomNumber;
+				currentSessionID = user.activeSessionID;
+				return res.redirect('/selectRoles');
 			});
 		})(req, res, next);
 	});
