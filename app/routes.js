@@ -18,6 +18,7 @@ module.exports = function(app, passport) {
 	var currentExercise = null;
 	var currentRoom = null;
 	var currentSessionID = null;
+	var hasStarted = false;
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -96,7 +97,7 @@ module.exports = function(app, passport) {
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
-		if (taken.includes(req.body.selectButtons)) {
+		if (taken.includes(req.body.selectButtons) || req.body.selectButtons == null) {
 			res.redirect('/selectRoles');
 		} else {
 			Session.findOneAndUpdate(
@@ -108,13 +109,13 @@ module.exports = function(app, passport) {
 					}
 			);
 			console.log(currentSession.activeRoles);
-			res.render('wait.ejs', {players: currentSession.activeRoles});
+			//res.render('wait.ejs', {players: currentSession.activeRoles});
+			if (currentExercise.scenarios[0].text == null) {
+				res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
+			} else {
+				res.render('text.ejs', {question: currentExercise.scenarios[0].text});
+			}
 		}
-		// if (currentExercise.scenarios[0].text == null) {
-		// 	res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
-		// } else {
-		// 	res.render('text.ejs', {question: currentExercise.scenarios[0].text});
-		// }
 	});
 	// show questions to students
 	app.get('/response', function(req, res) {
@@ -124,6 +125,10 @@ module.exports = function(app, passport) {
 	// collect student responses
 	app.post('/collect', function(req, res) {
 
+	});
+
+	app.get('/startGame', function (req, res) {
+	 hasStarted = true;
 	});
 
 	app.get('/createRoles', function(req, res) {
@@ -158,7 +163,6 @@ module.exports = function(app, passport) {
 			});
 		})(req, res, next);
 	});
-
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
@@ -251,47 +255,6 @@ module.exports = function(app, passport) {
 	app.get('/homeRedirect', function(req, res) {
 		res.redirect('/admin');
 	});
-		//res.render('video.ejs');
-	// VIDEO UPLOAD INTO DATABASE===============
-	// Grid.mongo = mongoose.mongo;
-	// conn.once('open', function() {
-	// 	console.log('connection open');
-	// 	// uploading video
-	// 	app.post('/upload', upload.single('myVideo'), function(req, res) {
-	// 		//res.send(req.file.filename);
-	// 		videoPath = videoPath + req.file.filename;
-	// 		console.log(videoPath);
-	// 		// create write stream
-	// 		var gfs = Grid(conn.db);
-	// 		var writeStream = gfs.createWriteStream({
-	// 			filename: 'test1.mp4'
-	// 		});
-	// 		// create read stream with file path and pipe into database
-	// 		fs.createReadStream(videoPath).pipe(writeStream);
-	// 		writeStream.on('close', function(file) {
-	// 			console.log(file.filename + ' written to DB');
-	// 		});
-	// 		res.render('test.ejs');
-	// 	});
-	//
-	// 	// retrieving video
-	// 	app.post('/getVideo', function(req, res) {
-	// 		var gfs = Grid(conn.db);
-	// 		// write content to this path
-	// 		var writeStream = fs.createWriteStream(path.join(__dirname, '../videos/test4.mp4'));
-	// 		//create read stream from mongodb
-	// 		var readStream = gfs.createReadStream({
-	// 			filename: 'test1.mp4'
-	// 		});
-	//
-	// 		//pipe the read stream into the write stream
-	// 		readStream.pipe(writeStream);
-	// 		writeStream.on('close', function() {
-	// 			console.log('File has been written to videos folder');
-	// 		});
-	//
-	// 	})
-	// });
 
 	// UPLOAD VIDEO LOCALLY===============
 	// app.post('/upload', upload.single('myVideo'), function(req, res) {
