@@ -241,22 +241,32 @@ module.exports = function(app, passport) {
 
 	app.post('/addSurvey', function(req, res) {
 		var range = "1";
-		var scenario = new Scenario({
-			videoURL: req.body.videoURL,
-			text: null,
-			question: req.body.question,
-			survey: req.body.surveys
-		});
+
 		Exercise.nextCount(function(err, count) {
 			var exerciseID = count - 1;
-			Exercise.findByIdAndUpdate(
-		    exerciseID,
-		    {$push: {scenarios: scenario}},
-		    {safe: true, upsert: true},
-			    function(err, model) {
-			        if (err) throw err;
-			    }
-			);
+
+			// find length of scenarios array from current exercise
+			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+				var exCount = result.scenarios.length + 1; // set this as scenario id
+				console.log("exercise count: " + exCount);
+				var scenario = new Scenario({
+					_id: exCount,
+					videoURL: req.body.videoURL,
+					text: req.body.text,
+					question: req.body.question,
+					survey: req.body.surveys
+				});
+
+				// find and update exercise with current scenario
+				Exercise.findByIdAndUpdate(
+			    exerciseID,
+			    {$push: {scenarios: scenario}},
+			    {safe: true, upsert: true},
+				    function(err, model) {
+				        if (err) throw err;
+				    }
+				);
+			});
 		});
 		res.render('finishCreateExercise.ejs');
 	});
