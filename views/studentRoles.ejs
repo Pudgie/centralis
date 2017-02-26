@@ -28,7 +28,8 @@
 		<%
 			for (var i = 0; i < roles.length; i++) {
 			%>
-				<input type = "radio" id = "<%i%>" value = "<%= roles[i]%>" name = "selectButtons" /> <%=roles[i]%> <br>
+				<input type = "radio" id = "<%i%>" value = "<%=roles[i] + '//' + descriptions[i]%>" name = "role" /> <%=roles[i]%> <br>
+        <p> <%= descriptions[i] %> </p>
 			<%
 			}
 		%>

@@ -5,6 +5,10 @@
     <title></title>
   </head>
   <body>
-    <p><%= players %></p>
+    <p>Your role is <%= role %>.</p>
+    <p><%= description %></p>
+    <input type="hidden" value="<%= role %>" name="role"/>
+    <input type="hidden" value="<%= description %>" name="description"/>
+    <button type="submit" onclick="location.href = '/startScenario'">Start</button>
   </body>
 </html>

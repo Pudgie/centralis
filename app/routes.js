@@ -90,31 +90,35 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles});
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles, descriptions: currentExercise.descriptions});
 			});
 		});
 	});
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
-		if (taken.includes(req.body.selectButtons) || req.body.selectButtons == null) {
+		if (taken.includes(req.body.role) || req.body.role == null) {
 			res.redirect('/selectRoles');
 		} else {
 			Session.findOneAndUpdate(
 				{roomNumber: currentRoom},
-				{$push: {activeRoles: req.body.selectButtons}},
+				{$push: {activeRoles: req.body.role}},
 				{safe: true, upsert: true},
 					function(err, model) {
 							if (err) throw err;
 					}
 			);
 			console.log(currentSession.activeRoles);
-			//res.render('wait.ejs', {players: currentSession.activeRoles});
-			if (currentExercise.scenarios[0].text == null) {
-				res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
-			} else {
-				res.render('text.ejs', {question: currentExercise.scenarios[0].text});
-			}
+			var str = (req.body.role).split("//");
+			res.render('wait.ejs', {role: str[0], description: str[1]});
+		}
+	});
+
+	app.get('/startScenario', function(req, res) {
+		if (currentExercise.scenarios[0].videoURL == null) {
+			res.render('text.ejs', {question: currentExercise.scenarios[0].text});
+		} else {
+			res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
 		}
 	});
 	// show questions to students
@@ -215,13 +219,22 @@ module.exports = function(app, passport) {
 
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//res.send(req.file.filename);
-		videoPath = videoPath + req.file.filename;
-		var scenario = new Scenario({
-			videoURL: req.file.filename,
-			text: req.body.text,
-			question: req.body.question,
-			survey: null
-		});
+		//videoPath = videoPath + req.file.filename;
+		if (req.body.text != null) {
+			var scenario = new Scenario({
+				videoURL: null,
+				text: req.body.text,
+				question: req.body.question,
+				survey: null
+			});
+		} else {
+			var scenario = new Scenario({
+				videoURL: req.file.filename,
+				text: req.body.text,
+				question: req.body.question,
+				survey: null
+			});
+		}
 		console.log(req.body.survey);
 		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
 	});
