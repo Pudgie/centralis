@@ -26,10 +26,11 @@
         <input type="hidden" name="text" value="<%= scenario.text %>" />
         <input type="hidden" name="question" value="<%=scenario.question%>" />
     		<p><strong>Enter survey questions</strong></p>
-        <p><% number %> hell oworld </p>
     		<%
     		for (var i = 1; i <= number; i++) {
-    			%><input class="indForms" type="text" name="surveys"><%
+    			%><input class="indForms" type="text" name="surveys">
+          <input class="indForms" type="text" name="descriptions">
+          <%
     		}
     		%>
         <br> <br>
