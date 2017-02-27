@@ -4,8 +4,8 @@ var bcrypt = require('bcrypt-nodejs');
 
 var sessionSchema = new Schema({
   roomNumber: String,
-  activeSessionID: String
-  
+  activeSessionID: String,
+  exerciseID: String
 });
 
 

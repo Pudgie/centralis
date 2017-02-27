@@ -5,5 +5,10 @@
 	<p>Exercise ID: <%=exId%></p>
 	<p>Session ID: <%=sesId%></p>
 
+	<form action="/finishSession" method="post">
+		<input type = "hidden" name = "sessionID" value = "<%=sesId%>"/>
+		<input type="submit" value="Finish Session" />
+	</form>
+
 </body>
 </html>
