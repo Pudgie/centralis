@@ -14,6 +14,15 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var Answer = require('./models/answer');
+	var ScenarioAnswer = require('./models/scenarioAnswer');
+	var SurveyAnswer = require('./models/surveyAnswer');
+	var currentSession = null;
+	var currentExercise = null;
+	var currentRoom = null;
+	var currentSessionID = null;
+	var hasStarted = false;
+	var sCount = 0;
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -36,17 +45,31 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/session', function(req, res) {
+		var rooms = ['A', 'B', 'C', 'D'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
-		var session = new Session ({
-			activeSessionID: sessionID,
-			exerciseID: req.body.exId
-		});
-		session.save(function(err) {
-			if (err) { throw err; }
-			console.log("Session saved succesfully");
-
-		});
+		for (var i = 0; i < rooms.length; i++) {
+			var session = new Session ({
+				roomNumber: rooms[i],
+				activeSessionID: sessionID,
+				exerciseID: req.body.exId
+			});
+			session.save(function(err) {
+				if (err) { throw err; }
+				console.log("Session saved succesfully");
+			});
+			// create answer models to store data
+			var answer = new Answer({
+				roomNumber: rooms[i],
+				sessionID: sessionID,
+				exerciseID: req.body.exID,
+				scenarioAnswers: []
+			});
+			answer.save(function(err) {
+				if (err) { throw err; }
+				console.log("Answer saved succesfully");
+			});
+		}
 		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
 	});
 
@@ -56,12 +79,112 @@ module.exports = function(app, passport) {
 		});
 	});
 
+	app.get('/selectRoles', function(req, res) {
+		Session.findOne({'roomNumber': currentRoom, 'activeSessionID': currentSessionID}).lean().exec( function(err, result) {
+			//get the session
+			currentSession = result;
+			var id = result.exerciseID; //pull out exercise ID for that session
+			console.log("my current ID is: " + id);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				//find session ID;
+				currentExercise = exercise;
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles, descriptions: currentExercise.descriptions});
+			});
+		});
+	});
+
+	app.post('/wait', function (req, res) {
+		var taken = currentSession.activeRoles;
+		var str = (req.body.role).split("//");
+		if (taken.includes(str[0]) || str[0] == null) {
+			res.redirect('/selectRoles');
+		} else {
+			Session.findOneAndUpdate(
+				{roomNumber: currentRoom},
+				{$push: {activeRoles: str[0]}},
+				{safe: true, upsert: true},
+					function(err, model) {
+						if (err) throw err;
+					}
+			);
+			console.log(currentSession.activeRoles);
+			res.render('wait.ejs', {role: str[0], description: str[1]});
+		}
+	});
+
+	app.post('/startScenario', function(req, res) {
+		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
+		} else {
+			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
+		}
+	});
+
+	// show questions to students
+	app.post('/response', function(req, res) {
+		// add group answer to database
+		if (req.body.answer != null && req.body.answer != "") {
+			var scenarioAnswer = new ScenarioAnswer({
+				scenarioID: sCount + 1,
+				text: req.body.answer,
+				surveyAnswers: []
+			});
+			Answer.findOneAndUpdate(
+				{'roomNumber': currentRoom, 'sessionID': currentSessionID},
+				{$addToSet: {scenarioAnswers: scenarioAnswer}},
+				{safe: true, upsert: true},
+					function(err, model) {
+						if (err) throw err;
+					}
+			);
+		}
+		res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
+	});
+
+	// collect student survey responses
+	app.post('/collect', function(req, res) {
+		var currScenario = currentExercise.scenarios.length;
+		var surveyAnswer = new SurveyAnswer({
+			role: req.body.role,
+			answers: req.body.surveyAnswers
+		});
+		Answer.findOneAndUpdate(
+			{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
+			{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
+			{safe: true, upsert: true},
+				function(err, model) {
+					if (err) throw err;
+					console.log("survey answer inserted successfully!")
+				}
+		);
+		sCount++;
+		if (sCount == currScenario) { // finished exercise
+			res.render('finish.ejs');
+		} else { // more scenarios
+			if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+				res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
+			} else {
+				res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+										role: req.body.role, description: req.body.description});
+			}
+		}
+	});
+
+	app.post('/reset', function(req, res) {
+		sCount = 0;
+		res.redirect('/');
+	});
+
+	app.get('/startGame', function (req, res) {
+		hasStarted = true;
+	});
 
 	app.get('/createRoles', function(req, res) {
 		res.render('roles.ejs');
 	});
-
-
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
@@ -70,12 +193,19 @@ module.exports = function(app, passport) {
 		failureFlash: true
 	}));
 
-	// process the student login form **CHANGE THIS**
-  	app.post('/studentlogin', passport.authenticate('local-student', {
-		successRedirect: '/createRoles',
-		failureRedirect: '/studentlogin',
-		failureFlash: true
-	}));
+	// process the student login form 
+	app.post('/studentlogin', function(req, res, next) {
+		passport.authenticate('local-student', function(err, user, info) {
+			if (err) { return next(err); }
+			if (!user) { return res.redirect('/studentlogin'); }
+			req.logIn(user, function(err) {
+				if (err) { return next(err); }
+				currentRoom = user.roomNumber;
+				currentSessionID = user.activeSessionID;
+				return res.redirect('/selectRoles');
+			});
+		})(req, res, next);
+	});
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
 	app.get('/admin', isLoggedIn, function(req, res) {
@@ -127,36 +257,52 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
-		//res.send(req.file.filename);
-		videoPath = videoPath + req.file.filename;
-		var scenario = new Scenario({
-			videoURL: req.file.filename,
-			text: req.body.text,
-			question: req.body.question,
-			survey: null
-		});
+		//videoPath = videoPath + req.file.filename;
+		if (req.body.text != null) {
+			var scenario = new Scenario({
+				videoURL: null,
+				text: req.body.text,
+				question: req.body.question,
+				survey: null
+			});
+		} else {
+			var scenario = new Scenario({
+				videoURL: req.file.filename,
+				text: req.body.text,
+				question: req.body.question,
+				survey: null
+			});
+		}
 		console.log(req.body.survey);
 		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
 	});
 
 	app.post('/addSurvey', function(req, res) {
-		var range = "1";
-		var scenario = new Scenario({
-			videoURL: req.body.videoURL,
-			text: null,
-			question: req.body.question,
-			survey: req.body.surveys
-		});
 		Exercise.nextCount(function(err, count) {
 			var exerciseID = count - 1;
-			Exercise.findByIdAndUpdate(
-		    exerciseID,
-		    {$push: {scenarios: scenario}},
-		    {safe: true, upsert: true},
-			    function(err, model) {
-			        if (err) throw err;
-			    }
-			);
+
+			// find length of scenarios array from current exercise
+			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+				var exCount = result.scenarios.length + 1; // set this as scenario id
+				console.log("exercise count: " + exCount);
+				var scenario = new Scenario({
+					_id: exCount,
+					videoURL: req.body.videoURL,
+					text: req.body.text,
+					question: req.body.question,
+					survey: req.body.surveys
+				});
+
+				// find and update exercise with current scenario
+				Exercise.findByIdAndUpdate(
+			    exerciseID,
+			    {$push: {scenarios: scenario}},
+			    {safe: true, upsert: true},
+				    function(err, model) {
+				        if (err) throw err;
+				    }
+				);
+			});
 		});
 		res.render('finishCreateExercise.ejs');
 	});
@@ -168,47 +314,6 @@ module.exports = function(app, passport) {
 	app.get('/homeRedirect', function(req, res) {
 		res.redirect('/admin');
 	});
-		//res.render('video.ejs');
-	// VIDEO UPLOAD INTO DATABASE===============
-	// Grid.mongo = mongoose.mongo;
-	// conn.once('open', function() {
-	// 	console.log('connection open');
-	// 	// uploading video
-	// 	app.post('/upload', upload.single('myVideo'), function(req, res) {
-	// 		//res.send(req.file.filename);
-	// 		videoPath = videoPath + req.file.filename;
-	// 		console.log(videoPath);
-	// 		// create write stream
-	// 		var gfs = Grid(conn.db);
-	// 		var writeStream = gfs.createWriteStream({
-	// 			filename: 'test1.mp4'
-	// 		});
-	// 		// create read stream with file path and pipe into database
-	// 		fs.createReadStream(videoPath).pipe(writeStream);
-	// 		writeStream.on('close', function(file) {
-	// 			console.log(file.filename + ' written to DB');
-	// 		});
-	// 		res.render('test.ejs');
-	// 	});
-	//
-	// 	// retrieving video
-	// 	app.post('/getVideo', function(req, res) {
-	// 		var gfs = Grid(conn.db);
-	// 		// write content to this path
-	// 		var writeStream = fs.createWriteStream(path.join(__dirname, '../videos/test4.mp4'));
-	// 		//create read stream from mongodb
-	// 		var readStream = gfs.createReadStream({
-	// 			filename: 'test1.mp4'
-	// 		});
-	//
-	// 		//pipe the read stream into the write stream
-	// 		readStream.pipe(writeStream);
-	// 		writeStream.on('close', function() {
-	// 			console.log('File has been written to videos folder');
-	// 		});
-	//
-	// 	})
-	// });
 
 	// UPLOAD VIDEO LOCALLY===============
 	// app.post('/upload', upload.single('myVideo'), function(req, res) {

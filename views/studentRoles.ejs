@@ -23,22 +23,20 @@
 </head>
 <body>
 	<div id="mainForm">
-		<h1><strong>Exercise Name: <%= name %></strong></p></h1><br>
-		<em>Write the type of roles (The first role will be typing for team decision)</em><br>
-		<form action="/createScenarios" method="post">
-			<input type="hidden" name="exerciseName" value= "<%=name%>" />
-			<%
-			var numRoles = roles;
-			for (var i = 1; i <= numRoles; i++) {
-				%><p><strong>Role <%=i%>: <input class="inputForms" type="text" name="roles"></strong> </p>
-
-          		<p><strong>Description </strong><textarea rows="5" cols="50" name="text"></textarea></p><%
-				}
+		<h1><strong>Exercise Name: <%= exName %></strong></p></h1><br>
+		<form action = "/wait" method = "post">
+		<%
+			for (var i = 0; i < roles.length; i++) {
 			%>
-			<input type="hidden" name="numRoles" value= "<%=numRoles%>" />
-			<br>
-			<button type="submit" class="btn btn-primary btn-md">Add Scenarios</button>
-	 	</form>
+				<input type = "radio" id = "<%i%>" value = "<%=roles[i] + '//' + descriptions[i]%>" name = "role" /> <%=roles[i]%> <br>
+        <p> <%= descriptions[i] %> </p>
+			<%
+			}
+		%>
+		<input type= "submit" value="Select" />
+	</form>
+
  	</div>
+
 </body>
 </html>
