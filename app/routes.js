@@ -14,11 +14,15 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var Answer = require('./models/answer');
+	var ScenarioAnswer = require('./models/scenarioAnswer');
+	var SurveyAnswer = require('./models/surveyAnswer');
 	var currentSession = null;
 	var currentExercise = null;
 	var currentRoom = null;
 	var currentSessionID = null;
 	var hasStarted = false;
+	var sCount = 0;
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -53,6 +57,17 @@ module.exports = function(app, passport) {
 			session.save(function(err) {
 				if (err) { throw err; }
 				console.log("Session saved succesfully");
+			});
+			// create answer models to store data
+			var answer = new Answer({
+				roomNumber: rooms[i],
+				sessionID: sessionID,
+				exerciseID: req.body.exID,
+				scenarioAnswers: []
+			});
+			answer.save(function(err) {
+				if (err) { throw err; }
+				console.log("Answer saved succesfully");
 			});
 		}
 		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
@@ -97,42 +112,91 @@ module.exports = function(app, passport) {
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
-		if (taken.includes(req.body.role) || req.body.role == null) {
+		var str = (req.body.role).split("//");
+		if (taken.includes(str[0]) || str[0] == null) {
 			res.redirect('/selectRoles');
 		} else {
 			Session.findOneAndUpdate(
 				{roomNumber: currentRoom},
-				{$push: {activeRoles: req.body.role}},
+				{$push: {activeRoles: str[0]}},
 				{safe: true, upsert: true},
 					function(err, model) {
-							if (err) throw err;
+						if (err) throw err;
 					}
 			);
 			console.log(currentSession.activeRoles);
-			var str = (req.body.role).split("//");
 			res.render('wait.ejs', {role: str[0], description: str[1]});
 		}
 	});
 
-	app.get('/startScenario', function(req, res) {
-		if (currentExercise.scenarios[0].videoURL == null) {
-			res.render('text.ejs', {question: currentExercise.scenarios[0].text});
+	app.post('/startScenario', function(req, res) {
+		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
 		} else {
-			res.render('video.ejs', {file: currentExercise.scenarios[0].videoURL});
+			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
 		}
 	});
-	// show questions to students
-	app.get('/response', function(req, res) {
-		// res.render('response.ejs', {question: currentExercise.scenarios[0].text});
-		res.render('response.ejs', {question: currentExercise.scenarios[0].question, survey: currentExercise.scenarios[0].survey});
-	});
-	// collect student responses
-	app.post('/collect', function(req, res) {
 
+	// show questions to students
+	app.post('/response', function(req, res) {
+		// add group answer to database
+		if (req.body.answer != null && req.body.answer != "") {
+			var scenarioAnswer = new ScenarioAnswer({
+				scenarioID: sCount + 1,
+				text: req.body.answer,
+				surveyAnswers: []
+			});
+			Answer.findOneAndUpdate(
+				{'roomNumber': currentRoom, 'sessionID': currentSessionID},
+				{$addToSet: {scenarioAnswers: scenarioAnswer}},
+				{safe: true, upsert: true},
+					function(err, model) {
+						if (err) throw err;
+					}
+			);
+		}
+		res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
+	});
+
+	// collect student survey responses
+	app.post('/collect', function(req, res) {
+		var currScenario = currentExercise.scenarios.length;
+		var surveyAnswer = new SurveyAnswer({
+			role: req.body.role,
+			answers: req.body.surveyAnswers
+		});
+		Answer.findOneAndUpdate(
+			{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
+			{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
+			{safe: true, upsert: true},
+				function(err, model) {
+					if (err) throw err;
+					console.log("survey answer inserted successfully!")
+				}
+		);
+		sCount++;
+		if (sCount == currScenario) { // finished exercise
+			res.render('finish.ejs');
+		} else { // more scenarios
+			if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+				res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+									role: req.body.role, description: req.body.description});
+			} else {
+				res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+										role: req.body.role, description: req.body.description});
+			}
+		}
+	});
+
+	app.post('/reset', function(req, res) {
+		sCount = 0;
+		res.redirect('/');
 	});
 
 	app.get('/startGame', function (req, res) {
-	 hasStarted = true;
+		hasStarted = true;
 	});
 
 	app.get('/createRoles', function(req, res) {

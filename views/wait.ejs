@@ -7,8 +7,12 @@
   <body>
     <p>Your role is <%= role %>.</p>
     <p><%= description %></p>
-    <input type="hidden" value="<%= role %>" name="role"/>
-    <input type="hidden" value="<%= description %>" name="description"/>
-    <button type="submit" onclick="location.href = '/startScenario'">Start</button>
+    <br/>
+    <p> Please stop here </p>
+    <form action = "/startScenario" method = "post">
+      <input type="hidden" value="<%= role %>" name="role"/>
+      <input type="hidden" value="<%= description %>" name="description"/>
+      <input type="submit" value="Start" />
+    </form>
   </body>
 </html>

@@ -5,7 +5,19 @@
     <title></title>
   </head>
   <body>
-      <p>Question: <%= question %></p>
-      <button type="button" onclick="location.href = '/response'">Proceed</button>
+      <p><%= scenario.text %></p>
+      <br/>
+      <p><strong>Question</strong>: <%= scenario.question %></p>
+      <br/>
+	  <p> Only <%= answerer %> needs to type out the answer for the entire group %> </p>
+	  <p> All other team members should wait until the answer is submitted before proceeding </p>
+      <form action="/response" method="post">
+      	<% if (role == answerer) { %>
+	        <input type="text" name="answer">
+	    <% } %>
+	    <input type="hidden" value="<%= role %>" name="role"/>
+	    <input type="hidden" value="<%= description %>" name="description"/>
+	    <input type="submit" value="Proceed" />
+      </form>
   </body>
 </html>
