@@ -27,10 +27,18 @@
 		<form action = "/wait" method = "post">
 		<%
 			for (var i = 0; i < roles.length; i++) {
+				var find = false;
+				for (var j = 0; j < activeRoles.length; j++) {
+					if (activeRoles[j] === roles[i]) {
+						find = true;
+					}
+				}
+				if (!find) {
 			%>
 				<input type = "radio" id = "<%i%>" value = "<%=roles[i] + '//' + descriptions[i]%>" name = "role" /> <%=roles[i]%> <br>
-        <p> <%= descriptions[i] %> </p>
+        		<p> <%= descriptions[i] %> </p>
 			<%
+				}
 			}
 		%>
 		<input type= "submit" value="Select" />
