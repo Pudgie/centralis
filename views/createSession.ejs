@@ -18,9 +18,9 @@
 	}
 	</style>
 </head>
-<body>	
-	<form action="/session" method="post">
-		<h1>You have selected exercise <%=exName%></h1>
+<body>
+	<h1>You have selected exercise <%=exName%></h1>
+	<form action="/sessionAdmin" method="post">
 		<input type = "hidden" name = "exId" value = "<%=exId%>" />
 		<br>
 		<br>
