@@ -31,11 +31,32 @@ module.exports = function(app, passport) {
 	app.post('/createSession', function(req, res) {
 		var id = req.body.exerciseButtons;
 		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+			if (err) console.err(err);
 			res.render('createSession.ejs', {exName: results.name, exId: id});
 		});
 	});
 
-	app.post('/session', function(req, res) {
+	app.get('/deleteExercise', function(req, res) {
+		Exercise.find().lean().exec( function(err, results) {
+			if (err) console.err(err);
+			res.render('deleteExercise.ejs', {exercises: results});
+		});
+	});
+
+	app.post('/deleteExercise', function(req, res) {
+		var exercisesToDelete = req.body.exerciseChecks;
+		if (exercisesToDelete) {
+			for (var ii = 0; ii < exercisesToDelete.length; ii++) {
+				Exercise.findOneAndRemove({'_id': exercisesToDelete[ii]}, function(err, results) {
+					if (err) console.err(err);
+					console.log("Removed exercise " + results._id + " from DB");
+				});
+			}
+		}
+		res.redirect('/admin');
+	});
+
+	app.post('/sessionAdmin', function(req, res) {
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		var session = new Session ({
@@ -47,11 +68,12 @@ module.exports = function(app, passport) {
 			console.log("Session saved succesfully");
 
 		});
-		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
+		res.render('session.ejs', {exId: session.exerciseID, sesId: session.activeSessionID});
 	});
 
 	app.get('/selectExercise', function(req, res) {
 		Exercise.find().lean().exec( function(err, results) {
+			if (err) console.err(err);
 			res.render('selectExercise.ejs', {exercises: results});
 		});
 	});
@@ -60,8 +82,6 @@ module.exports = function(app, passport) {
 	app.get('/createRoles', function(req, res) {
 		res.render('roles.ejs');
 	});
-
-
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
@@ -82,7 +102,6 @@ module.exports = function(app, passport) {
 		res.render('admin.ejs', {user: req.user})
 	});
 
-
 	app.get('/session', isLoggedIn, function(req, res) {
 		res.render('student.ejs', {user: req.user})
 	});
@@ -97,7 +116,15 @@ module.exports = function(app, passport) {
 		res.render('exercises.ejs');
 	});
 
-
+	app.post('/finishSession', function(req, res) {
+		var sessionIDToRemove = req.body.sessionID;
+		console.log("SessionID: " + sessionIDToRemove);
+		Session.findOneAndRemove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+			if (err) console.err(err);
+			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+		});
+		res.redirect('/admin');
+	});
 
 	app.post('/createRoles', function(req, res) {
 		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});

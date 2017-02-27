@@ -15,10 +15,16 @@
 <head>
 </head>
 <body>
+
 	<div id="wholeForm">
 		<h2>Session Created Successfully</h2>
 		<p><strong>Exercise ID: <%=exId%></strong></p>
 		<p><strong>Session ID: <%=sesId%></strong></p>
+		<form action="/finishSession" method="post">
+			<input type = "hidden" name = "sessionID" value = "<%=sesId%>"/>
+			<input type="submit" value="Finish Session" />
+		</form>
 	</div>
+
 </body>
 </html>
