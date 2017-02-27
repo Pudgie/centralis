@@ -28,12 +28,15 @@
       left: 42%;
       top: 140px;
     }
+    #leftButton {
+      margin-right: 20px;
+    }
   </style>
 </head>
 <body background="http://www.usctrojanrugby.org/wp-content/uploads/2014/10/179_1tommy_trojan_usc.jpg">
   <div class="totalForm">
     <h1 class="alert">Please Sign In</h1>
-    <button type="button" class="btn btn-primary btn-md" onclick="location.href = '/adminlogin'">Admin</button>
+    <button id="leftButton" type="button" class="btn btn-primary btn-md" onclick="location.href = '/adminlogin'">Admin</button>
     <button type="button" class="btn btn-primary btn-md" onclick="location.href = '/studentlogin'">Student</button>
   </div>
 </body>
