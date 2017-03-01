@@ -4,10 +4,12 @@ var bcrypt = require('bcrypt-nodejs');
 
 var scenarioSchema = new Schema({
 	_id: Number,
-	videoURL: String,
+	round: Number,
+	videoURL: String, // for implementing video later
 	text: String,
-	question: String,
-	survey: []
+	teamSurveyLink: String,
+	studentSurveyLink: String,
+	observerSurveyLink: String
 });
 
 var Scenario = mongoose.model('Scenario', scenarioSchema);

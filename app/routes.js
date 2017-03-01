@@ -14,9 +14,9 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
-	var Answer = require('./models/answer');
-	var ScenarioAnswer = require('./models/scenarioAnswer');
-	var SurveyAnswer = require('./models/surveyAnswer');
+	// var Answer = require('./models/answer');
+	// var ScenarioAnswer = require('./models/scenarioAnswer');
+	// var SurveyAnswer = require('./models/surveyAnswer');
 	var currentSession = null;
 	var currentExercise = null;
 	var currentRoom = null;
@@ -47,7 +47,7 @@ module.exports = function(app, passport) {
 
 
 	app.post('/sessionAdmin', function(req, res) {
-		var rooms = ['A', 'B', 'C', 'D'];
+		var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
@@ -61,16 +61,16 @@ module.exports = function(app, passport) {
 				console.log("Session saved succesfully");
 			});
 			// create answer models to store data
-			var answer = new Answer({
-				roomNumber: rooms[i],
-				sessionID: sessionID,
-				exerciseID: req.body.exID,
-				scenarioAnswers: []
-			});
-			answer.save(function(err) {
-				if (err) { throw err; }
-				console.log("Answer saved succesfully");
-			});
+			// var answer = new Answer({
+			// 	roomNumber: rooms[i],
+			// 	sessionID: sessionID,
+			// 	exerciseID: req.body.exID,
+			// 	scenarioAnswers: []
+			// });
+			// answer.save(function(err) {
+			// 	if (err) { throw err; }
+			// 	console.log("Answer saved succesfully");
+			// });
 		}
 		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
 	});
@@ -144,56 +144,56 @@ module.exports = function(app, passport) {
 		}
 	});
 
-	// show questions to students
-	app.post('/response', function(req, res) {
-		// add group answer to database
-		if (req.body.answer != null && req.body.answer != "") {
-			var scenarioAnswer = new ScenarioAnswer({
-				scenarioID: sCount + 1,
-				text: req.body.answer,
-				surveyAnswers: []
-			});
-			Answer.findOneAndUpdate(
-				{'roomNumber': currentRoom, 'sessionID': currentSessionID},
-				{$addToSet: {scenarioAnswers: scenarioAnswer}},
-				{safe: true, upsert: true},
-					function(err, model) {
-						if (err) throw err;
-					}
-			);
-		}
-		res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
-	});
+	// // show questions to students
+	// app.post('/response', function(req, res) {
+	// 	// add group answer to database
+	// 	if (req.body.answer != null && req.body.answer != "") {
+	// 		var scenarioAnswer = new ScenarioAnswer({
+	// 			scenarioID: sCount + 1,
+	// 			text: req.body.answer,
+	// 			surveyAnswers: []
+	// 		});
+	// 		Answer.findOneAndUpdate(
+	// 			{'roomNumber': currentRoom, 'sessionID': currentSessionID},
+	// 			{$addToSet: {scenarioAnswers: scenarioAnswer}},
+	// 			{safe: true, upsert: true},
+	// 				function(err, model) {
+	// 					if (err) throw err;
+	// 				}
+	// 		);
+	// 	}
+	// 	res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
+	// });
 
 	// collect student survey responses
-	app.post('/collect', function(req, res) {
-		var currScenario = currentExercise.scenarios.length;
-		var surveyAnswer = new SurveyAnswer({
-			role: req.body.role,
-			answers: req.body.surveyAnswers
-		});
-		Answer.findOneAndUpdate(
-			{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
-			{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
-			{safe: true, upsert: true},
-				function(err, model) {
-					if (err) throw err;
-					console.log("survey answer inserted successfully!")
-				}
-		);
-		sCount++;
-		if (sCount == currScenario) { // finished exercise
-			res.render('finish.ejs');
-		} else { // more scenarios
-			if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-				res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
-									role: req.body.role, description: req.body.description});
-			} else {
-				res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
-										role: req.body.role, description: req.body.description});
-			}
-		}
-	});
+	// app.post('/collect', function(req, res) {
+	// 	var currScenario = currentExercise.scenarios.length;
+	// 	var surveyAnswer = new SurveyAnswer({
+	// 		role: req.body.role,
+	// 		answers: req.body.surveyAnswers
+	// 	});
+	// 	Answer.findOneAndUpdate(
+	// 		{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
+	// 		{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
+	// 		{safe: true, upsert: true},
+	// 			function(err, model) {
+	// 				if (err) throw err;
+	// 				console.log("survey answer inserted successfully!")
+	// 			}
+	// 	);
+	// 	sCount++;
+	// 	if (sCount == currScenario) { // finished exercise
+	// 		res.render('finish.ejs');
+	// 	} else { // more scenarios
+	// 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 								role: req.body.role, description: req.body.description});
+	// 		} else {
+	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 									role: req.body.role, description: req.body.description});
+	// 		}
+	// 	}
+	// });
 
 	app.post('/reset', function(req, res) {
 		sCount = 0;
@@ -251,7 +251,7 @@ module.exports = function(app, passport) {
 	app.post('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.body.sessionID;
 		console.log("SessionID: " + sessionIDToRemove);
-		Session.findOneAndRemove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
 			if (err) console.err(err);
 			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
 		});

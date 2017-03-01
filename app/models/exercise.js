@@ -5,11 +5,8 @@ var Scenario = require('./scenario');
 var autoIncrement = require('mongoose-auto-increment');
 
 var exerciseSchema = new Schema({
-	name: String,
-	roles: [String],
-	descriptions: [String],
-	scenarios: [],
-	answerer: String
+	title: String,
+	scenarios: []
 });
 
 exerciseSchema.plugin(autoIncrement.plugin, {
