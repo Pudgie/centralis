@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
+var autoIncrement = require('mongoose-auto-increment');
 
 var scenarioSchema = new Schema({
-	_id: Number,
+	exerciseID: Number,
 	round: Number,
 	videoURL: String, // for implementing video later
 	text: String,
@@ -11,6 +12,11 @@ var scenarioSchema = new Schema({
 	studentSurveyLink: String,
 	observerSurveyLink: String
 });
+
+scenarioSchema.plugin(autoIncrement.plugin, {
+	model: 'Scenario',
+	startAt: 1,
+    incrementBy: 1});
 
 var Scenario = mongoose.model('Scenario', scenarioSchema);
 
