@@ -109,7 +109,7 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles, 
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles,
 												roles: exercise.roles, descriptions: currentExercise.descriptions});
 			});
 		});
@@ -136,10 +136,10 @@ module.exports = function(app, passport) {
 
 	app.post('/startScenario', function(req, res) {
 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		} else {
-			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		}
 	});
@@ -186,10 +186,10 @@ module.exports = function(app, passport) {
 	// 		res.render('finish.ejs');
 	// 	} else { // more scenarios
 	// 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 	// 								role: req.body.role, description: req.body.description});
 	// 		} else {
-	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 	// 									role: req.body.role, description: req.body.description});
 	// 		}
 	// 	}
@@ -215,7 +215,7 @@ module.exports = function(app, passport) {
 		failureFlash: true
 	}));
 
-	// process the student login form 
+	// process the student login form
 	app.post('/studentlogin', function(req, res, next) {
 		passport.authenticate('local-student', function(err, user, info) {
 			if (err) { return next(err); }
@@ -256,10 +256,6 @@ module.exports = function(app, passport) {
 			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
 		});
 		res.redirect('/admin');
-	});
-
-	app.post('/createRoles', function(req, res) {
-		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
 	});
 
 	app.post('/createScenarios', function(req, res) {
