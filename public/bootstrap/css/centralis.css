@@ -1,0 +1,261 @@
+
+/*Main page style*/
+
+ 
+form {
+      text-align: center;
+      
+    }
+ .totalForm{
+      text-align: center;
+      position: relative;
+      padding-bottom: 60px;
+      display: table;
+      background-color: white;
+      font-weight: 700;
+      left: 42%;
+      top: 140px;
+   }
+    .formHolder {
+      margin-top: 100px;
+      background-color: white;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+    }
+
+
+
+  .form-group {
+    margin-bottom: 40px; 
+    text-align: center;
+
+   font-size: 14px;
+    margin-bottom: 10px;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #B22222;
+  }
+  .form-group label{
+    display: block;
+    z-index: 0;
+    position: relative;
+    top: 2em;
+    margin: 0;
+    font-size: 0.85em;
+    line-height: 1.764705882em;
+    vertical-align: middle;
+    vertical-align: baseline;
+    opacity: 0;
+    -webkit-transition: top 0.3s ease,opacity 0.3s ease;
+    -moz-transition: top 0.3s ease,opacity 0.3s ease;
+    -ms-transition: top 0.3s ease,opacity 0.3s ease;
+    transition: top 0.3s ease,opacity 0.3s ease;
+  }
+
+  .form-group::not(:first-child) {
+  padding-left: 14px;
+  border-left: 1px solid #eeeeee;
+}
+
+  .form-group input,
+  .form-group textarea {
+      padding: 20px; }
+
+ .form-group input.form-control {
+      height: 40px;
+      margin-left: 600px;
+      width:  250px
+     }
+.form-group textarea.form-control {
+      height: 236px; }
+   .form-control:focus {
+    border-color: #fed136;
+    box-shadow: none; }
+
+.form-group-with-value label {
+  top: 0;
+  opacity: 1;
+}
+.form-group-with-focus label {
+  color: #0085A1;
+}
+
+
+
+    .inputForms {
+      border-radius: 5px;
+    }
+
+    .alert{
+      text-align: center;
+      color: #FFA500;
+      font-weight: 700;
+       font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    body {
+      background-position: center;
+      margin-top: 150px;
+      background-repeat: no-repeat;
+      font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+   }
+p {
+  font-size: 20px;
+}
+p.small {
+  font-size: 16px;
+}
+a,
+a:hover,
+a:focus,
+a:active,
+a.active {
+  color: #18BC9C;
+  outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color:  black
+}
+.btn-outline {
+  color: white;
+  font-size: 20px;
+  font-weight:  700;
+  background: #B22222;
+  transition: all 0.3s ease-in-out;
+}
+.btn-outline:hover,
+.btn-outline:focus,
+.btn-outline:active,
+.btn-outline.active {
+  color: #B22222;
+  background: white;
+  border: solid 1.5px #B22222;
+}
+.btn-primary {
+  color: white;
+  background-color: #2C3E50;
+  border-color: #2C3E50;
+  font-weight: 700;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+  color: white;
+  background-color: #1a242f;
+  border-color: #161f29;
+}
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+  background-image: none;
+}
+hr.star-light,
+hr.star-primary {
+  padding: 0;
+  border: none;
+  border-top: solid 5px;
+  text-align: center;
+  max-width: 250px;
+  margin: 25px auto 30px;
+}
+hr.star-light:after,
+hr.star-primary:after {
+  content: "\f005";
+  font-family: FontAwesome;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  font-size: 2em;
+  padding: 0 0.25em;
+}
+hr.star-light {
+  border-color: white;
+}
+hr.star-light:after {
+  background-color: #18BC9C;
+  color: white;
+}
+hr.star-primary {
+  border-color: #2C3E50;
+}
+hr.star-primary:after {
+  background-color: white;
+  color: #2C3E50;
+}
+.img-centered {
+  margin: 0 auto;
+}
+   
+    #leftButton {
+      font-weight: 700;
+      margin-right: 20px;
+  }
+
+
+
+
+
+/*admin*/
+    .completeForm {
+    text-align: center;
+    margin-top: 190px;
+  }
+
+  .exercise {
+    margin-top: 80px;
+  }
+  #logout {
+    margin-top: 50px;
+  }
+
+
+
+
+/*create senario*/
+
+      #wholeForm {
+        text-align: center;
+        margin-top: 70px;
+        background-color: white;
+        padding-bottom: 20px;
+        padding-top: 20px;
+      }
+      #formStyle {
+        font-weight: bold;
+      }
+      .indForms {
+        border-radius: 5px;
+      }
+      table {
+        margin-right: auto;
+        margin-left: auto;
+      }
+      .paddingTD {
+        padding-bottom: 2em;
+      }
+      h2 {
+        margin-top: 30px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+
+
+  form {
+
+    text-align:center;
+    margin-top: 250px;
+  }
+ 
+
+

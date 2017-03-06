@@ -23,6 +23,8 @@ module.exports = function(app, passport) {
 	var currentSessionID = null;
 	var sCount = 0;
 
+
+	
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
