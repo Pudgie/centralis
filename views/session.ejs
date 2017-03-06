@@ -18,11 +18,13 @@
 
 	<div id="wholeForm">
 		<h2>Session Created Successfully</h2>
-		<p><strong>Exercise ID: <%=exId%></strong></p>
-		<p><strong>Session ID: <%=sesId%></strong></p>
-		<form action="/finishSession" method="post">
-			<input type = "hidden" name = "sessionID" value = "<%=sesId%>"/>
-			<input type="submit" value="Finish Session" />
+		<p><strong>Exercise ID: <%= exerciseID %></strong></p>
+		<p><strong>Session ID: <%= sessionID %></strong></p>
+		<form action="/adminWait" method="post">
+			<input type = "hidden" name = "sessionID" value = "<%= sessionID %>"/>
+			<input type = "hidden" name= "exerciseID" value = "<%= exerciseID %>"/>
+			<input type = "hidden" name = "currRound" value = "<%= currRound %>"/>
+			<input type="submit" value="Start Session" />
 		</form>
 	</div>
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Select the scenario for each room based on their response to the disruption</h1>
+<form action="/adminWait" method="post">
+	<%
+		for (var ii = 0; ii < allRooms.length; ii++) {
+			%>
+				<p>Room #<%= allRooms[ii] %>: </p>
+				<%
+					for (var zz = 0; zz < scenarioChoices.length; zz++) {
+				%>
+					<input type="radio" name="<%= allRooms[ii] %>" value="<%= scenarioChoices[zz]._id %>" /> <%= scenarioChoices[zz].name %> <br>
+				<% 
+			}
+		}
+	%>
+	<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
+	<input type="hidden" name="currRound" value="<%= currRound %>" />
+	<input type="submit" value="Send to Rooms"/>
+</form>
+
+</body>
+</html>

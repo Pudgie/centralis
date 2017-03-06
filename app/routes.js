@@ -22,6 +22,7 @@ module.exports = function(app, passport) {
 	var currentRoom = null;
 	var currentSessionID = null;
 	var sCount = 0;
+	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 
 	
@@ -30,8 +31,34 @@ module.exports = function(app, passport) {
 		res.render('main.ejs', {message: req.flash('loginMessage')});
 	});
 
+	app.post('/adminWait', function(req, res) {
+		var currRound = parseInt(req.body.currRound);
+		var exerciseID = parseInt(req.body.exerciseID);
+		res.render('adminWait.ejs', {currRound: currRound, exerciseID: exerciseID});	
+	});
+
 	app.get('/adminlogin', function(req, res) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
+	});
+
+	app.post('/assignDisruption', function(req, res) {
+		var currRound = parseInt(req.body.currRound, 10);
+		var exerciseID = parseInt(req.body.exerciseID);
+		Scenario.find({'round': currRound, 'exerciseID': exerciseID}).lean().exec( function(err, results) {
+			if (err) console.log(err);
+			res.render('assignDisruption.ejs', {scenarioChoices: results, allRooms: rooms, currRound: currRound+1, exerciseID: exerciseID})
+		});
+	});
+
+
+	app.post('/finishSession', function(req, res) {
+		var sessionIDToRemove = req.body.sessionID;
+		console.log("SessionID: " + sessionIDToRemove);
+		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+			if (err) console.err(err);
+			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+		});
+		res.redirect('/admin');
 	});
 
 	app.get('/studentlogin', function(req, res) {
@@ -39,23 +66,23 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createSession', function(req, res) {
-		var id = req.body.exerciseButtons;
-		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+		var exerciseID = req.body.exerciseButtons;
+		Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, results) {
 			if (err) console.err(err);
-			res.render('createSession.ejs', {exName: results.name, exId: id});
+			res.render('createSession.ejs', {exerciseName: results.name, exerciseID: exerciseID});
 		});
 	});
 
 
 	app.post('/sessionAdmin', function(req, res) {
-		var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				exerciseID: req.body.exId
+				nextScenario: 1
+				exerciseID: req.body.exerciseID
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
@@ -73,7 +100,8 @@ module.exports = function(app, passport) {
 			// 	console.log("Answer saved succesfully");
 			// });
 		}
-		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
+		var currRound = 1;
+		res.render('session.ejs', {exerciseID: req.body.exerciseID, sessionID: sessionID, currRound: currRound});
 	});
 
 	app.get('/deleteExercise', function(req, res) {
@@ -245,20 +273,11 @@ module.exports = function(app, passport) {
 		res.render('exercises.ejs');
 	});
 
-	app.post('/finishSession', function(req, res) {
-		var sessionIDToRemove = req.body.sessionID;
-		console.log("SessionID: " + sessionIDToRemove);
-		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
-			if (err) console.err(err);
-			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
-		});
-		res.redirect('/admin');
-	});
-
 	app.post('/createScenarios', function(req, res) {
 		sCount = 0;
 		var exercise = new Exercise({
 			title: req.body.exerciseName,
+			numOfRounds: req.body.numOfRounds,
 			scenarios: [],
 			ceoSurvey: req.body.ceoSurvey,
 			teamMemberSurvey: req.body.teamMemberSurvey,
