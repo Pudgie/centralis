@@ -21,7 +21,6 @@ module.exports = function(app, passport) {
 	var currentExercise = null;
 	var currentRoom = null;
 	var currentSessionID = null;
-	var hasStarted = false;
 	var sCount = 0;
 
 	app.get('/', function(req, res) {
@@ -54,7 +53,8 @@ module.exports = function(app, passport) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				exerciseID: req.body.exId
+				exerciseID: req.body.exId,
+				nextRound: 1
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
@@ -109,7 +109,7 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles, 
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles,
 												roles: exercise.roles, descriptions: currentExercise.descriptions});
 			});
 		});
@@ -136,10 +136,10 @@ module.exports = function(app, passport) {
 
 	app.post('/startScenario', function(req, res) {
 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		} else {
-			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		}
 	});
@@ -186,10 +186,10 @@ module.exports = function(app, passport) {
 	// 		res.render('finish.ejs');
 	// 	} else { // more scenarios
 	// 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 	// 								role: req.body.role, description: req.body.description});
 	// 		} else {
-	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 	// 									role: req.body.role, description: req.body.description});
 	// 		}
 	// 	}
@@ -200,13 +200,9 @@ module.exports = function(app, passport) {
 		res.redirect('/');
 	});
 
-	app.get('/startGame', function (req, res) {
-		hasStarted = true;
-	});
-
-	app.get('/createRoles', function(req, res) {
-		res.render('roles.ejs');
-	});
+	// app.get('/createRoles', function(req, res) {
+	// 	res.render('roles.ejs');
+	// });
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
@@ -215,7 +211,7 @@ module.exports = function(app, passport) {
 		failureFlash: true
 	}));
 
-	// process the student login form 
+	// process the student login form
 	app.post('/studentlogin', function(req, res, next) {
 		passport.authenticate('local-student', function(err, user, info) {
 			if (err) { return next(err); }
@@ -258,83 +254,124 @@ module.exports = function(app, passport) {
 		res.redirect('/admin');
 	});
 
-	app.post('/createRoles', function(req, res) {
-		res.render('roles.ejs', {name: req.body.exerciseName, roles: req.body.roles});
-	});
-
 	app.post('/createScenarios', function(req, res) {
-		var titles = req.body.roles;
-		var descriptions = req.body.descriptions;
-		var answerer;
-		if (req.body.numRoles == 1) {
-			answerer = titles;
-		} else {
-			answerer = titles[0];
-		}
+		sCount = 0;
 		var exercise = new Exercise({
-			roles: titles,
-			descriptions: descriptions,
-			name: req.body.exerciseName,
+			title: req.body.exerciseName,
+			numOfRounds: req.body.numOfRounds,
 			scenarios: [],
-			answerer: answerer
+			ceoSurvey: req.body.ceoSurvey,
+			teamMemberSurvey: req.body.teamMemberSurvey,
+			observerSurvey: req.body.observerSurvey
 		});
 		exercise.save(function(err) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
-		res.render('createScenario.ejs');
+		//res.render('createScenario.ejs');
+		res.redirect('/displayScenarios');
 	});
 
+	app.get('/displayScenarios', function(req, res) {
+		Exercise.nextCount(function(err, count) {
+			var exerciseID = count - 1;
+			Exercise.findOne({'_id': exerciseID}).lean().exec(function(err, result) {
+				console.log("Debugging:" + result._id);
+				res.render('displayScenarios.ejs', {scenarios: result.scenarios});
+			})
+		})
+	});
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//videoPath = videoPath + req.file.filename;
 		if (req.body.text != null) {
-			var scenario = new Scenario({
-				videoURL: null,
-				text: req.body.text,
-				question: req.body.question,
-				survey: null
+			Exercise.nextCount(function(err, count) {
+				var exerciseID = count - 1;
+
+				// find length of scenarios array from current exercise
+				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+					// var exCount = result.scenarios.length + 1;
+					sCount += 1;
+					var scenario = new Scenario({
+						name: req.body.name,
+						id: sCount,
+						round: req.body.round,
+						videoURL: null,
+						text: req.body.text
+					});
+
+					// find and update exercise with current scenario
+					Exercise.findByIdAndUpdate(
+						exerciseID,
+						{$push: {scenarios: scenario}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+							}
+					);
+				});
 			});
 		} else {
-			var scenario = new Scenario({
-				videoURL: req.file.filename,
-				text: req.body.text,
-				question: req.body.question,
-				survey: null
+			Exercise.nextCount(function(err, count) {
+				var exerciseID = count - 1;
+
+				// find length of scenarios array from current exercise
+				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+					// var exCount = result.scenarios.length + 1;
+					sCount += 1;
+					console.log("exercise count: " + exCount);
+					var scenario = new Scenario({
+						name: req.body.name,
+						id: sCount,
+						round: req.body.round,
+						videoURL: req.body.myVideo,
+						text: null
+					});
+
+					// find and update exercise with current scenario
+					Exercise.findByIdAndUpdate(
+						exerciseID,
+						{$push: {scenarios: scenario}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+							}
+					);
+				});
 			});
 		}
 		console.log(req.body.survey);
-		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+		res.redirect('/displayScenarios');
 	});
 
-	app.post('/addSurvey', function(req, res) {
-		Exercise.nextCount(function(err, count) {
-			var exerciseID = count - 1;
-
-			// find length of scenarios array from current exercise
-			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-				var exCount = result.scenarios.length + 1; // set this as scenario id
-				console.log("exercise count: " + exCount);
-				var scenario = new Scenario({
-					_id: exCount,
-					videoURL: req.body.videoURL,
-					text: req.body.text,
-					question: req.body.question,
-					survey: req.body.surveys
-				});
-
-				// find and update exercise with current scenario
-				Exercise.findByIdAndUpdate(
-			    exerciseID,
-			    {$push: {scenarios: scenario}},
-			    {safe: true, upsert: true},
-				    function(err, model) {
-				        if (err) throw err;
-				    }
-				);
-			});
-		});
-		res.render('finishCreateExercise.ejs');
-	});
+	// app.post('/addSurvey', function(req, res) {
+	// 	Exercise.nextCount(function(err, count) {
+	// 		var exerciseID = count - 1;
+	//
+	// 		// find length of scenarios array from current exercise
+	// 		Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+	// 			var exCount = result.scenarios.length + 1; // set this as scenario id
+	// 			console.log("exercise count: " + exCount);
+	// 			var scenario = new Scenario({
+	// 				_id: exCount,
+	// 				videoURL: req.body.videoURL,
+	// 				text: req.body.text,
+	// 				question: req.body.question,
+	// 				survey: req.body.surveys
+	// 			});
+	//
+	// 			// find and update exercise with current scenario
+	// 			Exercise.findByIdAndUpdate(
+	// 		    exerciseID,
+	// 		    {$push: {scenarios: scenario}},
+	// 		    {safe: true, upsert: true},
+	// 			    function(err, model) {
+	// 			        if (err) throw err;
+	// 			    }
+	// 			);
+	// 		});
+	// 	});
+	// 	res.render('finishCreateExercise.ejs');
+	// });
 
 	app.get('/scenarioRedirect', function(req, res) {
 		res.render('createScenario.ejs');

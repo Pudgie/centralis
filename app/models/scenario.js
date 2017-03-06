@@ -4,13 +4,11 @@ var bcrypt = require('bcrypt-nodejs');
 var autoIncrement = require('mongoose-auto-increment');
 
 var scenarioSchema = new Schema({
-	exerciseID: Number,
+	name: String,
+	id: Number,
 	round: Number,
 	videoURL: String, // for implementing video later
 	text: String,
-	teamSurveyLink: String,
-	studentSurveyLink: String,
-	observerSurveyLink: String
 });
 
 scenarioSchema.plugin(autoIncrement.plugin, {
