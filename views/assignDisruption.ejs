@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Select the scenario for each room based on their response to the disruption</h1>
+<%
+	for (var ii = 0; ii < allRooms.length; ii++) {
+		%>
+			<p>Room: <%= allRooms[ii] %></p><br>
+		<%
+	}
+	for (var jj = 0; jj < scenarioChoices.length; jj++) {
+		%>
+			<p>Scenario: <%= scenarioChoices[jj].name %></p><br>
+		<%
+	}
+%>
+
+</body>
+</html>

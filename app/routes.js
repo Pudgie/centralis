@@ -22,14 +22,28 @@ module.exports = function(app, passport) {
 	var currentRoom = null;
 	var currentSessionID = null;
 	var sCount = 0;
+	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
 	});
 
+	app.post('/adminWait', function(req, res) {
+		var round = req.body.roundNumber;
+		res.render('adminWait.ejs', {roundNum: round});
+	});
+
 	app.get('/adminlogin', function(req, res) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
+	});
+
+	app.post('/assignDisruption', function(req, res) {
+		var round = req.body.currRound;
+		Scenario.find({'round': round}).lean().exec( function(err, results) {
+			if (err) console.log(err);
+			res.render('assignDisruption.ejs', {scenarioChoices: results, allRooms: rooms})
+		});
 	});
 
 	app.get('/studentlogin', function(req, res) {
@@ -46,7 +60,6 @@ module.exports = function(app, passport) {
 
 
 	app.post('/sessionAdmin', function(req, res) {
-		var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
@@ -71,7 +84,8 @@ module.exports = function(app, passport) {
 			// 	console.log("Answer saved succesfully");
 			// });
 		}
-		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
+		var roundCreatedNum = 1;
+		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID, newRoundNum: roundCreatedNum});
 	});
 
 	app.get('/deleteExercise', function(req, res) {
