@@ -8,6 +8,7 @@ var autoIncrement = require('mongoose-auto-increment');
 var exerciseSchema = new Schema({
 	title: String,
 	scenarios: [], // array of scenario IDs
+	numOfRounds: Number,
 	ceoSurvey: String,
 	teamMemberSurvey: String,
 	observerSurvey: String

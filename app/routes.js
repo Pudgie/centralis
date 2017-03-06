@@ -53,7 +53,8 @@ module.exports = function(app, passport) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				exerciseID: req.body.exId
+				exerciseID: req.body.exId,
+				nextRound: 1
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
@@ -257,6 +258,7 @@ module.exports = function(app, passport) {
 		sCount = 0;
 		var exercise = new Exercise({
 			title: req.body.exerciseName,
+			numOfRounds: req.body.numOfRounds,
 			scenarios: [],
 			ceoSurvey: req.body.ceoSurvey,
 			teamMemberSurvey: req.body.teamMemberSurvey,
