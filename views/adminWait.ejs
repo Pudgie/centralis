@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<h1>Round # <%=  roundNum %> </h1>
+	<h1>Round # <%=  currRound %> </h1>
 	<p>Go to Qualtrics and view student responses</p>
 	<form action="/assignDisruption" method="post">
-		<input type="hidden" name="currRound" value="<%= roundNum %>"/>
+		<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
+		<input type="hidden" name="currRound" value="<%= currRound %>"/>
 		<input type="submit" value="Assign Disruption"/>
 	</form>
 </body>
