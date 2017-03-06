@@ -85,12 +85,10 @@ module.exports = function(app, passport) {
 	app.post('/deleteExercise', function(req, res) {
 		var exercisesToDelete = req.body.exerciseChecks;
 		if (exercisesToDelete) {
-			for (var ii = 0; ii < exercisesToDelete.length; ii++) {
-				Exercise.findOneAndRemove({'_id': exercisesToDelete[ii]}, function(err, results) {
-					if (err) console.err(err);
-					console.log("Removed exercise " + results._id + " from DB");
-				});
-			}
+			Exercise.findOneAndRemove({'_id': exercisesToDelete}, function(err, results) {
+				if (err) console.err(err);
+				console.log("Removed exercise successfully from DB");
+			});
 		}
 		res.redirect('/admin');
 	});
@@ -254,7 +252,7 @@ module.exports = function(app, passport) {
 		console.log("SessionID: " + sessionIDToRemove);
 		Session.findOneAndRemove({'activeSessionID': sessionIDToRemove}, function(err, results) {
 			if (err) console.err(err);
-			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+			console.log("Completed Session successfully and removed from DB");
 		});
 		res.redirect('/admin');
 	});
