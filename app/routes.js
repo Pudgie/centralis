@@ -109,7 +109,8 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, roles: exercise.roles, descriptions: currentExercise.descriptions});
+				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles, 
+												roles: exercise.roles, descriptions: currentExercise.descriptions});
 			});
 		});
 	});
