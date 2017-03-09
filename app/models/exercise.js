@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt-nodejs');
 var Scenario = require('./scenario');
 var autoIncrement = require('mongoose-auto-increment');
 
+// autoincrement implicitly adds _id
 var exerciseSchema = new Schema({
 	enabled: Boolean,
 	title: String,
