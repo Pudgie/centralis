@@ -30,14 +30,14 @@ module.exports = function(app, passport) {
 
 	app.post('/createSession', function(req, res) {
 		var id = req.body.exerciseButtons;
-		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+		Exercise.findOne({'_id': id, 'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('createSession.ejs', {exName: results.name, exId: id});
 		});
 	});
 
 	app.get('/deleteExercise', function(req, res) {
-		Exercise.find().lean().exec( function(err, results) {
+		Exercise.find({'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('deleteExercise.ejs', {exercises: results});
 		});
@@ -72,7 +72,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/selectExercise', function(req, res) {
-		Exercise.find().lean().exec( function(err, results) {
+		Exercise.find({'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('selectExercise.ejs', {exercises: results});
 		});
@@ -140,6 +140,7 @@ module.exports = function(app, passport) {
 			answerer = titles[0];
 		}
 		var exercise = new Exercise({
+			enabled: true,
 			roles: titles,
 			descriptions: descriptions,
 			name: req.body.exerciseName,
