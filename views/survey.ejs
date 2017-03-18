@@ -21,8 +21,16 @@
   <body>
     <div id="survey">
       <form action="/display" method="post">
-        <iframe src="<%= url %>" height="800px" width="600px"></iframe>
-        <button type="submit" class="btn btn-primary btn-md">Next</button>
+        <% if (role == "ceo") { %>
+          <h1>Please discuss with team and complete survey </h1>
+          <iframe src="<%= url %>" height="800px" width="600px"></iframe>
+          <button type="submit" class="btn btn-primary btn-md">Next</button>
+        <% }
+
+        else { %>
+          <h1>Please discuss with team and wait for CEO to complete survey</h1>
+        <% } %>
+
       </form>
     </div>
   </body>

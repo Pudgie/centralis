@@ -7,6 +7,9 @@
   <body>
     <%= text %>
     </br>
-    <input type="button" onClick="location.href='/displaySurvey'" value="Go to Survey" />
+    <form action="/displaySurvey" method="post">
+      <input type="hidden" name="role" value="<%=role%>"/>
+      <input type="submit" value="Go to Survey" />
+    </form>
   </body>
 </html>

@@ -14,16 +14,10 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var currentExercise = null;
 	// var Answer = require('./models/answer');
 	// var ScenarioAnswer = require('./models/scenarioAnswer');
 	// var SurveyAnswer = require('./models/surveyAnswer');
-	var currentSession = null;
-	var currentExercise = null;
-	var currentRoom = null;
-	var currentSessionID = null;
-	var currentRole = null;
-	var currentRound = 1;
-	var sCount = 0;
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 	app.get('/', function(req, res) {
@@ -129,34 +123,49 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	app.get('/selectRole', function(req, res) {
-		res.render('roles.ejs');
-	});
 	app.post('/display', function(req, res) {
-		if (currentRole === null) {
-			currentRole = req.body.role;
-		}
-		console.log(currentRole);
-		Session.findOne({'roomNumber': currentRoom, 'activeSessionID': currentSessionID}).lean().exec( function(err, result) {
+		var role = req.body.role;
+		Session.findOne({"roomNumber": req.body.room}).lean().exec( function(err, result) {
 			//get the session
-			currentSession = result;
 			var id = result.exerciseID; //pull out exercise ID for that session
 			console.log("my current ID is: " + id);
+			var currentRound = result.currRound;
+			var results = [];
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
-				//find session ID;
 				currentExercise = exercise;
-				res.render('scenario.ejs', {text: exercise.scenarios[0].text});
+				//find session ID;
+				if (currentRound > exercise.numOfRounds) {
+					// render finish page
+					console.log("rasdfkjlsdajklf");
+				}
+				 else {
+					 for (var i = 0; i < exercise.scenarios.length; i++) {
+	 					if (exercise.scenarios[i].round == currentRound){
+	 						results.push(exercise.scenarios[i]);
+	 					}
+	 				}
+	 				res.render('scenario.ejs', {text: results[0].text, role: role});
+				 }
+			 	Session.findOneAndUpdate(
+			 		{"roomNumber": req.body.room},
+			 		{$inc: {"currRound": 1}},
+		 			function(err, model) {
+		 				if (err) throw err;
+		 				console.log("Incremented successfully");
+		 			}
+			 	);
 			});
 		});
 	});
 
-	app.get('/displaySurvey', function(req, res) {
-		if (currentRole === 'ceo') {
-			res.render('survey.ejs', {url: currentExercise.ceoSurvey});
-		} else if (currentRole === 'team') {
-			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey});
+	app.post('/displaySurvey', function(req, res) {
+		console.log(req.body.role);
+		if (req.body.role === 'ceo') {
+			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role});
+		} else if (req.body.role === 'team') {
+			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role});
 		} else {
-			res.render('survey.ejs', {url: currentExercise.observerSurvey});
+			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role});
 		}
 	});
 
@@ -263,9 +272,7 @@ module.exports = function(app, passport) {
 			if (!user) { return res.redirect('/studentlogin'); }
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
-				currentRoom = user.roomNumber;
-				currentSessionID = user.activeSessionID;
-				return res.redirect('/selectRole');
+				return res.render('roles.ejs', {roomNumber: user.roomNumber});
 			});
 		})(req, res, next);
 	});
