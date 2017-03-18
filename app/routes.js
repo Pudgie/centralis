@@ -21,6 +21,8 @@ module.exports = function(app, passport) {
 	var currentExercise = null;
 	var currentRoom = null;
 	var currentSessionID = null;
+	var currentRole = null;
+	var currentRound = 1;
 	var sCount = 0;
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
@@ -32,7 +34,7 @@ module.exports = function(app, passport) {
 	app.post('/adminWait', function(req, res) {
 		var currRound = parseInt(req.body.currRound);
 		var exerciseID = parseInt(req.body.exerciseID);
-		res.render('adminWait.ejs', {currRound: currRound, exerciseID: exerciseID});	
+		res.render('adminWait.ejs', {currRound: currRound, exerciseID: exerciseID});
 	});
 
 	app.get('/adminlogin', function(req, res) {
@@ -79,7 +81,7 @@ module.exports = function(app, passport) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				nextScenario: 1
+				nextScenario: 1,
 				exerciseID: req.body.exerciseID
 			});
 			session.save(function(err) {
@@ -127,7 +129,14 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	app.get('/selectRoles', function(req, res) {
+	app.get('/selectRole', function(req, res) {
+		res.render('roles.ejs');
+	});
+	app.post('/display', function(req, res) {
+		if (currentRole === null) {
+			currentRole = req.body.role;
+		}
+		console.log(currentRole);
 		Session.findOne({'roomNumber': currentRoom, 'activeSessionID': currentSessionID}).lean().exec( function(err, result) {
 			//get the session
 			currentSession = result;
@@ -136,10 +145,19 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles,
-												roles: exercise.roles, descriptions: currentExercise.descriptions});
+				res.render('scenario.ejs', {text: exercise.scenarios[0].text});
 			});
 		});
+	});
+
+	app.get('/displaySurvey', function(req, res) {
+		if (currentRole === 'ceo') {
+			res.render('survey.ejs', {url: currentExercise.ceoSurvey});
+		} else if (currentRole === 'team') {
+			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey});
+		} else {
+			res.render('survey.ejs', {url: currentExercise.observerSurvey});
+		}
 	});
 
 	app.post('/wait', function (req, res) {
@@ -247,7 +265,7 @@ module.exports = function(app, passport) {
 				if (err) { return next(err); }
 				currentRoom = user.roomNumber;
 				currentSessionID = user.activeSessionID;
-				return res.redirect('/selectRoles');
+				return res.redirect('/selectRole');
 			});
 		})(req, res, next);
 	});
