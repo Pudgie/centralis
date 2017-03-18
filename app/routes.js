@@ -125,7 +125,8 @@ module.exports = function(app, passport) {
 
 	app.post('/display', function(req, res) {
 		var role = req.body.role;
-		Session.findOne({"roomNumber": req.body.room}).lean().exec( function(err, result) {
+		var room = req.body.room;
+		Session.findOne({"roomNumber": room}).lean().exec( function(err, result) {
 			//get the session
 			var id = result.exerciseID; //pull out exercise ID for that session
 			console.log("my current ID is: " + id);
@@ -134,40 +135,43 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				currentExercise = exercise;
 				//find session ID;
-				if (currentRound > exercise.numOfRounds) {
+				if (currentRound >= exercise.numOfRounds) {
 					// render finish page
 					console.log("rasdfkjlsdajklf");
-				}
-				 else {
+				} else {
+					Session.findOneAndUpdate(
+						{"roomNumber": room},
+						{$inc: {"currRound": 1}},
+						function(err, model) {
+							if (err) throw err;
+							console.log("Incremented successfully");
+						}
+					);
 					 for (var i = 0; i < exercise.scenarios.length; i++) {
 	 					if (exercise.scenarios[i].round == currentRound){
 	 						results.push(exercise.scenarios[i]);
 	 					}
 	 				}
-	 				res.render('scenario.ejs', {text: results[0].text, role: role});
+	 				res.render('scenario.ejs', {text: results[0].text, role: role, room: room});
 				 }
-			 	Session.findOneAndUpdate(
-			 		{"roomNumber": req.body.room},
-			 		{$inc: {"currRound": 1}},
-		 			function(err, model) {
-		 				if (err) throw err;
-		 				console.log("Incremented successfully");
-		 			}
-			 	);
 			});
 		});
 	});
 
 	app.post('/displaySurvey', function(req, res) {
-		console.log(req.body.role);
+		console.log(req.body.room);
 		if (req.body.role === 'ceo') {
-			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role});
+			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role, room: req.body.room});
 		} else if (req.body.role === 'team') {
-			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role});
+			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room});
 		} else {
-			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role});
+			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role, room: req.body.room});
 		}
 	});
+
+	app.post('/team', function(req, res) {
+		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room});
+	})
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
