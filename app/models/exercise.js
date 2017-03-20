@@ -6,13 +6,13 @@ var autoIncrement = require('mongoose-auto-increment');
 
 // autoincrement implicitly adds _id
 var exerciseSchema = new Schema({
+	enabled: Boolean,
 	title: String,
-	numRounds: Number,
-	scenarios: [], // array of scenario IDs
 	numOfRounds: Number,
-	ceoSurvey: String,
-	teamMemberSurvey: String,
-	observerSurvey: String
+	roles: [String],
+	descriptions: [String],
+	scenarios: [],
+	answerer: String
 });
 
 exerciseSchema.plugin(autoIncrement.plugin, {
