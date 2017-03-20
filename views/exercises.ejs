@@ -3,37 +3,69 @@
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<style>
-		body {
-			background-color: #FFCC00;
-		}
-		.mainForm {
-			margin-top: 230px;
-			text-align: center;
-		}
-		.inputForms {
-			border-radius: 5px;
-		}
-	</style>
+
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+ 	 <script src="bootstrap/js/jquery.min.js"></script>
+  	<script src = "/bootstrap/js/clean-blog.js"></script>
+  	<!-- javascript -->
+ 	 <script src="/bootstrap/js/bootstrap.min.js"></script>
+  	<script src="/bootstrap/js/typed.js"></script>
+	
   <title>Create Exercise</title>
 </head>
 <body>
-	<div class="mainForm">
-		<h2> <strong> Specify the exercise name and survey links: </strong> </h2>
-		<br>
-	  	<form action="/createScenarios" method="post">
-			<strong>Exercise Name:</strong><br>
-			<input class="inputForms" type="text" name="exerciseName"><br>
-			<strong>Number of Rounds:</strong><br>
-			<input class="inputForms" type="text" name="numOfRounds"><br>
-			<strong>CEO Survey URL:</strong><br>
-			<input class="inputForms" type="text" name="ceoSurvey"><br>
-			<strong>Team Member Survey URL:</strong><br>
-			<input class="inputForms" type="text" name="teamMemberSurvey"><br>
-			<strong>Observer Survey URL:</strong><br>
-			<input class="inputForms" type="text" name="observerSurvey"><br><br>
-		 	<button type="submit" class="btn btn-primary btn-md">Next</button>
+	
+		<div class="formNoBorder">
+			<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
+		</div>
+		<script >
+                                $(function(){
+                                    $(".typing").typed({
+                                      strings: ["Specify the exercise name and survey links:"],
+                                      typeSpeed: 40
+                                    });
+                                });
+                      	</script>
+
+		<form action="/createScenarios" method="post">
+			<h2></h2>
+			<div class="row control-group">
+                            		<div class="form-group col-xs-12 floating-label-form-group controls" >	
+					<label><strong>Exercise Name:</strong></label>
+					<input class="inputForms" type="text" name="exerciseName" placeholder ="Exercise Name">
+				</div>
+			</div>
+			<div class="row control-group">
+				<div class="form-group col-xs-12 floating-label-form-group controls">
+					<label><strong>Number of Rounds:</strong></label>
+					<input class="inputForms" type="text" name="numOfRounds" placeholder ="Number of Rounds">
+				</div>	
+			</div>	
+			<div class="row control-group">		
+				<div class="form-group col-xs-12 floating-label-form-group controls">
+					<label><strong>CEO Survey URL:</strong></label>
+					<input class="inputForms" type="text" name="ceoSurvey" placeholder ="CEO Survey URL">
+				</div>
+			</div>
+			<div class="row control-group">
+				<div class="form-group col-xs-12 floating-label-form-group controls">
+					<label><strong>Team Member Survey URL:</strong></label>
+					<input class="inputForms" type="text" name="teamMemberSurvey" placeholder ="Team Member Suervey URL">
+				</div>
+			</div>
+			<div class="row control-group">
+				<div class="form-group col-xs-12 floating-label-form-group controls">
+					<label><strong>Observer Survey URL:</strong></label>
+					<input class="inputForms" type="text" name="observerSurvey" placeholder ="Observer Survey URL">
+				</div>
+			</div>
+			<br>
+			<button type="submit" class="btn btn-outline">Next</button>
+			 	
 		</form>
-	</div>
+			
+		
+
+	
 </body>
 </html>

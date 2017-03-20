@@ -1,22 +1,23 @@
 
 /*Main page style*/
 
- 
+ #formNoBorder{
+    margin-top: 50px;
+    text-align: center;
+
+ }
 
 
 form {
      text-align: center;
      background-color: #FFA500;
-     padding-bottom: 60px;
+     padding-bottom: 40px;
      padding-top: 20px;
      width: 412px;
      margin: 0 auto; 
      top: 100px;
      border: solid 6px #B22222;
-   
   }
-
-
 .alert{
   color: #B22222;
 }
