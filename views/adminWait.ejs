@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<h1>Round # <%=  currRound %> </h1>
+	<p>Go to Qualtrics and view student responses</p>
+	<form action="/assignDisruption" method="post">
+		<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
+		<input type="hidden" name="currRound" value="<%= currRound %>"/>
+		<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
+		<input type="submit" value="Next"/>
+	</form>
+</body>
+</html>

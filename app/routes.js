@@ -14,23 +14,133 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
-	var Answer = require('./models/answer');
-	var ScenarioAnswer = require('./models/scenarioAnswer');
-	var SurveyAnswer = require('./models/surveyAnswer');
+	// var Answer = require('./models/answer');
+	// var ScenarioAnswer = require('./models/scenarioAnswer');
+	// var SurveyAnswer = require('./models/surveyAnswer');
 	var currentSession = null;
 	var currentExercise = null;
 	var currentRoom = null;
 	var currentSessionID = null;
-	var hasStarted = false;
 	var sCount = 0;
+	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
 	});
 
+	app.get('/adminWait', function(req, res) {
+		var currRound = parseInt(req.query.currRound);
+		var exerciseID = parseInt(req.query.exerciseID);
+		var sessionID = parseInt(req.query.sessionID);
+		Exercise.find({'_id': exerciseID}).lean().exec(function(err, results) {
+			if (err) console.err(err);
+			if (currRound == (results[0].numOfRounds+1)) {
+				res.redirect('/finishSession?sessionID='+sessionID);
+			}
+			else {
+				res.render('adminWait.ejs', {currRound: currRound, exerciseID: exerciseID, sessionID: sessionID});
+			}
+		});
+	});
+
+	app.post('/adminWait', function(req, res) {
+		var currRound = parseInt(req.body.currRound);
+		var exerciseID = parseInt(req.body.exerciseID);
+		var sessionID = parseInt(req.body.sessionID);
+		Exercise.find({'_id': exerciseID}).lean().exec(function(err, results) {
+			if (currRound == (results[0].numOfRounds+1)) {
+				res.redirect('/finishSession?sessionID='+sessionID);
+			}
+			else {
+				res.render('adminWait.ejs', {currRound: currRound, exerciseID: exerciseID, sessionID: sessionID});
+			}
+		});
+	});
+
+	app.post('/submitResults', function(req, res) {
+		var currRound = parseInt(req.body.currRound);
+		var exerciseID = parseInt(req.body.exerciseID);
+		var sessionID = parseInt(req.body.sessionID);
+		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+		disruptionSelection[0] = req.body.A;
+		disruptionSelection[1] = req.body.B;
+		disruptionSelection[2] = req.body.C;
+		disruptionSelection[3] = req.body.D;
+		disruptionSelection[4] = req.body.E;
+		disruptionSelection[5] = req.body.F;
+		disruptionSelection[6] = req.body.G;
+		disruptionSelection[7] = req.body.J;
+		disruptionSelection[8] = req.body.K;
+		disruptionSelection[9] = req.body.L;
+		disruptionSelection[10] = req.body.M;
+		disruptionSelection[11] = req.body.N;
+		for (var ii = 0; ii < rooms.length; ii++) {
+			if (disruptionSelection[ii] != null && distruptionSelection[ii] != -1) {
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID}, 
+										 {$set: {'nextScenario': disruptionSelection[ii]}},
+										 {new:true}, function(err, model) {
+											if (err) throw err;
+										});
+			}
+			else { // at least one scenario is not selected
+				res.redirect('/assignDisruption?currRound='+currRound+'&exerciseID='+exerciseID+'&sessionID='+sessionID);
+			}
+		}
+		res.redirect('/adminWait?currRound='+(currRound+1)+'&exerciseID='+exerciseID+'&sessionID='+sessionID);
+	});
+
 	app.get('/adminlogin', function(req, res) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
+	});
+
+	app.get('/assignDisruption', function(req, res) {
+		var currRound = parseInt(req.query.currRound);
+		var exerciseID = parseInt(req.query.exerciseID);
+		var sessionID = parseInt(req.query.sessionID);
+		if (currRound == 1) {
+			res.redirect('/adminWait?currRound='+(currRound+1)+'&exerciseID='+exerciseID+'&sessionID='+sessionID);
+		}
+		else {
+			Scenario.find({'round': currRound, 'exerciseID': exerciseID}).lean().exec( function(err, results) {
+				if (err) console.log(err);
+				res.render('assignDisruption.ejs', {scenarioChoices: results, allRooms: rooms, currRound: currRound, exerciseID: exerciseID, sessionID: sessionID})
+			});
+		}
+	});
+
+	app.post('/assignDisruption', function(req, res) {
+		var currRound = parseInt(req.body.currRound);
+		var exerciseID = parseInt(req.body.exerciseID);
+		var sessionID = parseInt(req.body.sessionID);
+		if (currRound == 1) {
+			res.redirect('/adminWait?currRound='+(currRound+1)+'&exerciseID='+exerciseID+'&sessionID='+sessionID);
+		}
+		else {
+			Scenario.find({'round': currRound, 'exerciseID': exerciseID}).lean().exec( function(err, results) {
+				if (err) console.log(err);
+				res.render('assignDisruption.ejs', {scenarioChoices: results, allRooms: rooms, currRound: currRound, exerciseID: exerciseID, sessionID: sessionID})
+			});
+		}
+	});
+
+
+	app.get('/finishSession', function(req, res) {
+		var sessionIDToRemove = req.query.sessionID;
+		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+			if (err) console.err(err);
+			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+		});
+		res.redirect('/admin');
+	});
+
+	app.post('/finishSession', function(req, res) {
+		var sessionIDToRemove = req.body.sessionID;
+		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+			if (err) console.err(err);
+			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+		});
+		res.redirect('/admin');
 	});
 
 	app.get('/studentlogin', function(req, res) {
@@ -38,63 +148,68 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createSession', function(req, res) {
-		var id = req.body.exerciseButtons;
-		Exercise.findOne({'_id': id}).lean().exec( function(err, results) {
+		var exerciseID = req.body.exerciseButtons;
+		Exercise.findOne({'_id': exerciseID, 'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
-			res.render('createSession.ejs', {exName: results.name, exId: id});
+			res.render('createSession.ejs', {exerciseName: results.title, exerciseID: exerciseID});
 		});
 	});
 
-
 	app.post('/sessionAdmin', function(req, res) {
-		var rooms = ['A', 'B', 'C', 'D'];
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				exerciseID: req.body.exId
+				nextScenario: 1,
+				exerciseID: req.body.exerciseID
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
 				console.log("Session saved succesfully");
 			});
 			// create answer models to store data
-			var answer = new Answer({
-				roomNumber: rooms[i],
-				sessionID: sessionID,
-				exerciseID: req.body.exID,
-				scenarioAnswers: []
-			});
-			answer.save(function(err) {
-				if (err) { throw err; }
-				console.log("Answer saved succesfully");
-			});
+			// var answer = new Answer({
+			// 	roomNumber: rooms[i],
+			// 	sessionID: sessionID,
+			// 	exerciseID: req.body.exID,
+			// 	scenarioAnswers: []
+			// });
+			// answer.save(function(err) {
+			// 	if (err) { throw err; }
+			// 	console.log("Answer saved succesfully");
+			// });
 		}
-		res.render('session.ejs', {exId: req.body.exId, sesId: sessionID});
+		var currRound = 1;
+		res.render('session.ejs', {exerciseID: req.body.exerciseID, sessionID: sessionID, currRound: currRound});
 	});
 
 	app.get('/deleteExercise', function(req, res) {
-		Exercise.find().lean().exec( function(err, results) {
+		
+		Exercise.find({'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('deleteExercise.ejs', {exercises: results});
 		});
 	});
 
 	app.post('/deleteExercise', function(req, res) {
-		var exercisesToDelete = req.body.exerciseChecks;
-		if (exercisesToDelete) {
-			Exercise.findOneAndRemove({'_id': exercisesToDelete}, function(err, results) {
-				if (err) console.err(err);
-				console.log("Removed exercise successfully from DB");
-			});
+		var exerciseID = req.body.exerciseChecks;
+		if (exerciseID) {
+			Exercise.findByIdAndUpdate(
+						exerciseID,
+						{$set: {'enabled': false}},
+						{new: true},
+							function(err, model) {
+									if (err) throw err;
+							}
+			);
 		}
 		res.redirect('/admin');
 	});
 
 	app.get('/selectExercise', function(req, res) {
-		Exercise.find().lean().exec( function(err, results) {
+		Exercise.find({'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('selectExercise.ejs', {exercises: results});
 		});
@@ -109,7 +224,7 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.name, exId: id, activeRoles: currentSession.activeRoles, 
+				res.render('studentRoles.ejs', {exName: exercise.title, exId: id, activeRoles: currentSession.activeRoles,
 												roles: exercise.roles, descriptions: currentExercise.descriptions});
 			});
 		});
@@ -136,77 +251,73 @@ module.exports = function(app, passport) {
 
 	app.post('/startScenario', function(req, res) {
 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		} else {
-			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
+			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
 									role: req.body.role, description: req.body.description});
 		}
 	});
 
-	// show questions to students
-	app.post('/response', function(req, res) {
-		// add group answer to database
-		if (req.body.answer != null && req.body.answer != "") {
-			var scenarioAnswer = new ScenarioAnswer({
-				scenarioID: sCount + 1,
-				text: req.body.answer,
-				surveyAnswers: []
-			});
-			Answer.findOneAndUpdate(
-				{'roomNumber': currentRoom, 'sessionID': currentSessionID},
-				{$addToSet: {scenarioAnswers: scenarioAnswer}},
-				{safe: true, upsert: true},
-					function(err, model) {
-						if (err) throw err;
-					}
-			);
-		}
-		res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
-	});
+	// // show questions to students
+	// app.post('/response', function(req, res) {
+	// 	// add group answer to database
+	// 	if (req.body.answer != null && req.body.answer != "") {
+	// 		var scenarioAnswer = new ScenarioAnswer({
+	// 			scenarioID: sCount + 1,
+	// 			text: req.body.answer,
+	// 			surveyAnswers: []
+	// 		});
+	// 		Answer.findOneAndUpdate(
+	// 			{'roomNumber': currentRoom, 'sessionID': currentSessionID},
+	// 			{$addToSet: {scenarioAnswers: scenarioAnswer}},
+	// 			{safe: true, upsert: true},
+	// 				function(err, model) {
+	// 					if (err) throw err;
+	// 				}
+	// 		);
+	// 	}
+	// 	res.render('response.ejs', {scenario: currentExercise.scenarios[sCount], role: req.body.role, description: req.body.description});
+	// });
 
 	// collect student survey responses
-	app.post('/collect', function(req, res) {
-		var currScenario = currentExercise.scenarios.length;
-		var surveyAnswer = new SurveyAnswer({
-			role: req.body.role,
-			answers: req.body.surveyAnswers
-		});
-		Answer.findOneAndUpdate(
-			{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
-			{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
-			{safe: true, upsert: true},
-				function(err, model) {
-					if (err) throw err;
-					console.log("survey answer inserted successfully!")
-				}
-		);
-		sCount++;
-		if (sCount == currScenario) { // finished exercise
-			res.render('finish.ejs');
-		} else { // more scenarios
-			if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-				res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
-									role: req.body.role, description: req.body.description});
-			} else {
-				res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer, 
-										role: req.body.role, description: req.body.description});
-			}
-		}
-	});
+	// app.post('/collect', function(req, res) {
+	// 	var currScenario = currentExercise.scenarios.length;
+	// 	var surveyAnswer = new SurveyAnswer({
+	// 		role: req.body.role,
+	// 		answers: req.body.surveyAnswers
+	// 	});
+	// 	Answer.findOneAndUpdate(
+	// 		{roomNumber: currentRoom, sessionID: currentSessionID, 'scenarioAnswers.scenarioID' : sCount + 1},
+	// 		{$push: {'scenarioAnswers.$.surveyAnswers' : surveyAnswer}},
+	// 		{safe: true, upsert: true},
+	// 			function(err, model) {
+	// 				if (err) throw err;
+	// 				console.log("survey answer inserted successfully!")
+	// 			}
+	// 	);
+	// 	sCount++;
+	// 	if (sCount == currScenario) { // finished exercise
+	// 		res.render('finish.ejs');
+	// 	} else { // more scenarios
+	// 		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+	// 			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
+	// 								role: req.body.role, description: req.body.description});
+	// 		} else {
+	// 			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
+	// 									role: req.body.role, description: req.body.description});
+	// 		}
+	// 	}
+	// });
 
 	app.post('/reset', function(req, res) {
 		sCount = 0;
 		res.redirect('/');
 	});
 
-	app.get('/startGame', function (req, res) {
-		hasStarted = true;
-	});
-
-	app.get('/createRoles', function(req, res) {
-		res.render('roles.ejs');
-	});
+	// app.get('/createRoles', function(req, res) {
+	// 	res.render('roles.ejs');
+	// });
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
@@ -215,7 +326,7 @@ module.exports = function(app, passport) {
 		failureFlash: true
 	}));
 
-	// process the student login form 
+	// process the student login form
 	app.post('/studentlogin', function(req, res, next) {
 		passport.authenticate('local-student', function(err, user, info) {
 			if (err) { return next(err); }
@@ -263,78 +374,124 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		var titles = req.body.roles;
-		var descriptions = req.body.descriptions;
-		var answerer;
-		if (req.body.numRoles == 1) {
-			answerer = titles;
-		} else {
-			answerer = titles[0];
-		}
+		sCount = 0;
 		var exercise = new Exercise({
-			roles: titles,
-			descriptions: descriptions,
-			name: req.body.exerciseName,
+			enabled: true,
+			title: req.body.exerciseName,
+			numRounds: req.body.numOfRounds,
 			scenarios: [],
-			answerer: answerer
+			ceoSurvey: req.body.ceoSurvey,
+			teamMemberSurvey: req.body.teamMemberSurvey,
+			observerSurvey: req.body.observerSurvey
 		});
 		exercise.save(function(err) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
-		res.render('createScenario.ejs');
+		//res.render('createScenario.ejs');
+		res.redirect('/displayScenarios');
 	});
 
+	app.get('/displayScenarios', function(req, res) {
+		Exercise.nextCount(function(err, count) {
+			var exerciseID = count - 1;
+			Exercise.findOne({'_id': exerciseID}).lean().exec(function(err, result) {
+				console.log("Debugging:" + result._id);
+				res.render('displayScenarios.ejs', {scenarios: result.scenarios});
+			})
+		})
+	});
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//videoPath = videoPath + req.file.filename;
 		if (req.body.text != null) {
-			var scenario = new Scenario({
-				videoURL: null,
-				text: req.body.text,
-				question: req.body.question,
-				survey: null
+			Exercise.nextCount(function(err, count) {
+				var exerciseID = count - 1;
+
+				// find length of scenarios array from current exercise
+				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+					// var exCount = result.scenarios.length + 1;
+					sCount += 1;
+					var scenario = new Scenario({
+						name: req.body.name,
+						id: sCount,
+						round: req.body.round,
+						videoURL: null,
+						text: req.body.text
+					});
+
+					// find and update exercise with current scenario
+					Exercise.findByIdAndUpdate(
+						exerciseID,
+						{$push: {scenarios: scenario}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+							}
+					);
+				});
 			});
 		} else {
-			var scenario = new Scenario({
-				videoURL: req.file.filename,
-				text: req.body.text,
-				question: req.body.question,
-				survey: null
+			Exercise.nextCount(function(err, count) {
+				var exerciseID = count - 1;
+
+				// find length of scenarios array from current exercise
+				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+					// var exCount = result.scenarios.length + 1;
+					sCount += 1;
+					console.log("exercise count: " + exCount);
+					var scenario = new Scenario({
+						name: req.body.name,
+						id: sCount,
+						round: req.body.round,
+						videoURL: req.body.myVideo,
+						text: null
+					});
+
+					// find and update exercise with current scenario
+					Exercise.findByIdAndUpdate(
+						exerciseID,
+						{$push: {scenarios: scenario}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+							}
+					);
+				});
 			});
 		}
 		console.log(req.body.survey);
-		res.render('survey.ejs', {number: req.body.survey, scenario: scenario});
+		res.redirect('/displayScenarios');
 	});
 
-	app.post('/addSurvey', function(req, res) {
-		Exercise.nextCount(function(err, count) {
-			var exerciseID = count - 1;
-
-			// find length of scenarios array from current exercise
-			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-				var exCount = result.scenarios.length + 1; // set this as scenario id
-				console.log("exercise count: " + exCount);
-				var scenario = new Scenario({
-					_id: exCount,
-					videoURL: req.body.videoURL,
-					text: req.body.text,
-					question: req.body.question,
-					survey: req.body.surveys
-				});
-
-				// find and update exercise with current scenario
-				Exercise.findByIdAndUpdate(
-			    exerciseID,
-			    {$push: {scenarios: scenario}},
-			    {safe: true, upsert: true},
-				    function(err, model) {
-				        if (err) throw err;
-				    }
-				);
-			});
-		});
-		res.render('finishCreateExercise.ejs');
-	});
+	// app.post('/addSurvey', function(req, res) {
+	// 	Exercise.nextCount(function(err, count) {
+	// 		var exerciseID = count - 1;
+	//
+	// 		// find length of scenarios array from current exercise
+	// 		Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
+	// 			var exCount = result.scenarios.length + 1; // set this as scenario id
+	// 			console.log("exercise count: " + exCount);
+	// 			var scenario = new Scenario({
+	// 				_id: exCount,
+	// 				videoURL: req.body.videoURL,
+	// 				text: req.body.text,
+	// 				question: req.body.question,
+	// 				survey: req.body.surveys
+	// 			});
+	//
+	// 			// find and update exercise with current scenario
+	// 			Exercise.findByIdAndUpdate(
+	// 		    exerciseID,
+	// 		    {$push: {scenarios: scenario}},
+	// 		    {safe: true, upsert: true},
+	// 			    function(err, model) {
+	// 			        if (err) throw err;
+	// 			    }
+	// 			);
+	// 		});
+	// 	});
+	// 	res.render('finishCreateExercise.ejs');
+	// });
 
 	app.get('/scenarioRedirect', function(req, res) {
 		res.render('createScenario.ejs');
