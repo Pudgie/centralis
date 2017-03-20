@@ -143,7 +143,7 @@ module.exports = function(app, passport) {
 				} else {
 					// check if can proceed
 					var next = result.nextScenario;
-					if (currentRound != 1 && next == null) {
+					if (next == null) {
 						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
 						return;
 					}
@@ -158,6 +158,16 @@ module.exports = function(app, passport) {
 							}
 						);
 					}
+
+					// set nextScenario to NULL
+					Session.findOneAndUpdate(
+						{"roomNumber": room},
+						{"nextScenario": null},
+						function(err, model) {
+							if (err) throw err;
+							console.log("Set nextScenario to null successfully");
+						}
+					);
 					
 					if (currentRound == 1) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
