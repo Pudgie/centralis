@@ -8,6 +8,7 @@ var autoIncrement = require('mongoose-auto-increment');
 var exerciseSchema = new Schema({
 	enabled: Boolean,
 	title: String,
+	numOfRounds: Number,
 	roles: [String],
 	descriptions: [String],
 	scenarios: [],
