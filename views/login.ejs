@@ -1,46 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Admin Login</title>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-  <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+<!-- clean -->
+  <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+  <script src="bootstrap/js/jquery.min.js"></script>
+  <script src = "/bootstrap/js/clean-blog.js"></script>
+  <script src="/bootstrap/js/typed.js"></script>
+
+      
 
   
 </head>
 <body>
-  <% if (message.length > 0) { %>
-      <h2 class="alert"><%= message %></h2>
-  <% } %>
-  <form action="/login" method="post">
-    <div class="formHolder">
-        <div>
-          <h3> <strong>Administrator Login</strong> </h3>
-        </div>
-        <br>
-        <div class = "form-group" >
-          <label>Username</label>
-            <input type="text" name="email" class = "form-control" poistion = "center"
-           placeholder="Username" id="name" required data-validation-required-message="Please enter your email."/>   
-           <br>   
-           <label>Password</label>   
-            <input type="password" name="password" class = "form-control"
-             placeholder="Password" id="name" required data-validation-required-message="Please enter your email."/>
-        </div>
-        <br>
-        <div>
-            <button type="submit" class="btn btn-outline" >Login</button>
-        </div>
-    </div>
-  </form>
+   
+            <form action="/login" method="post">
+                    <h3> <strong><span class ="typing">Administrator Login</span></strong> </h3>
+                       <script >
+                                $(function(){
+                                    $(".typing").typed({
+                                      strings: ["Administrator Login"],
+                                      typeSpeed: 100
+                                    });
+                                });
+                      </script>
+                        <% if (message.length > 0) { %>
+                            <h4 class="alert"><%= message %></h4>
+                        <% } %>
+                    <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Username</label>
+                                <input class="inputForms" placeholder="Username" type="text" name="email"/>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Password</label>
+                                <input class="inputForms" placeholder="Password" type="password" name="password"/>
+                            </div>
+                        </div>
+                        <br></br>
+                       
+                                    
+                        
+                    </div>
+                    <button type="submit" class="btn btn-outline">Login</button>
+                      <div class="divider"></div>
+                     <button type="button" class="btn btn-outline" onclick="location.href = '/logout'">Go Back</button>
+            </form>
+
+    
+   
+
+</body>
 
 
-   <!-- Contact Form JavaScript -->
+
+
+
+    <!-- Contact Form JavaScript -->
     <script src="/bootstrap/js/jqBootstrapValidation.js"></script>
     <script src="/bootstrap/js/contact_me.js"></script>
+    <script type="/bootstrap/js/clean-blog.js"></script>
+    
 
     <!-- Theme JavaScript -->
-    <script src="bootstrap/js/clean-blog.min.js"></script>
-</body>
+    
 </html>

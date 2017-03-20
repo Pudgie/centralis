@@ -2,10 +2,36 @@
 /*Main page style*/
 
  
+
+
 form {
-      text-align: center;
-      
-    }
+     text-align: center;
+     background-color: #FFA500;
+     padding-bottom: 60px;
+     padding-top: 20px;
+     width: 412px;
+     margin: 0 auto; 
+     top: 100px;
+     border: solid 6px #B22222;
+   
+  }
+
+
+.alert{
+  color: #B22222;
+}
+
+.divider{
+    width: 15px;
+    height:auto;
+    display:inline-block;
+}
+
+
+
+
+
+
  .totalForm{
       text-align: center;
       position: relative;
@@ -17,78 +43,95 @@ form {
       top: 140px;
    }
     .formHolder {
-      margin-top: 100px;
-      background-color: white;
-      padding-top: 20px;
-      padding-bottom: 20px;
       text-align: center;
+     background-color: #FFA500;
+     padding-bottom: 60px;
+     padding-top: 20px;
+     width: 412px;
+     position:  relative;
+     left: 37%;
+     top: 100px;
+    border: solid 6px #B22222;
     }
 
 
 
   .form-group {
     margin-bottom: 40px; 
-    text-align: center;
-
-   font-size: 14px;
+    text-align: left;
+    font-size: 14px;
     margin-bottom: 10px;
     padding-bottom: 0.5em;
-    border-bottom: 1px solid #B22222;
-  }
-  .form-group label{
-    display: block;
-    z-index: 0;
-    position: relative;
-    top: 2em;
-    margin: 0;
-    font-size: 0.85em;
-    line-height: 1.764705882em;
-    vertical-align: middle;
-    vertical-align: baseline;
-    opacity: 0;
-    -webkit-transition: top 0.3s ease,opacity 0.3s ease;
-    -moz-transition: top 0.3s ease,opacity 0.3s ease;
-    -ms-transition: top 0.3s ease,opacity 0.3s ease;
-    transition: top 0.3s ease,opacity 0.3s ease;
   }
 
-  .form-group::not(:first-child) {
+
+.floating-label-form-group {
+  font-size: 14px;
+  margin: 10px 0;
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 0.5em;
+}
+.floating-label-form-group input,
+.floating-label-form-group textarea {
+  z-index: 1;
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-right: 3px;
+  padding-left: 3px;
+  border: none;
+  font-size: 1.5em;
+  background: none;
+  box-shadow: none !important;
+  resize: none;
+  width: 380px;
+  border-bottom: 2px solid #B22222;
+
+}
+
+::-webkit-input-placeholder{
+   color: #F8F8FF;
+}
+
+.floating-label-form-group label {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: block;
+  z-index: 0;
+  position: relative;
+  top: 2em;
+  font-size: 0.85em;
+  line-height: 1.764705882em;
+  vertical-align: middle;
+  vertical-align: baseline;
+  opacity: 0;
+  -webkit-transition: top 0.3s ease,opacity 0.3s ease;
+  -moz-transition: top 0.3s ease,opacity 0.3s ease;
+  -ms-transition: top 0.3s ease,opacity 0.3s ease;
+  transition: top 0.3s ease,opacity 0.3s ease;
+}
+.floating-label-form-group::not(:first-child) {
   padding-left: 14px;
   border-left: 1px solid #eeeeee;
 }
-
-  .form-group input,
-  .form-group textarea {
-      padding: 20px; }
-
- .form-group input.form-control {
-      height: 40px;
-      margin-left: 600px;
-      width:  250px
-     }
-.form-group textarea.form-control {
-      height: 236px; }
-   .form-control:focus {
-    border-color: #fed136;
-    box-shadow: none; }
-
-.form-group-with-value label {
+.floating-label-form-group-with-value label {
   top: 0;
   opacity: 1;
 }
-.form-group-with-focus label {
+.floating-label-form-group-with-focus label {
   color: #0085A1;
+}
+form .row:first-child .floating-label-form-group {
+  border-top: 1px solid #eeeeee;
 }
 
 
+  
 
-    .inputForms {
-      border-radius: 5px;
-    }
-
-    .alert{
+    .whiteT{
       text-align: center;
-      color: #FFA500;
+      color: white;
       font-weight: 700;
        font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       overflow-x: hidden;
@@ -124,6 +167,30 @@ h6 {
   font-weight: 700;
   color:  black
 }
+
+
+.typed-cursor{
+    opacity: 1;
+    -webkit-animation: blink 0.7s infinite;
+    -moz-animation: blink 0.7s infinite;
+    animation: blink 0.7s infinite;
+}
+@keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+@-webkit-keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+@-moz-keyframes blink{
+    0% { opacity:1; }
+    50% { opacity:0; }
+    100% { opacity:1; }
+}
+
 .btn-outline {
   color: white;
   font-size: 20px;
@@ -214,7 +281,7 @@ hr.star-primary:after {
   }
 
   .exercise {
-    margin-top: 80px;
+    
   }
   #logout {
     margin-top: 50px;
@@ -253,11 +320,9 @@ hr.star-primary:after {
 
 
 
-  form {
 
-    text-align:center;
-    margin-top: 250px;
-  }
+
+
  
 
 

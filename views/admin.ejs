@@ -3,21 +3,37 @@
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+ 	 <script src="bootstrap/js/jquery.min.js"></script>
+  	<script src = "/bootstrap/js/clean-blog.js"></script>
+  	<!-- javascript -->
+ 	 <script src="/bootstrap/js/bootstrap.min.js"></script>
+  	<script src="/bootstrap/js/typed.js"></script>
+
 	<title>How Would You Handle This?</title>
 	
 </head>
 <body>
-	<div class="completeForm">
-		<h1><strong>Successfully Logged <%= user.email %> in!</strong></h1>
+	<form>
+		<h1><strong><%= user.email %></strong></h1>
+		<h2><strong><span class="typing">Logged In!</span></strong></h2>
+		  <script >
+		              $(function(){
+		                  $(".typing").typed({
+		                    strings: ["Logged In!", "Select Your Option"],
+		                    typeSpeed: 150
+		                  });
+		              });
+        		 </script>
+        		 <br></br>
 		<div class = "exercise">
-		<p><em>(Tap button to create an exercise.)</em></p>
-		<button id="exercise" type="button" class="btn btn-primary btn-md" onclick="location.href = '/createExercise'">Create Exercise</button>
-		<button id="delete" type="button" class="btn btn-primary btn-md" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
+		<button id="exercise" type="button" class="btn btn-outline" onclick="location.href = '/createExercise'">Create Exercise</button>
+		<button id="delete" type="button" class="btn btn-outline" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
 		</div>
 		<br>
-		<button id="select" type="button" class="btn btn-primary btn-md" onclick="location.href = 'selectExercise'">Select Exercise</button>
+		<button id="select" type="button" class="btn btn-outline" onclick="location.href = 'selectExercise'">Select Exercise</button>
 		<br>
-		<button id="logout" type="button" class="btn btn-primary btn-md" onclick="location.href = '/logout'">Logout</button>
-	</div>
+		<button id="logout" type="button" class="btn btn-outline" onclick="location.href = '/logout'">Logout</button>
+	</form>
 </body>
 </html>

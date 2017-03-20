@@ -82,7 +82,7 @@ module.exports = function(app, passport) {
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
 				nextScenario: 1
-				exerciseID: req.body.exerciseID
+				//exerciseID: req.body.exerciseID
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
