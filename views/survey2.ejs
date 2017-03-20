@@ -16,12 +16,20 @@
         text-align: center;
         margin-bottom: 50px;
       }
+      .alert {
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <div id="survey">
+      <% if (message.length > 0) { %>
+        <h2 class="alert"><%= message %></h2>
+      <% } %>
       <form action="/display" method="post">
-          <iframe src="<%= url %>" height="800px" width="600px"></iframe>
+          <% if (url.length > 0) { %>
+             <iframe src="<%= url %>" height="800px" width="600px"></iframe>
+          <% } %>
           <button type="submit" class="btn btn-primary btn-md">Next</button>
           <input type="hidden" name="role" value="<%=role%>"/>
           <input type="hidden" name="room" value="<%=room%>"/>

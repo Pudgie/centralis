@@ -131,28 +131,50 @@ module.exports = function(app, passport) {
 			var id = result.exerciseID; //pull out exercise ID for that session
 			console.log("my current ID is: " + id);
 			var currentRound = result.currRound;
-			var results = [];
+			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				currentExercise = exercise;
 				//find session ID;
 				if (currentRound >= exercise.numOfRounds) {
 					// render finish page
-					console.log("rasdfkjlsdajklf");
+					console.log("finished exercise");
+					res.render('finish.ejs');
+					return;
 				} else {
-					Session.findOneAndUpdate(
-						{"roomNumber": room},
-						{$inc: {"currRound": 1}},
-						function(err, model) {
-							if (err) throw err;
-							console.log("Incremented successfully");
-						}
-					);
-					 for (var i = 0; i < exercise.scenarios.length; i++) {
-	 					if (exercise.scenarios[i].round == currentRound){
-	 						results.push(exercise.scenarios[i]);
+					// check if can proceed
+					var next = result.nextScenario;
+					if (currentRound != 1 && next == null) {
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
+						return;
+					}
+					// TODO: change to admin incrementing instead
+					if (role == "ceo") {
+						Session.findOneAndUpdate(
+							{"roomNumber": room},
+							{$inc: {"currRound": 1}},
+							function(err, model) {
+								if (err) throw err;
+								console.log("Incremented successfully");
+							}
+						);
+					}
+					
+					if (currentRound == 1) {
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+		 					if (exercise.scenarios[i].round == 1){
+		 						results = exercise.scenarios[i];
+		 					}
 	 					}
-	 				}
-	 				res.render('scenario.ejs', {text: results[0].text, role: role, room: room});
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+					}
+					else {
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+		 					if (exercise.scenarios[i].round == currentRound && exercise.scenarios[i].id == next){
+		 						results = exercise.scenarios[i];
+		 					}
+	 					}
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+					}
 				 }
 			});
 		});
@@ -170,7 +192,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/team', function(req, res) {
-		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room});
+		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, message: ""});
 	})
 
 	app.post('/wait', function (req, res) {
