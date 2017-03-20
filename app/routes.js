@@ -14,14 +14,10 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var currentExercise = null;
 	// var Answer = require('./models/answer');
 	// var ScenarioAnswer = require('./models/scenarioAnswer');
 	// var SurveyAnswer = require('./models/surveyAnswer');
-	var currentSession = null;
-	var currentExercise = null;
-	var currentRoom = null;
-	var currentSessionID = null;
-	var sCount = 0;
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 
@@ -164,7 +160,6 @@ module.exports = function(app, passport) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-
 				nextScenario: 1,
 				exerciseID: req.body.exerciseID
 
@@ -219,20 +214,87 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	app.get('/selectRoles', function(req, res) {
-		Session.findOne({'roomNumber': currentRoom, 'activeSessionID': currentSessionID}).lean().exec( function(err, result) {
+	app.post('/display', function(req, res) {
+		var role = req.body.role;
+		var room = req.body.room;
+		Session.findOne({"roomNumber": room}).lean().exec( function(err, result) {
 			//get the session
-			currentSession = result;
 			var id = result.exerciseID; //pull out exercise ID for that session
 			console.log("my current ID is: " + id);
+			var currentRound = result.currRound;
+			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
-				//find session ID;
 				currentExercise = exercise;
-				res.render('studentRoles.ejs', {exName: exercise.title, exId: id, activeRoles: currentSession.activeRoles,
-												roles: exercise.roles, descriptions: currentExercise.descriptions});
+				//find session ID;
+				if (currentRound >= exercise.numOfRounds) {
+					// render finish page
+					console.log("finished exercise");
+					res.render('finish.ejs');
+					return;
+				} else {
+					// check if can proceed
+					var next = result.nextScenario;
+					if (next == null) {
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
+						return;
+					}
+					// TODO: change to admin incrementing instead
+					if (role == "ceo") {
+						Session.findOneAndUpdate(
+							{"roomNumber": room},
+							{$inc: {"currRound": 1}},
+							function(err, model) {
+								if (err) throw err;
+								console.log("Incremented successfully");
+							}
+						);
+					}
+
+					// set nextScenario to NULL
+					Session.findOneAndUpdate(
+						{"roomNumber": room},
+						{"nextScenario": null},
+						function(err, model) {
+							if (err) throw err;
+							console.log("Set nextScenario to null successfully");
+						}
+					);
+					
+					if (currentRound == 1) {
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+		 					if (exercise.scenarios[i].round == 1){
+		 						results = exercise.scenarios[i];
+		 					}
+	 					}
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+					}
+					else {
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+		 					if (exercise.scenarios[i].round == currentRound && exercise.scenarios[i].id == next){
+		 						results = exercise.scenarios[i];
+		 					}
+	 					}
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+					}
+				 }
 			});
 		});
 	});
+
+	app.post('/displaySurvey', function(req, res) {
+		console.log(req.body.room);
+		if (req.body.role === 'ceo') {
+			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role, room: req.body.room});
+		} else if (req.body.role === 'team') {
+			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room});
+		} else {
+			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role, room: req.body.room});
+		}
+	});
+
+	app.post('/team', function(req, res) {
+		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, message: ""});
+	})
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
@@ -337,9 +399,7 @@ module.exports = function(app, passport) {
 			if (!user) { return res.redirect('/studentlogin'); }
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
-				currentRoom = user.roomNumber;
-				currentSessionID = user.activeSessionID;
-				return res.redirect('/selectRoles');
+				return res.render('roles.ejs', {roomNumber: user.roomNumber});
 			});
 		})(req, res, next);
 	});
