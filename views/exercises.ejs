@@ -10,25 +10,38 @@
   	<!-- javascript -->
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
-  	  <!-- font -->
-	     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
-	      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-	      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-	      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
+	  <!-- font -->
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 	
   <title>Create Exercise</title>
 </head>
 <body class="noneMain">
 	<ul>
-	          <li class="left">
-	          	<a class="logo">
-	          		Centralis
-	          	</a>
-	          </li>
-	          <li class="right"><a class="logo"><i class="fa fa-home " aria-hidden="true"></i> </a></li>
+
+	          <li><a class="logo">Centralis</a></li>
+	           <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/selectExercise"> Select Exercise</a>
+                        </li>
+                        <li><a href="/deleteExercise"> Delete Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+
 	</ul>
 	<div >
 			<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
