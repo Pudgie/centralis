@@ -21,28 +21,27 @@
 </head>
 <body class="noneMain">
 	<ul>
-	          <li><a class="logo">Centralis</a></li>
+	          <li class= "left"><a class="logo">Centralis</a></li>
 	</ul>
-	<form>
-		<h1><strong><%= user.email %></strong></h1>
-		<h2><strong><span class="typing">Logged In!</span></strong></h2>
+	<div style="margin-top:50px;" class = "formNoBorder">
+		<h2><strong><span class="typing"></span></strong></h2>
 		  <script >
 		              $(function(){
 		                  $(".typing").typed({
-		                    strings: ["Logged In!", "Select Your Option"],
+		                    strings: ["Main Menu: "],
 		                    typeSpeed: 150
 		                  });
 		              });
         		 </script>
-        		 <br></br>
-		<div class = "exercise">
-		<button id="exercise" type="button" class="btn btn-outline" onclick="location.href = '/createExercise'">Create Exercise</button>
-		<button id="delete" type="button" class="btn btn-outline" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
-		</div>
-		<br>
-		<button id="select" type="button" class="btn btn-outline" onclick="location.href = 'selectExercise'">Select Exercise</button>
-		<br>
-		<button id="logout" type="button" class="btn btn-outline" onclick="location.href = '/logout'">Logout</button>
-	</form>
+		<div class="wrapper">
+		<button id="exercise" type="button" class="btn btnNew" onclick="location.href = '/createExercise'">Create Exercise</button>
+		<br></br>
+		<button id="delete" type="button" class="btn btnNew" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
+		<br></br>
+		<button id="select" type="button" class="btn btnNew" onclick="location.href = 'selectExercise'">Select Exercise</button>
+		<br></br>
+		<button id="logout" type="button" class="btn btnNew" onclick="location.href = '/logout'">Logout</button>
+	</div>
+	</div class="formNoBorder">
 </body>
 </html>

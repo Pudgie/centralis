@@ -1,5 +1,12 @@
 
+/*icon*/
 
+.fa {
+  color: #F8F8FF;
+  font-size:40px;
+  padding: 3px; 
+  margin-right: 10px;
+}
 /*Navigation Bar*/
 ul {
     list-style-type: none;
@@ -12,7 +19,6 @@ ul {
 
 li {
     opacity: 1;
-    float: left;
 }
 li a {
     display: block;
@@ -21,8 +27,24 @@ li a {
     padding: 14px 16px;
     text-decoration: none;
 }
+li.left{
+  float: left;
+}
+li.right{
+  float: right;
+}
+
+
+/*div*/
 div{
    text-align: center;
+}
+
+div.wrapper{
+    padding: 30px;
+
+    border:  5px solid #333;
+    margin-bottom: 50px;
 }
 
 div.formNoBorder{
@@ -30,12 +52,78 @@ div.formNoBorder{
      padding-bottom: 20px;
      padding-top: 20px;
      margin: auto;
-     margin-top: 50px;
      width: 412px;
     
  }
 
+ div.formNoBorder input{
+    border-bottom: 3px solid #333;
+ }
 
+ div.formNoBorder ::-webkit-input-placeholder {
+        color: #808080;
+  }
+ 
+
+/*checkboxes*/
+.funkyradio label {
+  text-align: center;
+    width: 100%;
+    border-radius: 3px;
+    color: #333;
+    border: 1px solid #333;
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.funkyradio input[type="radio"]:empty, .funkyradio input[type="checkbox"]:empty {
+    display: none;
+}
+.funkyradio input[type="radio"]:empty ~ label, .funkyradio input[type="checkbox"]:empty ~ label {
+    position: relative;
+    line-height: 2.5em;
+    margin-top: 2em;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.funkyradio input[type="radio"]:empty ~ label:before, .funkyradio input[type="checkbox"]:empty ~ label:before {
+    position: absolute;
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    content:'';
+    width: 2.5em;
+    background: #333;
+    border-radius: 3px 0 0 3px;
+}
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label:before, .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+    content:'\2714';
+    color: #333;
+}
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label, .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+    color: #333;
+}
+.funkyradio input[type="radio"]:checked ~ label:before, .funkyradio input[type="checkbox"]:checked ~ label:before {
+    content:'\2714';
+    color: #333;
+    background-color: #ccc;
+}
+.funkyradio input[type="radio"]:checked ~ label, .funkyradio input[type="checkbox"]:checked ~ label {
+    color: #B22222;
+    border: 1px solid #B22222;
+}
+.funkyradio input[type="radio"]:focus ~ label:before, .funkyradio input[type="checkbox"]:focus ~ label:before {
+    box-shadow: 0 0 0 3px #999;
+}
+
+.funkyradio-warning input[type="radio"]:checked ~ label:before, .funkyradio-warning input[type="checkbox"]:checked ~ label:before {
+    color: #fff;
+    background-color: #B22222;
+}
 
 
 
@@ -49,7 +137,7 @@ form {
      margin-top: 100px;
      border: solid 6px #B22222;
   }
-  ::-webkit-input-placeholder {
+  form ::-webkit-input-placeholder {
         color: #F8F8FF;
   }
 .alert{
@@ -250,6 +338,23 @@ h6 {
   color: #B22222;
   background: white;
   border: solid 1.5px #B22222;
+}
+
+.btnNew {
+  color: #fed136;
+  font-size: 20px;
+  font-weight:  700;
+  background: #333;
+  border: solid 2px #333;
+  transition: all 0.3s ease-in-out;
+}
+.btnNew:hover,
+.btnNew:focus,
+.btnNew:active,
+.btnNew.active {
+  color: #333;
+  background: #fed136;
+  border: solid 2px #333;
 }
 
 
