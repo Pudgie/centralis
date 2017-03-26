@@ -1,25 +1,48 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+ 	 <script src="bootstrap/js/jquery.min.js"></script>
+  	<script src = "/bootstrap/js/clean-blog.js"></script>
+  	<!-- javascript -->
+ 	 <script src="/bootstrap/js/bootstrap.min.js"></script>
+  	<script src="/bootstrap/js/typed.js"></script>
+
+  	<style>
+  		#nextTitle{
+  			text-align: center;
+  		}
+  	</style>
+</head>
 <body>
 
-<h1>Select the scenario for each room based on their response to the disruption</h1>
+<h1 id="nextTitle">Assign scenario based on responses</h1>
 <form action="/submitResults" method="post">
 	<%
 		for (var ii = 0; ii < allRooms.length; ii++) {
 			%>
 				<p>Room #<%= allRooms[ii] %>: </p>
+				<ul class="dropdown-menu">
 				<%
 					for (var zz = 0; zz < scenarioChoices.length; zz++) {
 				%>
+					<li><%= scenarioChoices[zz].name %> </li>
 					<input type="radio" id="<%= allRooms[ii] %>" name="<%= allRooms[ii] %>" value="<%= scenarioChoices[zz]._id %>" /> <%= scenarioChoices[zz].name %> <br>
 				<% 
 			}
+			%>
+			</ul>
+			<%
 		}
 	%>
 	<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
 	<input type="hidden" name="currRound" value="<%= currRound %>" />
 	<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
-	<input type="submit" value="Send to Rooms"/>
+	<br>
+	<button type="submit" class="btn btn-outline">Send To Rooms</button>
 </form>
 
 </body>
