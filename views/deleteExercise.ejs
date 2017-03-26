@@ -25,12 +25,27 @@
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
 
-  	
+
+  
 </head>
 
 <body class="noneMain">
 	<ul>
 	          <li class= "left"><a class="logo">Centralis</a></li>
+	          <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/createExercise"> Create Exercise</a>
+                        </li>
+                        <li><a href="/selectExercise"> Select Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
 	</ul>
 	<h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
 		  <script >
@@ -41,7 +56,7 @@
 		                  });
 		              });
         		 </script>
-	<div class = "formNoBorder" method="post">
+	<div class = "formNoBorder" action="/deleteExercise" method="post">
 		<div class = "wrapper">
 			
 				<%
