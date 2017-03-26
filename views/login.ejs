@@ -17,19 +17,28 @@
   <script src = "/bootstrap/js/clean-blog.js"></script>
   <script src="/bootstrap/js/typed.js"></script>
 
+  <!-- font -->
+     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
       
 
   
 </head>
-<body>
-   
+<body class="noneMain">
+            <ul>
+                    <li><a class="logo">Centralis</a></li>
+            </ul>
             <form action="/login" method="post">
                     <h3> <strong><span class ="typing">Administrator Login</span></strong> </h3>
                        <script >
                                 $(function(){
                                     $(".typing").typed({
                                       strings: ["Administrator Login"],
-                                      typeSpeed: 100
+                                      typeSpeed: 60
                                     });
                                 });
                       </script>
@@ -55,7 +64,7 @@
                     </div>
                     <button type="submit" class="btn btn-outline">Login</button>
                       <div class="divider"></div>
-                     <button type="button" class="btn btn-outline" onclick="location.href = '/logout'">Go Back</button>
+                     <button type="button" class="btn btn-outline" onclick="location.href = '/logout' ">Go Back</button>
             </form>
 
     

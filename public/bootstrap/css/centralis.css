@@ -1,11 +1,42 @@
 
-/*Main page style*/
 
- #formNoBorder{
-    margin-top: 50px;
+/*Navigation Bar*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    text-decoration: none; 
+}
+
+li {
+    opacity: 1;
+    float: left;
+}
+li a {
+    display: block;
+    color: white;
     text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+div{
+   text-align: center;
+}
 
+div.formNoBorder{
+     text-align: center;
+     padding-bottom: 20px;
+     padding-top: 20px;
+     margin: auto;
+     margin-top: 50px;
+     width: 412px;
+    
  }
+
+
+
 
 
 form {
@@ -15,8 +46,11 @@ form {
      padding-top: 20px;
      width: 412px;
      margin: 0 auto; 
-     top: 100px;
+     margin-top: 100px;
      border: solid 6px #B22222;
+  }
+  ::-webkit-input-placeholder {
+        color: #F8F8FF;
   }
 .alert{
   color: #B22222;
@@ -55,8 +89,6 @@ form {
     border: solid 6px #B22222;
     }
 
-
-
   .form-group {
     margin-bottom: 40px; 
     text-align: left;
@@ -76,6 +108,7 @@ form {
 .floating-label-form-group input,
 .floating-label-form-group textarea {
   z-index: 1;
+  align : center;
   position: relative;
   margin-left: 10px;
   margin-right: 10px;
@@ -91,9 +124,7 @@ form {
 
 }
 
-::-webkit-input-placeholder{
-   color: #F8F8FF;
-}
+
 
 .floating-label-form-group label {
   margin-left: 10px;
@@ -137,12 +168,14 @@ form .row:first-child .floating-label-form-group {
        font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       overflow-x: hidden;
     }
-    body {
+body {
       background-position: center;
-      margin-top: 150px;
       background-repeat: no-repeat;
       font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       overflow-x: hidden;
+   }
+   .noneMain{
+      background: #D3D3D3;
    }
 p {
   font-size: 20px;
@@ -168,6 +201,17 @@ h6 {
   font-weight: 700;
   color:  black
 }
+.logo {
+  margin-left: 15px;
+  color: #fed136;
+  font-size:40px;
+  padding: 0; 
+  font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive; 
+  text-decoration: none; 
+}
+.logo:hover, .logo:focus, .logo:active, .logo.active {
+  text-decoration: none; 
+ color: #fec503; }
 
 
 .typed-cursor{
@@ -276,10 +320,7 @@ hr.star-primary:after {
 
 
 /*admin*/
-    .completeForm {
-    text-align: center;
-    margin-top: 190px;
-  }
+
 
   .exercise {
     

@@ -8,10 +8,20 @@
   <script src = "/bootstrap/js/clean-blog.js"></script>
   <script src="/bootstrap/js/typed.js"></script>
 
+  <!-- font -->
+     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
 
   <title>Student Login</title>
 </head>
-<body>
+<body class ="noneMain">
+  <ul>
+            <li><a class="logo">Centralis</a></li>
+  </ul>
   <form action="/studentlogin" method="post">
 
       <h3><strong><span class="typing">Student Login</span></strong></h3>
@@ -19,7 +29,7 @@
                   $(function(){
                       $(".typing").typed({
                         strings: ["Student Login: "],
-                        typeSpeed: 100
+                        typeSpeed: 60
                       });
                   });
         </script>

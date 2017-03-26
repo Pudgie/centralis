@@ -10,13 +10,23 @@
   	<!-- javascript -->
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
+  	  <!-- font -->
+	     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+	      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
 	
   <title>Create Exercise</title>
 </head>
-<body>
-		<div class="formNoBorder">
+<body class="noneMain">
+	<ul>
+	          <li><a class="logo">Centralis</a></li>
+	</ul>
+	<div >
 			<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
-		</div>
+		
 		<script >
                                 $(function(){
                                     $(".typing").typed({
@@ -26,7 +36,7 @@
                                 });
                       	</script>
 
-		<form action="/createScenarios" method="post">
+		<div class= "formNoBorder" action="/createScenarios" method="post">
 			<h2></h2>
 			<div class="row control-group">
                             		<div class="form-group col-xs-12 floating-label-form-group controls" >	
@@ -60,8 +70,12 @@
 			</div>
 			<br>
 			<button type="submit" class="btn btn-outline">Next</button>
+			<div class="divider"></div>
+                     		<button type="button" class="btn btn-outline" onclick="location.href = '/admin' ">Go Back</button>
 			 	
-		</form>
+		</div>
+
+	</div>
 			
 		
 
