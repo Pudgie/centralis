@@ -6,16 +6,20 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<!--  CSS -->
    	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+   	 <style>
+   	 	.title {
+   	 		text-align: center;
+   	 	}
+   	 </style>
 </head>
 <body>
-	<h1>You have selected exercise <%=exerciseName%></h1>
+	<h1 class="title">You have selected exercise <%=exerciseName%></h1>
 	<form action="/sessionAdmin" method="post">
 		<input type = "hidden" name = "exerciseID" value = "<%= exerciseID %>" />
 		<br>
 		<br>
-		<br>
 		<p><em>(Tap button to create new session.)</em></p>
-		<button type="submit" class="btn btn-primary btn-md">Create Session</button>
+		<button type="submit" class="btn btn-outline">Create Session</button>
 	</form>
 </body>
 </html>
