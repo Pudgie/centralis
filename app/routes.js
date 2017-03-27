@@ -33,7 +33,7 @@ module.exports = function(app, passport) {
 		var currRound;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-			{$inc: {currRound: 1}},
+			{$inc: {currRound: 0}},
 			{new: true}, function(err, model) {
 
 				currRound = model.currRound;
@@ -60,7 +60,7 @@ module.exports = function(app, passport) {
 		var currRound;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-			{$inc: {currRound: 1}},
+			{$inc: {currRound: 0}},
 			{new: true}, function(err, model) {
 
 				currRound = model.currRound;
@@ -100,7 +100,8 @@ module.exports = function(app, passport) {
 		for (var ii = 0; ii < rooms.length; ii++) {
 			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
 				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID},
-										 {$set: {'nextScenario': disruptionSelection[ii]}},
+										 {$set: {'nextScenario': disruptionSelection[ii]},
+									 $inc: {'currRound': 1}},
 										 {new:true}, function(err, model) {
 											if (err) throw err;
 										});
@@ -182,6 +183,15 @@ module.exports = function(app, passport) {
 		// 	console.log("Completed Session " + results.activeSessionID + " and removed from DB");
 		// });
 		// res.redirect('/admin');
+
+		// Session.findOneAndUpdate(
+		// 	{"activeSessionID": sessionIDToRemove},
+		// 	{$inc: {currRound: 1}},
+		// 	function(err, model) {
+		// 		if (err) throw err;
+		// 		console.log("Incremented successfully");
+		// 	}
+		// );
 		res.render('finishAdmin.ejs', {sessionID: sessionIDToRemove});
 	});
 
@@ -215,7 +225,7 @@ module.exports = function(app, passport) {
 				activeSessionID: sessionID,
 				nextScenario: 0,
 				exerciseID: req.body.exerciseID,
-				currRound: 0
+				currRound: 1
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
@@ -270,7 +280,7 @@ module.exports = function(app, passport) {
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				currentExercise = exercise;
 				//find session ID;
-				if (currentRound > exercise.numOfRounds) {
+				if (currentRound > exercise.numOfRounds + 1) {
 					// render finish page
 					console.log("finished exercise");
 					res.render('finish.ejs');
@@ -278,6 +288,10 @@ module.exports = function(app, passport) {
 				} else {
 					// check if can proceed
 					var next = result.nextScenario;
+					if (next == null && currentRound == exercise.numOfRounds + 1) {
+						res.render('finish.ejs');
+						return;
+					}
 					if (next == null) {
 						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
 						return;
@@ -308,7 +322,10 @@ module.exports = function(app, passport) {
 					}
 					else {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
-		 					if (exercise.scenarios[i].round == currentRound && exercise.scenarios[i].id == next){
+							console.log("round:" + exercise.scenarios[i].round);
+							console.log("id:" + exercise.scenarios[i].id);
+							console.log("next:" + next);
+		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						results = exercise.scenarios[i];
 		 					}
 	 					}
