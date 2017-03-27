@@ -1,39 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>How Would You Handle This?</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
  	 <script src="bootstrap/js/jquery.min.js"></script>
   	<script src = "/bootstrap/js/clean-blog.js"></script>
   	<!-- javascript -->
- 	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
-
-	<title>How Would You Handle This?</title>
+  	<!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
 	
 </head>
-<body>
-	<form>
-		<h1><strong><%= user.email %></strong></h1>
-		<h2><strong><span class="typing">Logged In!</span></strong></h2>
+<body class="noneMain">
+	<ul>
+	          <li class= "left"><a class="logo">Centralis</a></li>
+	</ul>
+	<div style="margin-top:50px;" class = "formNoBorder">
+		<h2><strong><span class="typing"></span></strong></h2>
 		  <script >
 		              $(function(){
 		                  $(".typing").typed({
-		                    strings: ["Logged In!", "Select Your Option"],
-		                    typeSpeed: 150
+		                    strings: ["Main Menu: "],
+		                    typeSpeed: 50
 		                  });
 		              });
         		 </script>
-        		 <br></br>
-		<div class = "exercise">
-		<button id="exercise" type="button" class="btn btn-outline" onclick="location.href = '/createExercise'">Create Exercise</button>
-		<button id="delete" type="button" class="btn btn-outline" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
-		</div>
-		<br>
-		<button id="select" type="button" class="btn btn-outline" onclick="location.href = 'selectExercise'">Select Exercise</button>
-		<br>
-		<button id="logout" type="button" class="btn btn-outline" onclick="location.href = '/logout'">Logout</button>
-	</form>
+		<div class="wrapper">
+		<button id="exercise" type="button" class="btn btnNew" onclick="location.href = '/createExercise'">Create Exercise</button>
+		<br></br>
+		<button id="delete" type="button" class="btn btnNew" onclick="location.href = '/deleteExercise'">Delete Exercise</button>
+		<br></br>
+		<button id="select" type="button" class="btn btnNew" onclick="location.href = 'selectExercise'">Select Exercise</button>
+		<br></br>
+		<button id="logout" type="button" class="btn btnNew" onclick="location.href = '/logout'">Logout</button>
+	</div>
+	</div class="formNoBorder">
 </body>
 </html>

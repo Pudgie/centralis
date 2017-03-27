@@ -5,48 +5,107 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-   <!--  CSS -->
-    <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+    <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <script src = "/bootstrap/js/clean-blog.js"></script>
+    <!-- javascript -->
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/typed.js"></script>
+
+
+      <!-- font -->
+     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
    
   </head>
-  <body>
-  <h2> Specify Videos and Questions </h2>
-  <div id="wholeForm">
+  <body class="noneMain">
+            <ul>
+                      <li class= "left"><a class="logo">Centralis</a></li>
+                      <li class="dropdown" style="float:right; margin-top:5px;">
+                              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                  <i class="fa fa-bars fa-2x"></i>
+                              </a>
+                              <ul class="dropdown-menu dropdown-user">
+                                  <li><a href="/admin"> Home</a>
+                                  </li>
+                                  <li><a href="/createExercise"> Create Exercise</a>
+                                  </li>
+                                  <li><a href="/selectExercise"> Select Exercise</a>
+                                  </li>
+                              </ul>
+                              <!-- /.dropdown-user -->
+                          </li>
+            </ul>
+         <h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
+               <script >
+                  $(function(){
+                      $(".typing").typed({
+                        strings: ["Specify Videos and Questions:  "],
+                        typeSpeed: 50
+                      });
+                  });
+             </script>
+  
     <form id="formStyle" action="/getScenario" method="post" enctype="multipart/form-data">
-      <table>
-      <tbody>
-        <tr>
-          <td class="paddingTD"><label>Disruption Name: </label> </td>
-          <td class="paddingTD"><input class="indForms" type="text" name="name"></td>
-          <br>
-        </tr>
-        <tr>
-          <td class="paddingTD"><label>Video URL: </label> </td>
-          <td class="paddingTD"><input class="indForms" type="file" name="myVideo"></td>
-          <br>
-        </tr>
-        <tr>
-          <td class="paddingTD"><label>Disruption Text: </label></td>
-          <td class="paddingTD"><textarea rows="7" cols="50" name="text"></textarea></td>
-        </tr>
-        <tr>
-          <td class="paddingTD"><label>Round: </label></td>
-          <td class="paddingTD"><input class="indForms" type="text" name="round"></td>
-        </tr>
-        <!-- <tr>
-          <td class="paddingTD"><label>Team-based Question:</label></td>
-          <td class="paddingTD"><input class="indForms" type="text" name="question" size="50"></td>
-        </tr>
-        <tr>
-          <td class="paddingTD"><label>Survey Questions: </label></td>
-          <td class="paddingTD"><input class="indForms" type ="number" name="survey" min="1" max="10" step="1" value="1" size="20"></td>
-        </tr> -->
-       </tbody>
-      </table>
+          <div class="formNoBorder">
+                <table>
+                <tbody>
+           
+
+                  <tr>
+                      <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <label><strong>Disruption Name: </strong></label>
+                                    <input class="inputForms" type="text" name="name" placeholder ="Disruption Name">
+                                  </div>
+                        </div>
+                  </tr>
+
+                  <tr>
+                      <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <label><strong>Video URL: </strong></label>
+                                    <input class="inputForms" type="text" name="myVideo" placeholder ="Video URL">
+                                  </div>
+                        </div>
+                  </tr>
+
+                   <tr>
+                      <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <label><strong>Disruption Text: </strong></label>
+                                    <textarea rows="4"  cols="80" type="text" name="text" placeholder ="Disruption Text"></textarea>
+                                  </div>
+                        </div>
+                  </tr>
+
+
+                  <tr>
+                  <div class="row control-group">
+                                <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                <label><strong>Round: </strong></label>
+                                <input class="inputForms" type="text" name="round" placeholder ="Round">
+                              </div>
+                    </div>
+                  </tr>
+                  
+                
+                 
+          
+                 </tbody>
+                </table>
       <br><br>
-      <button type="submit" class="btn btn-primary btn-md">Submit</button>
+      <button type="submit" class="btn btnNew">Submit</button>
+      <div class="divider"></div>
+       <button type="submit" class="btn btnNew"  onclick="location.href = '/admin' ">Go Back</button>
     </form>
 
-  </div>
+  
   </body>
 </html>
