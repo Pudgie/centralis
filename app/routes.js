@@ -60,23 +60,23 @@ module.exports = function(app, passport) {
 		var currRound;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-									{$inc: {currRound: 1}},
-									{new: true}, function(err, model) {
+			{$inc: {currRound: 1}},
+			{new: true}, function(err, model) {
 
-										currRound = model.currRound;
+				currRound = model.currRound;
 
-										if (err) console.err(err);
-										Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
-											if (err1) console.err(err1);
-											if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
-												res.redirect('/finishSession?sessionID='+sessionID);
-											}
-											else if (model.roomNumber == rooms[rooms.length - 1]) {
-												res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
-											}
-										});
+				if (err) console.err(err);
+				Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
+					if (err1) console.err(err1);
+					if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
+						res.redirect('/finishSession?sessionID='+sessionID);
+					}
+					else if (model.roomNumber == rooms[rooms.length - 1]) {
+						res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
+					}
+				});
 
-									});
+			});
 		}
 	});
 
@@ -213,7 +213,7 @@ module.exports = function(app, passport) {
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				nextScenario: 1,
+				nextScenario: 0,
 				exerciseID: req.body.exerciseID,
 				currRound: 0
 			});
@@ -221,17 +221,6 @@ module.exports = function(app, passport) {
 				if (err) { throw err; }
 				console.log("Session saved succesfully");
 			});
-			// create answer models to store data
-			// var answer = new Answer({
-			// 	roomNumber: rooms[i],
-			// 	sessionID: sessionID,
-			// 	exerciseID: req.body.exID,
-			// 	scenarioAnswers: []
-			// });
-			// answer.save(function(err) {
-			// 	if (err) { throw err; }
-			// 	console.log("Answer saved succesfully");
-			// });
 		}
 		var currRound = 1;
 		res.render('session.ejs', {exerciseID: req.body.exerciseID, sessionID: sessionID, currRound: currRound});
@@ -291,6 +280,11 @@ module.exports = function(app, passport) {
 					var next = result.nextScenario;
 					if (next == null) {
 						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
+						return;
+					}
+
+					if (next == 0) {
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses the first scenario', url: ""});
 						return;
 					}
 
@@ -424,10 +418,6 @@ module.exports = function(app, passport) {
 		sCount = 0;
 		res.redirect('/');
 	});
-
-	// app.get('/createRoles', function(req, res) {
-	// 	res.render('roles.ejs');
-	// });
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
