@@ -85,6 +85,7 @@ module.exports = function(app, passport) {
 		// var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
 		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+		console.log("A: " + req.body.A);
 		disruptionSelection[0] = req.body.A;
 		disruptionSelection[1] = req.body.B;
 		disruptionSelection[2] = req.body.C;
@@ -117,7 +118,7 @@ module.exports = function(app, passport) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 
-	app.get('/assignDisruption', function(req, res) {
+	app.get('/assignDisruption', function(req, res) { 
 		var sessionID = parseInt(req.query.sessionID);
 		Session.find({activeSessionID: sessionID}).lean().exec(function(err, results) {
 				Exercise.find({'_id': results[0].exerciseID}).lean().exec(function(err1, exerciseRes) {
@@ -135,7 +136,7 @@ module.exports = function(app, passport) {
 
 					else {
 						for (var ii = 0; ii < exerciseRes[0].scenarios.length; ii++) {
-							if (exeriseRes[0].scenarios[ii].round == results[0].currRound) {
+							if (exerciseRes[0].scenarios[ii].round == results[0].currRound) {
 								scenarios.push(exerciseRes[0].scenarios[ii]);
 							}
 						}

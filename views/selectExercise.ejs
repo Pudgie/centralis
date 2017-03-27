@@ -59,13 +59,13 @@
         			for (var i = 0; i < exercises.length; i++) {
         			%>
                                
-                                    <div class="funkyradio">
-                                          <div class="funkyradio-warning">
-                                              <input type="radio" name="exerciseButtons"   id="radio<%=i+1%>"
-                                              value = "<%= exercises[i]._id %>"/>
-                                              <label for="radio<%=i+1%>"><%= exercises[i].title %></label>
-                                          </div>
-                                      </div>
+                <div class="funkyradio">
+                      <div class="funkyradio-warning">
+                          <input type="radio" name="exerciseButtons"   id="radio<%=i+1%>"
+                          value = "<%= exercises[i]._id %>"/>
+                          <label for="radio<%=i+1%>"><%= exercises[i].title %></label>
+                      </div>
+                  </div>
         			<%
         			}
         		%>
