@@ -52,28 +52,30 @@
                       });
                   });
              </script>
-  <div class = "formNoBorder" action="/createSession" method="post">
-    <div class = "wrapper">
-		<%
-			for (var i = 0; i < exercises.length; i++) {
-			%>
-                       
-                            <div class="funkyradio">
-                                  <div class="funkyradio-warning">
-                                      <input type="radio" name="exerciseButtons"   id="radio<%=i+1%>"
-                                      value = "<%= exercises[i]._id %>"/>
-                                      <label for="radio<%=i+1%>"><%= exercises[i].title %></label>
-                                  </div>
-                              </div>
-			<%
-			}
-		%>
-		<br>
-		
-	</div>
-        <button type="submit" class="btn btnNew">Select</button>
-              <div class="divider"></div>
-               <button type="button" class="btn btnNew" onclick="location.href = '/admin'">Go Back</button>
-</div>
+  <form  class = "formNoBorder" action="/createSession" method="post">
+          <div class = "formNoBorder" >
+            <div class = "wrapper">
+        		<%
+        			for (var i = 0; i < exercises.length; i++) {
+        			%>
+                               
+                                    <div class="funkyradio">
+                                          <div class="funkyradio-warning">
+                                              <input type="radio" name="exerciseButtons"   id="radio<%=i+1%>"
+                                              value = "<%= exercises[i]._id %>"/>
+                                              <label for="radio<%=i+1%>"><%= exercises[i].title %></label>
+                                          </div>
+                                      </div>
+        			<%
+        			}
+        		%>
+        		<br>
+        		
+        	</div>
+                <button type="submit" class="btn btnNew">Select</button>
+                      <div class="divider"></div>
+                       <button type="button" class="btn btnNew" onclick="location.href = '/admin'">Go Back</button>
+        </div>
+  </form>
 </body>
 </html>

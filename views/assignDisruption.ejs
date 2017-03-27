@@ -11,39 +11,74 @@
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
 
-  	<style>
-  		#nextTitle{
-  			text-align: center;
-  		}
-  	</style>
-</head>
-<body>
 
-<h1 id="nextTitle">Assign scenario based on responses</h1>
-<form action="/submitResults" method="post">
-	<%
-		for (var ii = 0; ii < allRooms.length; ii++) {
-			%>
-				<p>Room #<%= allRooms[ii] %>: </p>
-				<ul class="dropdown-menu">
-				<%
-					for (var zz = 0; zz < scenarioChoices.length; zz++) {
-				%>
-					<li><%= scenarioChoices[zz].name %> </li>
-					<input type="radio" id="<%= allRooms[ii] %>" name="<%= allRooms[ii] %>" value="<%= scenarioChoices[zz]._id %>" /> <%= scenarioChoices[zz].name %> <br>
-				<% 
-			}
-			%>
-			</ul>
+  	<!-- font -->
+  	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+	    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body class="noneMain">
+	<ul>
+	          <li class= "left"><a class="logo">Centralis</a></li>
+	          <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/createExercise"> Create Exercise</a>
+                        </li>
+                        <li><a href="/selectExercise"> Select Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+	</ul>
+	<h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
+		  <script >
+		              $(function(){
+		                  $(".typing").typed({
+		                    strings: ["Assign scenario based on responses"],
+		                    typeSpeed: 100
+		                  });
+		              });
+        		 </script>
+        	<div class = "formNoBorder" action="/deleteExercise" method="post">
+		<div class = "wrapper">
+			<form action="/submitResults" method="post">
 			<%
-		}
-	%>
-	<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
-	<input type="hidden" name="currRound" value="<%= currRound %>" />
-	<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
-	<br>
-	<button type="submit" class="btn btn-outline">Send To Rooms</button>
-</form>
+				for (var ii = 0; ii < allRooms.length; ii++) {
+					%>
+						<p>Room #<%= allRooms[ii] %>: </p>
+						<ul class="dropdown-menu">
+						<%
+							for (var zz = 0; zz < scenarioChoices.length; zz++) {
+						%>
+							<li><%= scenarioChoices[zz].name %> </li>
+							<input type="radio" id="<%= allRooms[ii] %>" name="<%= allRooms[ii] %>" value="<%= scenarioChoices[zz]._id %>" /> <%= scenarioChoices[zz].name %> <br>
+						<% 
+					}
+					%>
+					</ul>
+					<%
+				}
+			%>
+			<input type="hidden" name="exerciseID" value="<%= exerciseID %>"/>
+			<input type="hidden" name="currRound" value="<%= currRound %>" />
+			<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
+			
+			</form>
+		</div>
+			
+		<button type="submit" class="btn btnNew">Send To Rooms</button>
+	</div>
 
 </body>
 </html>

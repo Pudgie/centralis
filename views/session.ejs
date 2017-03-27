@@ -9,25 +9,65 @@
   	<!-- javascript -->
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
-	<style>
-		#wholeForm {
-			margin-top: 160px;
-			text-align: center;
-		}
-	</style>
+
+  	<!-- fonts -->
+  	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <link href="/bootstrap/css/sb-admin-2.css" rel="stylesheet">
+
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <head>
 </head>
-<body>
+<body class="noneMain">
+	<ul>
+	          <li class="left"><a class="logo">Centralis</a></li>
+	          <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/createExercise"> Create Exercise</a>
+                        </li>
+                        <li><a href="/deleteExercise"> Delete Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+	</ul>
 
-	<div id="wholeForm">
+	
+	<h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
+      <script >
+                  $(function(){
+                      $(".typing").typed({
+                        strings: ["Session Created Successfully "],
+                        typeSpeed: 50
+                      });
+                  });
+             </script>
+             <br>
+             <br>
+             <br>
+             <br>
+             <br>
+             <br>
+	<div class="formNoBorder">
 		<form action="/adminWait" method="post">
-			<h2>Session Created Successfully</h2>
 			<p><strong>Exercise ID: <%= exerciseID %></strong></p>
 			<p><strong>Session ID: <%= sessionID %></strong></p>
 			<input type = "hidden" name = "sessionID" value = "<%= sessionID %>"/>
 			<input type = "hidden" name= "exerciseID" value = "<%= exerciseID %>"/>
 			<input type = "hidden" name = "currRound" value = "<%= currRound %>"/>
-			<button type="submit" class="btn btn-outline">Start Session</button>
+			<br>
+			<br>
+			<button type="submit" class="btn btnNew">Start Session</button>
+			<div class="divider"></div>
+			<button type="button" class="btn btnNew" onclick="location.href = '/selectExercise' ">Go Back</button>
 		</form>
 	</div>
 

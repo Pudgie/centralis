@@ -11,18 +11,74 @@
     <script src="/bootstrap/js/typed.js"></script>
     <meta charset="utf-8">
     <title></title>
+
+
+     <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+      <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+      <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  
+  
+   
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
-  <body>
-  <form>
-    <p><strong>Disruptions</strong></p>
-    <% if (scenarios.length == 0) { %>
-      <p>None</p>
-    <% } %>
-    <% for (var i = 0; i < scenarios.length; i++) { %>
-      <input type = "radio" value = "<%=scenarios[i].name%>" name = "scenario" /> Name: <%=scenarios[i].name%> Round: <%=scenarios[i].round%> <br>
-    <% } %>
-    <button id="select" type="button" class="btn btn-outline" onclick="location.href = 'scenarioRedirect'">Add Disruption</button>
-    <button id="select" type="button" class="btn btn-outline" onclick="location.href = 'homeRedirect'">Finish</button>
+
+
+
+
+
+  <body class="noneMain">
+  <ul>
+            <li class= "left"><a class="logo">Centralis</a></li>
+            <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/createExercise"> Create Exercise</a>
+                        </li>
+                        <li><a href="/selectExercise"> Select Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+  </ul>
+  <h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
+      <script >
+                  $(function(){
+                      $(".typing").typed({
+                        strings: ["Disruptions: "],
+                        typeSpeed: 50
+                      });
+                  });
+             </script>
+       <form >
+              <div class="formNoBorder">
+                  <div class = "wrapper">
+                    <% if (scenarios.length == 0) { %>
+                      <p>None</p>
+                    <% } %>
+                    <% for (var i = 0; i < scenarios.length; i++) { %>
+                                 <div class="funkyradio">
+                                    <div class="funkyradio-warning">
+                                        <input type="radio" name="scenario"   id="radio<%=i+1%>"
+                                        value = "<%= scenarios[i]._id %>"/>
+                                        <label for="radio<%=i+1%>"><strong >Name: </strong><%=scenarios[i].name%>     <strong>Round: </strong><%=scenarios[i].round%></label>
+                                    </div>
+                                </div>
+                             
+                    <% } %>
+                    
+                  </div>
+                  <button id="select" type="button" class="btn btnNew" onclick="location.href = 'scenarioRedirect'">Add Disruption</button>
+                  <div class= "divider"></div>
+                    <button id="select" type="button" class="btn btnNew" onclick="location.href = 'homeRedirect'">Finish</button>
+            </div>
     </form>
   </body>
 </html>

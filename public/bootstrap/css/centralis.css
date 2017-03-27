@@ -56,8 +56,14 @@ div.formNoBorder{
     
  }
 
- div.formNoBorder input{
-    border-bottom: 3px solid #333;
+
+div.formNoBorder textarea{
+  border:  3px solid #333;
+}
+
+ div.formNoBorder input
+ {
+    border: 3px solid #333;
  }
 
  div.formNoBorder ::-webkit-input-placeholder {
@@ -129,7 +135,7 @@ div.formNoBorder{
 
 
  form.login{
-      text-align: center;
+     text-align: center;
      background-color: #FFA500;
      padding-bottom: 40px;
      padding-top: 20px;
