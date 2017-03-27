@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Page Title</title>
-  <style>
-    form {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .alert {
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+   <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+  <script src="bootstrap/js/jquery.min.js"></script>
+  <script src = "/bootstrap/js/clean-blog.js"></script>
+  <script src="/bootstrap/js/typed.js"></script>
+
+
+  <title>Student Login</title>
 </head>
 <body>
-  <% if (message.length > 0) { %>
-      <h2 class="alert"><%= message %></h2>
-  <% } %>
   <form action="/studentlogin" method="post">
-      <div>
-          <label>Email:</label>
-          <input type="text" name="email"/>
-      </div>
 
-      <div>
-          <label>Password:</label>
-          <input type="password" name="password"/>
-      </div>
+      <h3><strong><span class="typing">Student Login</span></strong></h3>
+       <script >
+                  $(function(){
+                      $(".typing").typed({
+                        strings: ["Student Login: "],
+                        typeSpeed: 100
+                      });
+                  });
+        </script>
+          <% if (message.length > 0) { %>
+              <h4 class="alert"><%= message %></h4>
+          <% } %>
+      <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Room Number</label>
+                                <input class="inputForms" placeholder="Room Number" type="text" name="roomNumber"/>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Session ID</label>
+                                <input class="inputForms" placeholder="Session ID" type="password" name="activeSessionID"/>
+                            </div>
+                        </div>
+                        <br></br>
+                      </div>
+       </div> 
+       <button type="submit" class="btn btn-outline">Login</button>
+       <div class="divider"></div>
+       <button type="button" class="btn btn-outline" onclick="location.href = '/logout'">Go Back</button>
+    </div>
 
-      <div>
-          <label>Session ID:</label>
-          <input type="sessionID" name="sessionID"/>
-      </div>
-      <div>
-          <input type="submit" value="Log In"/>
-      </div>
   </form>
 
 </body>

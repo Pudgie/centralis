@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create Scenarios</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+   <!--  CSS -->
+    <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+   
+  </head>
+  <body>
+  <h2> Specify Videos and Questions </h2>
+  <div id="wholeForm">
+    <form id="formStyle" action="/getScenario" method="post" enctype="multipart/form-data">
+      <table>
+      <tbody>
+        <tr>
+          <td class="paddingTD"><label>Disruption Name: </label> </td>
+          <td class="paddingTD"><input class="indForms" type="text" name="name"></td>
+          <br>
+        </tr>
+        <tr>
+          <td class="paddingTD"><label>Video URL: </label> </td>
+          <td class="paddingTD"><input class="indForms" type="file" name="myVideo"></td>
+          <br>
+        </tr>
+        <tr>
+          <td class="paddingTD"><label>Disruption Text: </label></td>
+          <td class="paddingTD"><textarea rows="7" cols="50" name="text"></textarea></td>
+        </tr>
+        <tr>
+          <td class="paddingTD"><label>Round: </label></td>
+          <td class="paddingTD"><input class="indForms" type="text" name="round"></td>
+        </tr>
+        <!-- <tr>
+          <td class="paddingTD"><label>Team-based Question:</label></td>
+          <td class="paddingTD"><input class="indForms" type="text" name="question" size="50"></td>
+        </tr>
+        <tr>
+          <td class="paddingTD"><label>Survey Questions: </label></td>
+          <td class="paddingTD"><input class="indForms" type ="number" name="survey" min="1" max="10" step="1" value="1" size="20"></td>
+        </tr> -->
+       </tbody>
+      </table>
+      <br><br>
+      <button type="submit" class="btn btn-primary btn-md">Submit</button>
+    </form>
+
+  </div>
+  </body>
+</html>

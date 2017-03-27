@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Survey</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+      body {
+        background-color: #FFCC00;
+      }
+      #survey {
+        margin: auto;
+        width: 50%;
+        text-align: center;
+        margin-bottom: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="survey">
+      <form action="/team" method="post">
+        <% if (role == "ceo") { %>
+          <h1>Please discuss with team and complete survey </h1>
+          <iframe src="<%= url %>" height="800px" width="600px"></iframe>
+        <% }
+
+        else { %>
+          <h1>Please discuss with team and wait for CEO to complete survey</h1>
+        <% } %>
+          <button type="submit" class="btn btn-primary btn-md">Next</button>
+          <input type="hidden" name="role" value="<%=role%>"/>
+          <input type="hidden" name="room" value="<%=room%>"/>
+      </form>
+    </div>
+  </body>
+</html>

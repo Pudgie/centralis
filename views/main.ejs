@@ -2,22 +2,53 @@
 <html>
 <head>
   <title>How Would You Handle This?</title>
-  <style>
-    form {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .alert {
-      text-align: center;
-    }
-  </style>
+  <!--   Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!--  JQuery -->
+  <script src="bootstrap/js/jquery.min.js"></script>
+  <!-- javascript -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/bootstrap/js/typed.js"></script>
+
+   <!-- Custom Fonts -->
+    <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+      
+
 </head>
-<body>
-  <h4>Please Sign In</h4>
-    <p>
-      <input type="button" value="Admin" onclick="location.href = '/adminlogin'" />
-      <input type="button" value="Student" onclick="location.href = '/studentlogin'" />
-      <br>
-    </p>
+<body background="http://www.usctrojanrugby.org/wp-content/uploads/2014/10/179_1tommy_trojan_usc.jpg"  >
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <form >
+      <h1 class="whiteT"> 
+        <span class = "typing">Please Sign In</span> 
+      </h1>
+      <script >
+              $(function(){
+                  $(".typing").typed({
+                    strings: ["Welcome to Centralis", "Please Sign In"],
+                    typeSpeed: 100
+                  });
+              });
+      </script>
+      <br></br>
+          
+          
+    <button id="leftButton" type="button" class="btn btn-outline" onclick="location.href = '/adminlogin'">Admin</button>
+    <button type="button" class="btn btn-outline" onclick="location.href = '/studentlogin'">Student</button>
+
+  </form>
+
+  
+  
+
 </body>
 </html>

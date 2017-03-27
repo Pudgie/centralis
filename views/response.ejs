@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p><strong> Your Role </strong>: <%= role %> </p>
+    <p> <%= description %> </p>
+    <br/>
+    <form action="/collect" method="post">
+      <p><strong>Surveys</strong>:</p>
+      <% for (var i = 0; i < scenario.survey.length; i++) { %>
+        <p><%= scenario.survey[i] %></p>
+          <input type="text" name="surveyAnswers"/>
+        <% } %>
+      </br>
+      <input type="hidden" value="<%= role %>" name="role"/>
+      <input type="hidden" value="<%= description %>" name="description"/>
+      <input type="submit" name="Submit">
+    </form>
+  </body>
+</html>

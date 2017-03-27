@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Select the scenario for each room based on their response to the disruption</h1>
+<form action="/submitResults" method="post">
+	<%
+	for (var ii = 0; ii < allRooms.length; ii++) {
+		%>
+		<p>Room #<%= allRooms[ii] %>: </p>
+		<select id="<%= allRooms[ii] %>" name="<%= allRooms[ii] %>"/>
+		<%
+		for (var zz = 0; zz < scenarioChoices.length; zz++) {
+		%>
+			
+			 <option value="<%= scenarioChoices[zz].id %>"> <%= scenarioChoices[zz].name %> </option>
+					
+		<% 
+		}
+		%>
+		</select>
+		</br>
+		<%
+	}
+	%>
+	<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
+	<input type="submit" value="Send to Rooms"/>
+</form>
+
+</body>
+</html>

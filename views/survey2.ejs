@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Survey</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+      body {
+        background-color: #FFCC00;
+      }
+      #survey {
+        margin: auto;
+        width: 50%;
+        text-align: center;
+        margin-bottom: 50px;
+      }
+      .alert {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="survey">
+      <% if (message.length > 0) { %>
+        <h2 class="alert"><%= message %></h2>
+      <% } %>
+      <form action="/display" method="post">
+          <% if (url.length > 0) { %>
+             <iframe src="<%= url %>" height="800px" width="600px"></iframe>
+          <% } %>
+          <button type="submit" class="btn btn-primary btn-md">Next</button>
+          <input type="hidden" name="role" value="<%=role%>"/>
+          <input type="hidden" name="room" value="<%=room%>"/>
+      </form>
+    </div>
+  </body>
+</html>

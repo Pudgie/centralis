@@ -1,0 +1,23 @@
+<head>
+  <link href="http://vjs.zencdn.net/5.16.0/video-js.css" rel="stylesheet">
+  <script src="http://vjs.zencdn.net/5.16.0/video.js"></script>
+  <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+  <style>
+    #my-video {
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
+  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+    <source src="<%=file%>" type='video/mp4'>
+    <source src="<%=file%>" type='video/webm'>
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a web browser that
+      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+    </p>
+  </video>
+  <button type="button" onclick="location.href = '/response'">Proceed</button>
+</body>

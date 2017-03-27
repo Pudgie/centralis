@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Roles</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<style>
+		body {
+			background-color: #990000;
+		}
+		#mainForm {
+			background-color: white;
+			padding-top: 20px;
+			padding-bottom: 20px;
+			text-align: center;
+			margin-top: 230px;
+		}
+		.inputForms {
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div id="mainForm">
+		<h1><strong>Exercise Name: <%= exName %></strong></p></h1><br>
+		<form action = "/wait" method = "post">
+		<%
+			for (var i = 0; i < roles.length; i++) {
+				var find = false;
+				for (var j = 0; j < activeRoles.length; j++) {
+					if (activeRoles[j] === roles[i]) {
+						find = true;
+					}
+				}
+				if (!find) {
+			%>
+				<input type = "radio" id = "<%i%>" value = "<%=roles[i] + '//' + descriptions[i]%>" name = "role" /> <%=roles[i]%> <br>
+        		<p> <%= descriptions[i] %> </p>
+			<%
+				}
+			}
+		%>
+		<input type= "submit" value="Select" />
+	</form>
+
+ 	</div>
+
+</body>
+</html>
