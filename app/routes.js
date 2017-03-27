@@ -22,7 +22,7 @@ module.exports = function(app, passport) {
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 
 
-	
+
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
@@ -45,7 +45,7 @@ module.exports = function(app, passport) {
 												res.redirect('/finishSession?sessionID='+sessionID);
 											}
 											else if (model.roomNumber == rooms[rooms.length - 1]) {
-												
+
 												res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
 											}
 										});
@@ -62,7 +62,7 @@ module.exports = function(app, passport) {
 			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
 									{$inc: {currRound: 1}},
 									{new: true}, function(err, model) {
-													
+
 										currRound = model.currRound;
 
 										if (err) console.err(err);
@@ -81,8 +81,8 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/submitResults', function(req, res) {
-		var currRound = parseInt(req.body.currRound);
-		var exerciseID = parseInt(req.body.exerciseID);
+		// var currRound = parseInt(req.body.currRound);
+		// var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
 		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 		disruptionSelection[0] = req.body.A;
@@ -98,8 +98,8 @@ module.exports = function(app, passport) {
 		disruptionSelection[10] = req.body.M;
 		disruptionSelection[11] = req.body.N;
 		for (var ii = 0; ii < rooms.length; ii++) {
-			if (disruptionSelection[ii] != null && distruptionSelection[ii] != -1) {
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID}, 
+			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID},
 										 {$set: {'nextScenario': disruptionSelection[ii]}},
 										 {new:true}, function(err, model) {
 											if (err) throw err;
@@ -168,7 +168,7 @@ module.exports = function(app, passport) {
 							}
 						}
 					}
-					
+
 					res.render('assignDisruption.ejs', {scenarioChoices: scenarios, allRooms: rooms, sessionID: sessionID});
 				});
 		});
@@ -177,11 +177,12 @@ module.exports = function(app, passport) {
 
 	app.get('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.query.sessionID;
-		Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
-			if (err) console.err(err);
-			console.log("Completed Session " + results.activeSessionID + " and removed from DB");
-		});
-		res.redirect('/admin');
+		// Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
+		// 	if (err) console.err(err);
+		// 	console.log("Completed Session " + results.activeSessionID + " and removed from DB");
+		// });
+		// res.redirect('/admin');
+		res.render('finishAdmin.ejs', {sessionID: sessionIDToRemove});
 	});
 
 	app.post('/finishSession', function(req, res) {
@@ -237,7 +238,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/deleteExercise', function(req, res) {
-		
+
 		Exercise.find({'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('deleteExercise.ejs', {exercises: results});
@@ -274,11 +275,13 @@ module.exports = function(app, passport) {
 			var id = result.exerciseID; //pull out exercise ID for that session
 			console.log("my current ID is: " + id);
 			var currentRound = result.currRound;
+			console.log(currentRound);
+
 			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				currentExercise = exercise;
 				//find session ID;
-				if (currentRound >= exercise.numOfRounds) {
+				if (currentRound > exercise.numOfRounds) {
 					// render finish page
 					console.log("finished exercise");
 					res.render('finish.ejs');
@@ -300,7 +303,7 @@ module.exports = function(app, passport) {
 							console.log("Set nextScenario to null successfully");
 						}
 					);
-					
+
 					if (currentRound == 1) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == 1){
