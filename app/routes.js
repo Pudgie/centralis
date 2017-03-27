@@ -33,24 +33,24 @@ module.exports = function(app, passport) {
 		var currRound;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-									{$inc: {currRound: 1}},
-									{new: true}, function(err, model) {
+			{$inc: {currRound: 1}},
+			{new: true}, function(err, model) {
 
-										currRound = model.currRound;
+				currRound = model.currRound;
 
-										if (err) console.err(err);
-										Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
-											if (err1) console.err(err1);
-											if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
-												res.redirect('/finishSession?sessionID='+sessionID);
-											}
-											else if (model.roomNumber == rooms[rooms.length - 1]) {
+				if (err) console.err(err);
+				Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
+					if (err1) console.err(err1);
+					if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
+						res.redirect('/finishSession?sessionID='+sessionID);
+					}
+					else if (model.roomNumber == rooms[rooms.length - 1]) {
 
-												res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
-											}
-										});
+						res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
+					}
+				});
 
-									});
+			});
 		}
 
 	});
