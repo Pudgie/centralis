@@ -289,6 +289,9 @@ module.exports = function(app, passport) {
 				} else {
 					// check if can proceed
 					var next = result.nextScenario;
+					if (currentRound < exercise.numOfRounds + 1) {
+
+					}
 					if (next == null && currentRound == exercise.numOfRounds + 1) {
 						res.render('finish.ejs');
 						return;
@@ -303,7 +306,7 @@ module.exports = function(app, passport) {
 						return;
 					}
 
-					// set nextScenario to NULL
+					//set nextScenario to NULL
 					Session.findOneAndUpdate(
 						{"roomNumber": room},
 						{"nextScenario": null},
@@ -491,10 +494,11 @@ module.exports = function(app, passport) {
 
 	app.post('/createScenarios', function(req, res) {
 		sCount = 0;
+		console.log("line 494: " + req.body.ceoSurvey);
 		var exercise = new Exercise({
 			enabled: true,
 			title: req.body.exerciseName,
-			numRounds: req.body.numOfRounds,
+			numOfRounds: req.body.numOfRounds,
 			scenarios: [],
 			ceoSurvey: req.body.ceoSurvey,
 			teamMemberSurvey: req.body.teamMemberSurvey,
