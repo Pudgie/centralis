@@ -127,8 +127,9 @@ div.formNoBorder{
 
 
 
-form {
-     text-align: center;
+
+ form.login{
+      text-align: center;
      background-color: #FFA500;
      padding-bottom: 40px;
      padding-top: 20px;
@@ -136,8 +137,8 @@ form {
      margin: 0 auto; 
      margin-top: 100px;
      border: solid 6px #B22222;
-  }
-  form ::-webkit-input-placeholder {
+ }
+form ::-webkit-input-placeholder {
         color: #F8F8FF;
   }
 .alert{
@@ -149,10 +150,6 @@ form {
     height:auto;
     display:inline-block;
 }
-
-
-
-
 
 
  .totalForm{

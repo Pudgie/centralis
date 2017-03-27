@@ -18,11 +18,9 @@
     <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="/bootstrap/css/sb-admin-2.css" rel="stylesheet">
-  	<style>
-  		.typing {
-  			font-style: italic;
-  		}
-  	</style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	
 </head>
 <body class="noneMain">
@@ -45,21 +43,37 @@
 	</ul>
 
 	
-	
-	<form action = "/createSession" method = "post">
-		<h2><strong>Select an exercise:</strong></h2>
-		<span class="typing"><strong>(<%= exercises.length %> options include)</strong></span>
-		<br>
-		<br>
+	<h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
+      <script >
+                  $(function(){
+                      $(".typing").typed({
+                        strings: ["Select the exercise: "],
+                        typeSpeed: 50
+                      });
+                  });
+             </script>
+  <div class = "formNoBorder" action="/createSession" method="post">
+    <div class = "wrapper">
 		<%
 			for (var i = 0; i < exercises.length; i++) {
 			%>
-				<input type = "radio" id = "<%i%>" value = "<%=exercises[i]._id%>" name = "exerciseButtons" /><strong><%= exercises[i].title %></strong><br>
+                       
+                            <div class="funkyradio">
+                                  <div class="funkyradio-warning">
+                                      <input type="radio" name="exerciseButtons"   id="radio<%=i+1%>"
+                                      value = "<%= exercises[i]._id %>"/>
+                                      <label for="radio<%=i+1%>"><%= exercises[i].title %></label>
+                                  </div>
+                              </div>
 			<%
 			}
 		%>
 		<br>
-		<button type="submit" class="btn btn-outline">Select</button>
-	</form>
+		
+	</div>
+        <button type="submit" class="btn btnNew">Select</button>
+              <div class="divider"></div>
+               <button type="button" class="btn btnNew" onclick="location.href = '/admin'">Go Back</button>
+</div>
 </body>
 </html>
