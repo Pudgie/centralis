@@ -275,13 +275,10 @@ module.exports = function(app, passport) {
 				if (students[i].id == sid) {
 					next = students[i].nextScenario;
 					isDone = students[i].firstRoundDone;
-					// console.log("next: " + next + " isDone:" + isDone);
 					break;
 				}
 			}
 
-			console.log("isDone" + isDone);
-			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				//find session ID;
 				if (currentRound > exercise.numOfRounds + 1) {
@@ -331,19 +328,22 @@ module.exports = function(app, passport) {
 					if (currentRound == 1) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == 1){
-		 						results = exercise.scenarios[i];
+		 						var results = exercise.scenarios[i];
+		 						res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+		 						return;
 		 					}
 	 					}
-	 					res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 					}
 					else {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
-		 						results = exercise.scenarios[i];
+		 						var results = exercise.scenarios[i];
+	 							res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+		 						return;
 		 					}
 	 					}
-	 					res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 					}
+					console.log("line 347 in /display error: possibly undefined var results");
 				 }
 			});
 		});
@@ -531,7 +531,6 @@ module.exports = function(app, passport) {
 
 	app.post('/createScenarios', function(req, res) {
 		sCount = 0;
-		console.log("line 494: " + req.body.ceoSurvey);
 		var exercise = new Exercise({
 			enabled: true,
 			title: req.body.exerciseName,

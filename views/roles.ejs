@@ -60,31 +60,43 @@
 <h2 ><span class="typing"><strong> Select your role: </strong></span>  </h2>
 		
 		<script >
-                                $(function(){
-                                    $(".typing").typed({
-                                      strings: ["Select your role:"],
-                                      typeSpeed: 40
-                                    });
-                                });
-                      	</script>
-	<div class="formNoBorder" style="margin-top: 100px;">
-	  <form action="/display" method="post">
-	  <tr>
-	    <!-- <label for="role">Role: </label> -->
-	    <br>
-	    <select name="role">
-	      <option value="ceo">CEO</option>
-	      <option value="team">Team Member</option>
-	      <option value="observer">Observer</option>
-	    </select>
-	    <br>
-	    <br>
-	    <br>
-	    <button type="submit" class="btn btnNew">Play</button>
-	    <input type="hidden" name="room" value="<%=roomNumber%>"/>
-	  </tr>
-	  </form>
-	 </div>
+                $(function(){
+                    $(".typing").typed({
+                      strings: ["Select your role:"],
+                      typeSpeed: 40
+                    });
+                });
+      	</script>
+	<form action="/display" method="post" class="formNoBorder">
+		<div class = "formNoBorder" >
+        <div class = "wrapper">
+                           
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="ceo" value="ceo"/>
+                    <label for="ceo">CEO</label>
+                </div>
+            </div>
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="team" value="team"/>
+                    <label for="team">Team Member</label>
+                </div>
+            </div>
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="observer" value="observer"/>
+                    <label for="observer">Observer</label>
+                </div>
+            </div>
+    		<br/>
+    	</div>
+            <button type="submit" class="btn btnNew">Select</button>
+            <input type="hidden" name="room" value="<%=roomNumber%>"/>
+		    <input type="hidden" name="studentID" value="<%=studentID%>"/>
+	 		<input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+    </div>
+	</form>
 
 </body>
 </html>
