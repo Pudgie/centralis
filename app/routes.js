@@ -86,16 +86,23 @@ module.exports = function(app, passport) {
 				// MAX of 15 people per room. Can change.
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
 					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
-						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}, 
-						$inc: {'currRound': 1}},
+						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]},
+						$inc: {'currRound': 0}},
 						function(err, model) {
 							if (err) throw err;
 						}
 					);
 				}
-				
+
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}},
+					{$inc: {'currRound': 1}},
+					function(err, model) {
+						if (err) throw err;
+					}
+				);
+
 				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
-					{$set: {'nextScenario': disruptionSelection[ii]}, 
+					{$set: {'nextScenario': disruptionSelection[ii]},
 					$inc: {'currRound': 1}},
 					{new: true},
 					function(err, model) {
@@ -115,7 +122,7 @@ module.exports = function(app, passport) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 
-	app.get('/assignDisruption', function(req, res) { 
+	app.get('/assignDisruption', function(req, res) {
 		var sessionID = parseInt(req.query.sessionID);
 		var currRound = req.body.currRound;
 		Session.find({activeSessionID: sessionID}).lean().exec(function(err, results) {
