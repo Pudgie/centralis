@@ -14,12 +14,8 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
-	var currentExercise = null;
-
-	// var Answer = require('./models/answer');
-	// var ScenarioAnswer = require('./models/scenarioAnswer');
-	// var SurveyAnswer = require('./models/surveyAnswer');
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
+	var MAX_PEOPLE = 15; // can be changed
 
 
 
@@ -37,7 +33,25 @@ module.exports = function(app, passport) {
 			if (err) console.err(err);
 			Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
 				if (err1) console.err(err1);
-				console.log("1currRound: " + currRound + " 1numOfRounds: " + (results[0].numOfRounds+1));
+				if (currRound == (results[0].numOfRounds+1)) {
+					res.redirect('/finishSession?sessionID='+sessionID);
+				}
+				else {
+					res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
+				}
+			});
+		});
+	});
+
+	app.post('/adminWait', function(req, res) {
+		var sessionID = parseInt(req.body.sessionID);
+		var currRound = parseInt(req.body.currRound);
+		Session.findOneAndUpdate({activeSessionID: sessionID},
+		{$inc: {currRound: 0}},
+		{new: true}, function(err, model) {
+			if (err) console.err(err);
+			Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
+				if (err1) console.err(err1);
 				if (currRound == (results[0].numOfRounds+1)) {
 					res.redirect('/finishSession?sessionID='+sessionID);
 				}
@@ -47,54 +61,6 @@ module.exports = function(app, passport) {
 			});
 
 		});
-		// for (var ii = 0; ii < rooms.length; ii++) {
-		// 	Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-		// 	{$inc: {currRound: 0}},
-		// 	{new: true}, function(err, model) {
-
-		// 		currRound = model.currRound;
-
-		// 		if (err) console.err(err);
-		// 		Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
-		// 			if (err1) console.err(err1);
-		// 			console.log("1currRound: " + model.currRound + " 1numOfRounds: " + (results[0].numOfRounds+1));
-		// 			if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
-		// 				res.redirect('/finishSession?sessionID='+sessionID);
-		// 			}
-		// 			else if (model.roomNumber == rooms[rooms.length - 1]) {
-
-		// 				res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
-		// 			}
-		// 		});
-
-		// 	});
-		// }
-
-	});
-
-	app.post('/adminWait', function(req, res) {
-		var sessionID = parseInt(req.body.sessionID);
-		var currRound;
-		for (var ii = 0; ii < rooms.length; ii++) {
-			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-			{$inc: {currRound: 0}},
-			{new: true}, function(err, model) {
-
-				currRound = model.currRound;
-
-				if (err) console.err(err);
-				Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
-					if (err1) console.err(err1);
-					if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
-						res.redirect('/finishSession?sessionID='+sessionID);
-					}
-					else if (model.roomNumber == rooms[rooms.length - 1]) {
-						res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
-					}
-				});
-
-			});
-		}
 	});
 
 	app.post('/submitResults', function(req, res) {
@@ -125,7 +91,8 @@ module.exports = function(app, passport) {
 					}
 				);
 
-				for (var i = 1; i < 15; i++) {
+				// MAX of 15 people per room. Can change.
+				for (var i = 1; i <= MAX_PEOPLE; i++) {
 					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
 						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}, 
 						$inc: {'currRound': 1}},
@@ -209,12 +176,6 @@ module.exports = function(app, passport) {
 
 	app.get('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.query.sessionID;
-		// Session.remove({'activeSessionID': sessionIDToRemove}, function(err, results) {
-		// 	if (err) console.err(err);
-		// 	console.log("Completed Session " + results.activeSessionID + " and removed from DB");
-		// });
-		// res.redirect('/admin');
-
 		// Session.findOneAndUpdate(
 		// 	{"activeSessionID": sessionIDToRemove},
 		// 	{$inc: {currRound: 1}},
@@ -322,7 +283,6 @@ module.exports = function(app, passport) {
 			console.log("isDone" + isDone);
 			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
-				currentExercise = exercise;
 				//find session ID;
 				if (currentRound > exercise.numOfRounds + 1) {
 					// render finish page
@@ -392,20 +352,29 @@ module.exports = function(app, passport) {
 	app.post('/displaySurvey', function(req, res) {
 		var sess = req.body.sessionID;
 		var sid = req.body.studentID;
-		if (req.body.role === 'ceo') {
-			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
-		} else if (req.body.role === 'team') {
-			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
-		} else {
-			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
-		}
+		var room = req.body.room;
+		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
+			if (err) throw err;
+			var exerciseID = result.exerciseID;
+			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err1, exercise) {
+				if (err1) throw err1;
+				if (req.body.role === 'ceo') {
+					res.render('survey.ejs', {url: exercise.ceoSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
+				} else if (req.body.role === 'team') {
+					res.render('survey.ejs', {url: exercise.teamMemberSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
+				} else {
+					res.render('survey.ejs', {url: exercise.observerSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.observerSurvey});
+				}
+			});
+		});
 	});
 
 	app.post('/team', function(req, res) {
 		var sess = req.body.sessionID;
 		var sid = req.body.studentID;
-		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
-	})
+		var surveyURL = req.body.survey;
+		res.render('survey2.ejs', {url: surveyURL, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
+	});
 
 	app.post('/wait', function (req, res) {
 		var taken = currentSession.activeRoles;
@@ -426,15 +395,15 @@ module.exports = function(app, passport) {
 		}
 	});
 
-	app.post('/startScenario', function(req, res) {
-		if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
-			res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
-									role: req.body.role, description: req.body.description});
-		} else {
-			res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
-									role: req.body.role, description: req.body.description});
-		}
-	});
+	// app.post('/startScenario', function(req, res) {
+	// 	if (currentExercise.scenarios[sCount].videoURL == null || currentExercise.scenarios[sCount].videoURL == "") {
+	// 		res.render('text.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
+	// 								role: req.body.role, description: req.body.description});
+	// 	} else {
+	// 		res.render('video.ejs', {scenario: currentExercise.scenarios[sCount], answerer: currentExercise.answerer,
+	// 								role: req.body.role, description: req.body.description});
+	// 	}
+	// });
 
 	// // show questions to students
 	// app.post('/response', function(req, res) {

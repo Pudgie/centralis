@@ -22,19 +22,26 @@
     <div id="survey">
       <form action="/team" method="post">
         <% if (role == "ceo") { %>
-          <h1>Please discuss with team and complete survey </h1>
+          <h1>Please discuss with team and complete team decision survey</h1>
+          <h2>Move on to the next survey when complete</h2>
           <iframe src="<%= url %>" height="800px" width="600px"></iframe>
         <% }
-
-        else { %>
-          <h1>Please discuss with team and wait for CEO to complete survey</h1>
-        <% } %>
+        else if (role == "team") { %>
+          <h1>Please discuss with team and wait for CEO to complete team decision survey</h1>
+          <h2>Move on to the next survey when complete</h2>
+        <% 
+        } else { %>
+          <h1>Please observe the team's discussion and complete the next survey</h1>
+        <%
+        }
+        %>
           <br/><br/>
           <button type="submit" class="btn btn-primary btn-md">Next</button>
           <input type="hidden" name="role" value="<%=role%>"/>
           <input type="hidden" name="room" value="<%=room%>"/>
           <input type="hidden" name="studentID" value="<%=studentID%>"/>
           <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+          <input type="hidden" name="survey" value="<%=team%>"/>
       </form>
     </div>
   </body>
