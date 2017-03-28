@@ -30,8 +30,10 @@
       <option value="team">Team Member</option>
       <option value="observer">Observer</option>
     </select>
-    <button type="submit" class="btn btn-primary btn-md">Play</button>
+	<input type="hidden" name="studentID" value="<%=studentID%>"/>
+	<input type="hidden" name="sessionID" value="<%=sessionID%>"/>
     <input type="hidden" name="room" value="<%=roomNumber%>"/>
+    <button type="submit" class="btn btn-primary btn-md">Play</button>
   </tr>
   </form>
 </body>

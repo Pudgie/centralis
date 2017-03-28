@@ -30,28 +30,45 @@ module.exports = function(app, passport) {
 
 	app.get('/adminWait', function(req, res) {
 		var sessionID = parseInt(req.query.sessionID);
-		var currRound;
-		for (var ii = 0; ii < rooms.length; ii++) {
-			Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
-			{$inc: {currRound: 0}},
-			{new: true}, function(err, model) {
-
-				currRound = model.currRound;
-
-				if (err) console.err(err);
-				Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
-					if (err1) console.err(err1);
-					if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
-						res.redirect('/finishSession?sessionID='+sessionID);
-					}
-					else if (model.roomNumber == rooms[rooms.length - 1]) {
-
-						res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
-					}
-				});
-
+		var currRound = parseInt(req.query.currRound);
+		Session.findOneAndUpdate({activeSessionID: sessionID},
+		{$inc: {currRound: 0}},
+		{new: true}, function(err, model) {
+			if (err) console.err(err);
+			Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
+				if (err1) console.err(err1);
+				console.log("1currRound: " + currRound + " 1numOfRounds: " + (results[0].numOfRounds+1));
+				if (currRound == (results[0].numOfRounds+1)) {
+					res.redirect('/finishSession?sessionID='+sessionID);
+				}
+				else {
+					res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
+				}
 			});
-		}
+
+		});
+		// for (var ii = 0; ii < rooms.length; ii++) {
+		// 	Session.findOneAndUpdate({activeSessionID: sessionID, roomNumber: String(rooms[ii])},
+		// 	{$inc: {currRound: 0}},
+		// 	{new: true}, function(err, model) {
+
+		// 		currRound = model.currRound;
+
+		// 		if (err) console.err(err);
+		// 		Exercise.find({'_id': model.exerciseID}).lean().exec(function(err1, results) {
+		// 			if (err1) console.err(err1);
+		// 			console.log("1currRound: " + model.currRound + " 1numOfRounds: " + (results[0].numOfRounds+1));
+		// 			if (model.roomNumber == rooms[rooms.length - 1] && model.currRound == (results[0].numOfRounds+1)) {
+		// 				res.redirect('/finishSession?sessionID='+sessionID);
+		// 			}
+		// 			else if (model.roomNumber == rooms[rooms.length - 1]) {
+
+		// 				res.render('adminWait.ejs', {sessionID: sessionID, currRound: currRound});
+		// 			}
+		// 		});
+
+		// 	});
+		// }
 
 	});
 
@@ -81,11 +98,10 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/submitResults', function(req, res) {
-		// var currRound = parseInt(req.body.currRound);
-		// var exerciseID = parseInt(req.body.exerciseID);
+		var currRound = parseInt(req.body.currRound);
+		var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
 		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-		console.log("A: " + req.body.A);
 		disruptionSelection[0] = req.body.A;
 		disruptionSelection[1] = req.body.B;
 		disruptionSelection[2] = req.body.C;
@@ -100,18 +116,31 @@ module.exports = function(app, passport) {
 		disruptionSelection[11] = req.body.N;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID},
-										 {$set: {'nextScenario': disruptionSelection[ii]},
-									 $inc: {'currRound': 1}},
-										 {new:true}, function(err, model) {
-											if (err) throw err;
-										});
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
+					{$set: {'nextScenario': disruptionSelection[ii]}, 
+					$inc: {'currRound': 1}},
+					{new: true},
+					function(err, model) {
+						if (err) throw err;
+					}
+				);
+
+				for (var i = 1; i < 15; i++) {
+					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
+						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}, 
+						$inc: {'currRound': 1}},
+						function(err, model) {
+							if (err) throw err;
+						}
+					);
+				}
 			}
 			else { // at least one scenario is not selected
-				res.redirect('/assignDisruption?sessionID='+sessionID);
+				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
 			}
 		}
-		res.redirect('/adminWait?sessionID='+sessionID);
+		currRound++;
+		res.redirect('/adminWait?sessionID='+sessionID+"&currRound="+currRound);
 	});
 
 	app.get('/adminlogin', function(req, res) {
@@ -120,6 +149,7 @@ module.exports = function(app, passport) {
 
 	app.get('/assignDisruption', function(req, res) { 
 		var sessionID = parseInt(req.query.sessionID);
+		var currRound = req.body.currRound;
 		Session.find({activeSessionID: sessionID}).lean().exec(function(err, results) {
 				Exercise.find({'_id': results[0].exerciseID}).lean().exec(function(err1, exerciseRes) {
 					if (err1) console.err(err1);
@@ -133,7 +163,6 @@ module.exports = function(app, passport) {
 							}
 						}
 					}
-
 					else {
 						for (var ii = 0; ii < exerciseRes[0].scenarios.length; ii++) {
 							if (exerciseRes[0].scenarios[ii].round == results[0].currRound) {
@@ -142,12 +171,13 @@ module.exports = function(app, passport) {
 						}
 					}
 
-					res.render('assignDisruption.ejs', {scenarioChoices: scenarios, allRooms: rooms, sessionID: sessionID});
+					res.render('assignDisruption.ejs', {scenarioChoices: scenarios, allRooms: rooms, sessionID: sessionID, currRound: currRound});
 				});
 		});
 	});
 
 	app.post('/assignDisruption', function(req, res) {
+		var currRound = req.body.currRound;
 		var sessionID = parseInt(req.body.sessionID);
 		Session.find({activeSessionID: sessionID}).lean().exec(function(err, results) {
 				Exercise.find({'_id': results[0].exerciseID}).lean().exec(function(err1, exerciseRes) {
@@ -171,7 +201,7 @@ module.exports = function(app, passport) {
 						}
 					}
 
-					res.render('assignDisruption.ejs', {scenarioChoices: scenarios, allRooms: rooms, sessionID: sessionID});
+					res.render('assignDisruption.ejs', {scenarioChoices: scenarios, allRooms: rooms, sessionID: sessionID, currRound: currRound});
 				});
 		});
 	});
@@ -270,13 +300,26 @@ module.exports = function(app, passport) {
 	app.post('/display', function(req, res) {
 		var role = req.body.role;
 		var room = req.body.room;
-		Session.findOne({"roomNumber": room}).lean().exec( function(err, result) {
+		var sid = req.body.studentID;
+		var sess = req.body.sessionID;
+
+		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			//get the session
 			var id = result.exerciseID; //pull out exercise ID for that session
-			console.log("my current ID is: " + id);
 			var currentRound = result.currRound;
-			console.log(currentRound);
+			var next;
+			var isDone = false;
+			var students = result.students;
+			for (var i = 0; i < students.length; i++) {
+				if (students[i].id == sid) {
+					next = students[i].nextScenario;
+					isDone = students[i].firstRoundDone;
+					// console.log("next: " + next + " isDone:" + isDone);
+					break;
+				}
+			}
 
+			console.log("isDone" + isDone);
 			var results;
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				currentExercise = exercise;
@@ -288,31 +331,40 @@ module.exports = function(app, passport) {
 					return;
 				} else {
 					// check if can proceed
-					var next = result.nextScenario;
-					if (currentRound < exercise.numOfRounds + 1) {
-
+					if (result.nextScenario != null && result.nextScenario != 0 && !isDone) {
+						next = result.nextScenario;
+						Session.findOneAndUpdate(
+							{"roomNumber": room, "activeSessionID" : sess, "students.id": parseInt(sid)},
+							{$set: {"students.$.firstRoundDone": true}},
+							{new: true},
+							function(err, result) {
+								if (err) throw err;
+								console.log("Set firstRoundDone to true successfully");
+							}
+						);
 					}
 					if (next == null && currentRound == exercise.numOfRounds + 1) {
 						res.render('finish.ejs');
 						return;
 					}
 					if (next == null) {
-						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: ""});
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: "", sessionID: sess, studentID: sid});
 						return;
 					}
 
 					if (next == 0) {
-						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses the first scenario', url: ""});
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses the first scenario', url: "", sessionID: sess, studentID: sid});
 						return;
 					}
 
-					//set nextScenario to NULL
+					//set nextScenario of studentID to NULL
 					Session.findOneAndUpdate(
-						{"roomNumber": room},
-						{"nextScenario": null},
+						{"roomNumber": room, "activeSessionID" : sess, "students.id": parseInt(sid)},
+						{$set: {"students.$.nextScenario": null}},
+						{new: true},
 						function(err, model) {
 							if (err) throw err;
-							console.log("Set nextScenario to null successfully");
+							console.log("Set nextScenario of studentID to null successfully");
 						}
 					);
 
@@ -322,18 +374,15 @@ module.exports = function(app, passport) {
 		 						results = exercise.scenarios[i];
 		 					}
 	 					}
-	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 					}
 					else {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
-							console.log("round:" + exercise.scenarios[i].round);
-							console.log("id:" + exercise.scenarios[i].id);
-							console.log("next:" + next);
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						results = exercise.scenarios[i];
 		 					}
 	 					}
-	 					res.render('scenario.ejs', {text: results.text, role: role, room: room});
+	 					res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 					}
 				 }
 			});
@@ -341,18 +390,21 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/displaySurvey', function(req, res) {
-		console.log(req.body.room);
+		var sess = req.body.sessionID;
+		var sid = req.body.studentID;
 		if (req.body.role === 'ceo') {
-			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role, room: req.body.room});
+			res.render('survey.ejs', {url: currentExercise.ceoSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
 		} else if (req.body.role === 'team') {
-			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room});
+			res.render('survey.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
 		} else {
-			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role, room: req.body.room});
+			res.render('survey.ejs', {url: currentExercise.observerSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid});
 		}
 	});
 
 	app.post('/team', function(req, res) {
-		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, message: ""});
+		var sess = req.body.sessionID;
+		var sid = req.body.studentID;
+		res.render('survey2.ejs', {url: currentExercise.teamMemberSurvey, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
 	})
 
 	app.post('/wait', function (req, res) {
@@ -454,7 +506,23 @@ module.exports = function(app, passport) {
 			if (!user) { return res.redirect('/studentlogin'); }
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
-				return res.render('roles.ejs', {roomNumber: user.roomNumber});
+				var sessionID = req.body.activeSessionID;
+				var roomNum = req.body.roomNumber;
+				Session.findOne({'activeSessionID' : sessionID, 'roomNumber' : roomNum}, function(err, result) {
+					if (err) throw err;
+					var inc = result.students.length;
+					var studentObj = {"id" : inc + 1, "nextScenario" : null, "firstRoundDone": false};
+					Session.findOneAndUpdate(
+						{roomNumber: roomNum, activeSessionID: sessionID},
+						{$push: {'students' : studentObj}},
+						{safe: true, upsert: true},
+							function(err, model) {
+								if (err) throw err;
+								console.log("student object inserted successfully!")
+							}
+					);
+					return res.render('roles.ejs', {roomNumber: user.roomNumber, studentID: inc+1, sessionID: sessionID});
+				});
 			});
 		})(req, res, next);
 	});
@@ -521,6 +589,7 @@ module.exports = function(app, passport) {
 			})
 		})
 	});
+
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//videoPath = videoPath + req.file.filename;
 		if (req.body.text != null) {
@@ -573,7 +642,7 @@ module.exports = function(app, passport) {
 						{$push: {scenarios: scenario}},
 						{safe: true, upsert: true},
 							function(err, model) {
-									if (err) throw err;
+								if (err) throw err;
 							}
 					);
 				});

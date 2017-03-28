@@ -51,11 +51,16 @@
 	                  });
 	             </script>
 		
-		<p>Go to Qualtrics and view student responses</p>
-	
+    <% if (currRound == 1) { %>
+      <p>Select the first scenario for all rooms</p>
+    <% } else { %>
+		  <p>Go to survey platform and view student responses</p>
+    <%
+      }
+    %>	
 		<input type="hidden" name="currRound" value="<%= currRound %>"/>
 
 		<input type="hidden" name="sessionID" value="<%= sessionID %>"/>
-		<button type="submit" class="btn btn-outline">Next</button>
+		<button type="submit" class="btn btn-outline">Assign</button>
 </body>
 </html>
