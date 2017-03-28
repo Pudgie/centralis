@@ -259,7 +259,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/display', function(req, res) {
-		var role = req.body.role;
+		var role = req.body.roles;
 		var room = req.body.room;
 		var sid = req.body.studentID;
 		var sess = req.body.sessionID;
@@ -280,6 +280,7 @@ module.exports = function(app, passport) {
 			}
 
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				if (err) throw err;
 				//find session ID;
 				if (currentRound > exercise.numOfRounds + 1) {
 					// render finish page
