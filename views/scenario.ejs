@@ -21,16 +21,35 @@
     <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
-  <body>
+  <body class="noneMain">
+  <ul>
+            <li class= "left"><a class="logo">Centralis</a></li>
+            <li class="dropdown" style="float:right; margin-top:5px;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/admin"> Home</a>
+                        </li>
+                        <li><a href="/createExercise"> Create Exercise</a>
+                        </li>
+                        <li><a href="/selectExercise"> Select Exercise</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+  </ul>
 
     <%= text %>
     </br>
-    <form action="/displaySurvey" method="post">
-      <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
-      <input type="hidden" name="studentID" value="<%=studentID%>"/>
-      <input type="hidden" name="role" value="<%=role%>"/>
-      <input type="hidden" name="room" value="<%=room%>"/>
-      <input type="submit" value="Go to Survey" />
-    </form>
+    <div class="formNoBorder">
+      <form action="/displaySurvey" method="post">
+        <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+        <input type="hidden" name="studentID" value="<%=studentID%>"/>
+        <input type="hidden" name="role" value="<%=role%>"/>
+        <input type="hidden" name="room" value="<%=room%>"/>
+        <input type="submit" value="Go to Survey" />
+      </form>
+    </div>
   </body>
 </html>
