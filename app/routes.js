@@ -86,13 +86,18 @@ module.exports = function(app, passport) {
 				// MAX of 15 people per room. Can change.
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
 					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
-						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]},
-						$inc: {'currRound': 1}},
+						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}},
 						function(err, model) {
 							if (err) throw err;
 						}
 					);
 				}
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}},
+					{$inc: {'currRound': 1}},
+					function(err, model) {
+						if (err) throw err;
+					}
+				);
 			}
 			else { // at least one scenario is not selected
 				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
