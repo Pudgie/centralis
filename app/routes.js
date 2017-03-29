@@ -82,25 +82,37 @@ module.exports = function(app, passport) {
 		disruptionSelection[11] = req.body.N;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
-					{$set: {'nextScenario': disruptionSelection[ii]}, 
-					$inc: {'currRound': 1}},
-					{new: true},
-					function(err, model) {
-						if (err) throw err;
-					}
-				);
-
+				// BUG: both async calls are fucking things up
 				// MAX of 15 people per room. Can change.
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
 					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
-						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}, 
-						$inc: {'currRound': 1}},
+						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}},
 						function(err, model) {
 							if (err) throw err;
 						}
 					);
 				}
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}},
+					{$inc: {'currRound': 1}},
+					function(err, model) {
+						if (err) throw err;
+					}
+				);
+			}
+			else { // at least one scenario is not selected
+				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
+			}
+		}
+		for (var ii = 0; ii < rooms.length; ii++) {
+			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
+				// BUG: both async calls are fucking things up
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
+					{$set: {'nextScenario': disruptionSelection[ii]},
+					$inc: {'currRound': 1}},
+					function(err, model) {
+						if (err) throw err;
+					}
+				);
 			}
 			else { // at least one scenario is not selected
 				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
@@ -114,7 +126,7 @@ module.exports = function(app, passport) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 
-	app.get('/assignDisruption', function(req, res) { 
+	app.get('/assignDisruption', function(req, res) {
 		var sessionID = parseInt(req.query.sessionID);
 		var currRound = req.body.currRound;
 		Session.find({activeSessionID: sessionID}).lean().exec(function(err, results) {
@@ -259,11 +271,11 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/display', function(req, res) {
-		var role = req.body.role;
+		var role = req.body.roles;
 		var room = req.body.room;
 		var sid = req.body.studentID;
 		var sess = req.body.sessionID;
-
+		console.log("DISPLAY ROLE:" + role);
 		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			//get the session
 			var id = result.exerciseID; //pull out exercise ID for that session
@@ -279,7 +291,10 @@ module.exports = function(app, passport) {
 				}
 			}
 
+			console.log("EXERCISEID:" + id);
+			console.log("CURRENTROUND:" + currentRound);
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				if (err) throw err;
 				//find session ID;
 				if (currentRound > exercise.numOfRounds + 1) {
 					// render finish page
@@ -325,7 +340,7 @@ module.exports = function(app, passport) {
 						}
 					);
 
-					if (currentRound == 1) {
+					if (currentRound == 2) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == 1){
 		 						var results = exercise.scenarios[i];
@@ -334,9 +349,14 @@ module.exports = function(app, passport) {
 		 					}
 	 					}
 					}
-					else {
+					else if (currentRound > 2) {
+						console.log("FLAG1");
 						for (var i = 0; i < exercise.scenarios.length; i++) {
+							console.log("i:" + i + " length:" + exercise.scenarios.length);
+							console.log("currRound:" + currentRound -1);
+							console.log("sc ID: " + exercise.scenarios[i].id + " next:" + next);
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
+		 						console.log("FLAG2");
 		 						var results = exercise.scenarios[i];
 	 							res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 		 						return;
@@ -353,6 +373,7 @@ module.exports = function(app, passport) {
 		var sess = req.body.sessionID;
 		var sid = req.body.studentID;
 		var room = req.body.room;
+		console.log("DISPLAY SURVEY ROLE:" + req.body.role);
 		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			if (err) throw err;
 			var exerciseID = result.exerciseID;
