@@ -54,10 +54,12 @@
                     <!-- /.dropdown-user -->
                 </li>
   </ul>
-    <div id="survey" style="margin-top: 200px;">
+    <div id="survey" style="margin-top: 60px;">
       <% if (message.length > 0) { %>
         <h2 class="alert"><%= message %></h2>
       <% } %>
+      <h1>Please fill out the survey</h1>
+      <br/>
       <form action="/display" method="post">
           <% if (url.length > 0) { %>
              <iframe src="<%= url %>" height="800px" width="600px"></iframe>
