@@ -87,24 +87,23 @@ module.exports = function(app, passport) {
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
 					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
 						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]},
-						$inc: {'currRound': 0}},
+						$inc: {'currRound': 1}},
 						function(err, model) {
 							if (err) throw err;
 						}
 					);
 				}
-
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}},
-					{$inc: {'currRound': 1}},
-					function(err, model) {
-						if (err) throw err;
-					}
-				);
-
+			}
+			else { // at least one scenario is not selected
+				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
+			}
+		}
+		for (var ii = 0; ii < rooms.length; ii++) {
+			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
+				// BUG: both async calls are fucking things up
 				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
 					{$set: {'nextScenario': disruptionSelection[ii]},
 					$inc: {'currRound': 1}},
-					{new: true},
 					function(err, model) {
 						if (err) throw err;
 					}
