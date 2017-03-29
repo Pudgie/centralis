@@ -57,8 +57,9 @@
     <div id="survey" style="margin-top: 60px;">
       <% if (message.length > 0) { %>
         <h2 class="alert"><%= message %></h2>
+      <% } else { %>
+        <h1>Please fill out this survey</h1>
       <% } %>
-      <h1>Please fill out the survey</h1>
       <br/>
       <form action="/display" method="post">
           <% if (url.length > 0) { %>
