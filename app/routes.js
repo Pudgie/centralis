@@ -344,8 +344,15 @@ module.exports = function(app, passport) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == 1){
 		 						var results = exercise.scenarios[i];
-		 						res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
-		 						return;
+								if (results.videoURL == null) {
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+			 						return;
+								} else {
+									var id = results.videoURL.split("?v=");
+									console.log("asdfads");
+									console.log(id);
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+								}
 		 					}
 	 					}
 					}
@@ -358,8 +365,16 @@ module.exports = function(app, passport) {
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						console.log("FLAG2");
 		 						var results = exercise.scenarios[i];
-	 							res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
-		 						return;
+								if (results.videoURL == null) {
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+			 						return;
+								} else {
+									var id = results.videoURL.split("?v=");
+									console.log("asdfads");
+									console.log(id);
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+									return;
+								}
 		 					}
 	 					}
 					}
@@ -581,7 +596,7 @@ module.exports = function(app, passport) {
 
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//videoPath = videoPath + req.file.filename;
-		if (req.body.text != null) {
+		if (req.body.myVideo == null) {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
 
@@ -616,7 +631,6 @@ module.exports = function(app, passport) {
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
 					// var exCount = result.scenarios.length + 1;
 					sCount += 1;
-					console.log("exercise count: " + exCount);
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,

@@ -1,23 +1,36 @@
-<head>
-  <link href="http://vjs.zencdn.net/5.16.0/video-js.css" rel="stylesheet">
-  <script src="http://vjs.zencdn.net/5.16.0/video.js"></script>
-  <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
-  <style>
-    #my-video {
-      margin: auto;
-    }
-  </style>
-</head>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<body>
-  <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
-  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-    <source src="<%=file%>" type='video/mp4'>
-    <source src="<%=file%>" type='video/webm'>
-    <p class="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a web browser that
-      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-    </p>
-  </video>
-  <button type="button" onclick="location.href = '/response'">Proceed</button>
-</body>
+   <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+   <script src="bootstrap/js/jquery.min.js"></script>
+    <script src = "/bootstrap/js/clean-blog.js"></script>
+    <!-- javascript -->
+   <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/typed.js"></script>
+
+    <!-- font -->
+   <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/<%=id%>" frameborder="0" allowfullscreen></iframe>
+    </br>
+    <form action="/displaySurvey" method="post">
+      <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+      <input type="hidden" name="studentID" value="<%=studentID%>"/>
+      <input type="hidden" name="role" value="<%=role%>"/>
+      <input type="hidden" name="room" value="<%=room%>"/>
+      <input type="submit" value="Go to Survey" />
+    </form>
+  </body>
+</html>
