@@ -497,7 +497,7 @@ module.exports = function(app, passport) {
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
 				var sessionID = req.body.activeSessionID;
-				var roomNum = req.body.roomNumber;
+				var roomNum = req.body.roomNumber.toUpperCase();
 				Session.findOne({'activeSessionID' : sessionID, 'roomNumber' : roomNum}, function(err, result) {
 					if (err) throw err;
 					var inc = result.students.length;
@@ -511,7 +511,7 @@ module.exports = function(app, passport) {
 								console.log("student object inserted successfully!")
 							}
 					);
-					return res.render('roles.ejs', {roomNumber: user.roomNumber, studentID: inc+1, sessionID: sessionID});
+					return res.render('roles.ejs', {roomNumber: user.roomNumber.toUpperCase(), studentID: inc+1, sessionID: sessionID});
 				});
 			});
 		})(req, res, next);
