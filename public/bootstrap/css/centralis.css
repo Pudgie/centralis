@@ -36,9 +36,39 @@ li.right{
 
 
 /*div*/
+
+
 div{
-   text-align: center;
+  
+
 }
+
+div.displayLongText{
+    width: 700px;
+    padding-top: 50px;
+    margin: auto;
+    text-align: center;
+      margin-bottom: 50px;
+    padding-bottom: 20px;
+     padding-top: 20px;
+}
+div.displayLongText. p{
+    font-size: 20px; 
+    font-weight: bold; 
+    white-space: pre-wrap; 
+    text-align: center;
+}
+
+div.longerTextContainer{
+    width: 700px;
+    padding-top: 50px;
+    margin: auto;
+    text-align: center;
+
+}
+
+
+
 
 div.wrapper{
     padding: 30px;
@@ -121,6 +151,7 @@ div.formNoBorder textarea{
 .funkyradio input[type="radio"]:checked ~ label, .funkyradio input[type="checkbox"]:checked ~ label {
     color: #B22222;
     border: 1px solid #B22222;
+    vertical-align: middle;
 }
 .funkyradio input[type="radio"]:focus ~ label:before, .funkyradio input[type="checkbox"]:focus ~ label:before {
     box-shadow: 0 0 0 3px #999;
@@ -129,7 +160,13 @@ div.formNoBorder textarea{
 .funkyradio-warning input[type="radio"]:checked ~ label:before, .funkyradio-warning input[type="checkbox"]:checked ~ label:before {
     color: #fff;
     background-color: #B22222;
-}
+   
+  }
+
+  .padTop input[type="radio"]:checked ~ label:before, .padTop input[type="checkbox"]:checked ~ label:before {
+    padding-top: 20px;
+   
+  }
 
 
 

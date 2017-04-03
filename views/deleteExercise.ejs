@@ -48,7 +48,7 @@
 		  <script >
 		              $(function(){
 		                  $(".typing").typed({
-		                    strings: ["Select the exercises you would like to delete: "],
+		                    strings: ["Select the exercise you would like to delete: "],
 		                    typeSpeed: 50
 		                  });
 		              });
@@ -62,9 +62,9 @@
 						%>
 							   <div class="funkyradio">
 							        <div class="funkyradio-warning">
-							            <input type="checkbox" name="exerciseChecks"   id="checkbox<%=ii+1%>"
+							            <input type="radio" name="exerciseChecks"   id="radio<%=ii+1%>"
 							            value = "<%= exercises[ii]._id %>"/>
-							            <label for="checkbox<%=ii+1%>"><%= exercises[ii].title %></label>
+							            <label for="radio<%=ii+1%>"><%= exercises[ii].title %></label>
 							        </div>
 							    </div>
 
