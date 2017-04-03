@@ -58,7 +58,7 @@
                   });
              </script>
        <form >
-              <div class="formNoBorder">
+              <div class = "longerTextContainer">
                   <div class = "wrapper">
                     <% if (scenarios.length == 0) { %>
                       <p>None</p>
@@ -66,16 +66,20 @@
                     <% for (var i = 0; i < scenarios.length; i++) { %>
                                  <div class="funkyradio">
                                     <div class="funkyradio-warning">
-                                        <input type="radio" name="scenario"   id="radio<%=i+1%>"
-                                        value = "<%= scenarios[i]._id %>"/>
-                                        <label for="radio<%=i+1%>"><strong >Name: </strong><%=scenarios[i].name%>     <strong>Round: </strong><%=scenarios[i].round%></label>
+                                      <div class="padTop">
+                                          <input type="radio" name="scenario"   id="radio<%=i+1%>"
+                                          value = "<%= scenarios[i]._id %>"/>
+                                          <label for="radio<%=i+1%>"><strong >Name: </strong><%=scenarios[i].name%> <br />
+                                             <strong>Round: </strong><%=scenarios[i].round%></label>
+                                      </div>
+                                        
                                     </div>
                                 </div>
                              
                     <% } %>
                     
                   </div>
-                  <button id="select" type="button" class="btn btnNew" onclick="location.href = 'scenarioRedirect'">Add Disruption</button>
+                  <button id="select" type="button" class="btn btnNew" onclick="location.href = 'scenarioRedirect'">Add </button>
                   <div class= "divider"></div>
                     <button id="select" type="button" class="btn btnNew" onclick="location.href = 'homeRedirect'">Finish</button>
             </div>
