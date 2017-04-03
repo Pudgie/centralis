@@ -363,7 +363,6 @@ module.exports = function(app, passport) {
 							console.log("currRound:" + currentRound -1);
 							console.log("sc ID: " + exercise.scenarios[i].id + " next:" + next);
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
-		 						console.log("FLAG2");
 		 						var results = exercise.scenarios[i];
 								if (results.videoURL == null) {
 									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
