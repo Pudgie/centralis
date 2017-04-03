@@ -43,7 +43,7 @@
     
     </br>
     <div class="displayLongText">
-      <p > <%= text %> </p>
+      <p style="white-space: pre-wrap;"> <%= text %> </p>
       <form action="/displaySurvey" method="post">
         <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
         <input type="hidden" name="studentID" value="<%=studentID%>"/>
