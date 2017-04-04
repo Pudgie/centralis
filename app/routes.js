@@ -17,7 +17,13 @@ module.exports = function(app, passport) {
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
 	var MAX_PEOPLE = 15; // can be changed
 
-
+	// protects admin and student pages
+	app.all('*', function(req, res, next) {
+	  if (req.path === '/' || req.path === '/login' || req.path === '/adminlogin' || req.path === '/studentlogin')
+	    next();
+	  else
+	    ensureAuthenticated(req, res, next);
+	});
 
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
@@ -269,7 +275,119 @@ module.exports = function(app, passport) {
 			res.render('selectExercise.ejs', {exercises: results});
 		});
 	});
+	app.post('/display', function(req, res) {
+		var role = req.body.roles;
+		var room = req.body.room;
+		var sid = req.body.studentID;
+		var sess = req.body.sessionID;
+		console.log("DISPLAY ROLE:" + role);
+		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
+			//get the session
+			var id = result.exerciseID; //pull out exercise ID for that session
+			var currentRound = result.currRound;
+			var next;
+			var isDone = false;
+			var students = result.students;
+			for (var i = 0; i < students.length; i++) {
+				if (students[i].id == sid) {
+					next = students[i].nextScenario;
+					isDone = students[i].firstRoundDone;
+					break;
+				}
+			}
 
+			console.log("EXERCISEID:" + id);
+			console.log("CURRENTROUND:" + currentRound);
+			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
+				if (err) throw err;
+				//find session ID;
+				if (currentRound > exercise.numOfRounds + 1) {
+					// render finish page
+					console.log("finished exercise");
+					res.render('finish.ejs');
+					return;
+				} else {
+					// check if can proceed
+					if (result.nextScenario != null && result.nextScenario != 0 && !isDone) {
+						next = result.nextScenario;
+						Session.findOneAndUpdate(
+							{"roomNumber": room, "activeSessionID" : sess, "students.id": parseInt(sid)},
+							{$set: {"students.$.firstRoundDone": true}},
+							{new: true},
+							function(err, result) {
+								if (err) throw err;
+								console.log("Set firstRoundDone to true successfully");
+							}
+						);
+					}
+					if (next == null && currentRound == exercise.numOfRounds + 1) {
+						res.render('finish.ejs');
+						return;
+					}
+					if (next == null) {
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses next scenario', url: "", sessionID: sess, studentID: sid});
+						return;
+					}
+
+					if (next == 0) {
+						res.render('survey2.ejs', {role: role, room: room, message: 'Please wait until admin chooses the first scenario', url: "", sessionID: sess, studentID: sid});
+						return;
+					}
+
+					//set nextScenario of studentID to NULL
+					Session.findOneAndUpdate(
+						{"roomNumber": room, "activeSessionID" : sess, "students.id": parseInt(sid)},
+						{$set: {"students.$.nextScenario": null}},
+						{new: true},
+						function(err, model) {
+							if (err) throw err;
+							console.log("Set nextScenario of studentID to null successfully");
+						}
+					);
+
+					if (currentRound == 2) {
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+		 					if (exercise.scenarios[i].round == 1){
+		 						var results = exercise.scenarios[i];
+								if (results.videoURL == null) {
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+			 						return;
+								} else {
+									var id = results.videoURL.split("?v=");
+									console.log("asdfads");
+									console.log(id);
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+								}
+		 					}
+	 					}
+					}
+					else if (currentRound > 2) {
+						console.log("FLAG1");
+						for (var i = 0; i < exercise.scenarios.length; i++) {
+							console.log("i:" + i + " length:" + exercise.scenarios.length);
+							console.log("currRound:" + currentRound -1);
+							console.log("sc ID: " + exercise.scenarios[i].id + " next:" + next);
+		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
+		 						console.log("FLAG2");
+		 						var results = exercise.scenarios[i];
+								if (results.videoURL == null) {
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+			 						return;
+								} else {
+									var id = results.videoURL.split("?v=");
+									console.log("asdfads");
+									console.log(id);
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+									return;
+								}
+		 					}
+	 					}
+					}
+					console.log("line 347 in /display error: possibly undefined var results");
+				 }
+			});
+		});
+	});
 	app.post('/display', function(req, res) {
 		var role = req.body.roles;
 		var room = req.body.room;
@@ -494,13 +612,13 @@ module.exports = function(app, passport) {
 
 	app.post('/reset', function(req, res) {
 		sCount = 0;
-		res.redirect('/');
+		res.redirect('/logout');
 	});
 
 	// process the admin login form
   	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/admin',
-		failureRedirect: '/adminLogin',
+		failureRedirect: '/adminlogin',
 		failureFlash: true
 	}));
 
@@ -533,11 +651,11 @@ module.exports = function(app, passport) {
 	});
 
 	// admin page. Must be logged in to to visit using function isLoggedIn as middleware
-	app.get('/admin', isLoggedIn, function(req, res) {
+	app.get('/admin', function(req, res) {
 		res.render('admin.ejs', {user: req.user})
 	});
 
-	app.get('/session', isLoggedIn, function(req, res) {
+	app.get('/session', function(req, res) {
 		res.render('student.ejs', {user: req.user})
 	});
 
@@ -708,10 +826,9 @@ module.exports = function(app, passport) {
 	// });
 };
 
-
 // route middleware to make sure user is logged in
-function isLoggedIn(req, res, next) {
-	if (req.isAuthenticated()) return next();
-	// if not logged in, redirect to homepage
-	res.redirect('/');
+function ensureAuthenticated(req, res, next) {
+	console.log(req.isAuthenticated());
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/');
 }
