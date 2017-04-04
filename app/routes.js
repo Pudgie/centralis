@@ -18,7 +18,6 @@ module.exports = function(app, passport) {
 	var MAX_PEOPLE = 15; // can be changed
 
 
-
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
@@ -82,17 +81,16 @@ module.exports = function(app, passport) {
 		disruptionSelection[11] = req.body.N;
 		for (var ii = 0; ii < rooms.length; ii++) {
 			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
-				// BUG: both async calls are fucking things up
 				// MAX of 15 people per room. Can change.
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
-					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}, 'students.id' : i},
-						{$set: {'nextScenario': null, 'students.$.nextScenario': disruptionSelection[ii]}},
+					Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, 'students.id' : i},
+						{$set: {'students.$.nextScenario': disruptionSelection[ii]}},
 						function(err, model) {
 							if (err) throw err;
 						}
 					);
 				}
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: {$gt: 1}},
+				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID},
 					{$inc: {'currRound': 1}},
 					function(err, model) {
 						if (err) throw err;
@@ -103,21 +101,21 @@ module.exports = function(app, passport) {
 				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
 			}
 		}
-		for (var ii = 0; ii < rooms.length; ii++) {
-			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
-				// BUG: both async calls are fucking things up
-				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
-					{$set: {'nextScenario': disruptionSelection[ii]},
-					$inc: {'currRound': 1}},
-					function(err, model) {
-						if (err) throw err;
-					}
-				);
-			}
-			else { // at least one scenario is not selected
-				res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
-			}
-		}
+		// for (var ii = 0; ii < rooms.length; ii++) {
+		// 	if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
+		// 		// BUG: both async calls are fucking things up
+		// 		Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID, currRound: 1},
+		// 			{$set: {'nextScenario': disruptionSelection[ii]},
+		// 			$inc: {'currRound': 1}},
+		// 			function(err, model) {
+		// 				if (err) throw err;
+		// 			}
+		// 		);
+		// 	}
+		// 	else { // at least one scenario is not selected
+		// 		res.redirect('/assignDisruption?sessionID='+sessionID, {currRound: currRound});
+		// 	}
+		// }
 		currRound++;
 		res.redirect('/adminWait?sessionID='+sessionID+"&currRound="+currRound);
 	});
@@ -188,14 +186,6 @@ module.exports = function(app, passport) {
 
 	app.get('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.query.sessionID;
-		// Session.findOneAndUpdate(
-		// 	{"activeSessionID": sessionIDToRemove},
-		// 	{$inc: {currRound: 1}},
-		// 	function(err, model) {
-		// 		if (err) throw err;
-		// 		console.log("Incremented successfully");
-		// 	}
-		// );
 		res.render('finishAdmin.ejs', {sessionID: sessionIDToRemove});
 	});
 
@@ -224,12 +214,17 @@ module.exports = function(app, passport) {
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
+			var students = [MAX_PEOPLE];
+			for (var j = 0; j < MAX_PEOPLE; j++) {
+				var studentObj = {"id" : j+1, "nextScenario" : 0, "hasLoggedIn": false};
+				students[j] = studentObj;
+			}
 			var session = new Session ({
 				roomNumber: rooms[i],
 				activeSessionID: sessionID,
-				nextScenario: 0,
 				exerciseID: req.body.exerciseID,
-				currRound: 1
+				currRound: 1,
+				students: students
 			});
 			session.save(function(err) {
 				if (err) { throw err; }
@@ -275,23 +270,22 @@ module.exports = function(app, passport) {
 		var room = req.body.room;
 		var sid = req.body.studentID;
 		var sess = req.body.sessionID;
-		console.log("DISPLAY ROLE:" + role);
 		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			//get the session
 			var id = result.exerciseID; //pull out exercise ID for that session
 			var currentRound = result.currRound;
 			var next;
-			var isDone = false;
 			var students = result.students;
+			console.log("sid:" + sid);
 			for (var i = 0; i < students.length; i++) {
 				if (students[i].id == sid) {
+					console.log("students[i].id:" + students[i].id);
 					next = students[i].nextScenario;
-					isDone = students[i].firstRoundDone;
 					break;
 				}
 			}
 
-			console.log("EXERCISEID:" + id);
+			console.log("nextScenario:" + next);
 			console.log("CURRENTROUND:" + currentRound);
 			Exercise.findOne({'_id': id}).lean().exec( function(err, exercise) {
 				if (err) throw err;
@@ -303,18 +297,6 @@ module.exports = function(app, passport) {
 					return;
 				} else {
 					// check if can proceed
-					if (result.nextScenario != null && result.nextScenario != 0 && !isDone) {
-						next = result.nextScenario;
-						Session.findOneAndUpdate(
-							{"roomNumber": room, "activeSessionID" : sess, "students.id": parseInt(sid)},
-							{$set: {"students.$.firstRoundDone": true}},
-							{new: true},
-							function(err, result) {
-								if (err) throw err;
-								console.log("Set firstRoundDone to true successfully");
-							}
-						);
-					}
 					if (next == null && currentRound == exercise.numOfRounds + 1) {
 						res.render('finish.ejs');
 						return;
@@ -349,19 +331,13 @@ module.exports = function(app, passport) {
 			 						return;
 								} else {
 									var id = results.videoURL.split("?v=");
-									console.log("asdfads");
-									console.log(id);
 									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
 								}
 		 					}
 	 					}
 					}
 					else if (currentRound > 2) {
-						console.log("FLAG1");
 						for (var i = 0; i < exercise.scenarios.length; i++) {
-							console.log("i:" + i + " length:" + exercise.scenarios.length);
-							console.log("currRound:" + currentRound -1);
-							console.log("sc ID: " + exercise.scenarios[i].id + " next:" + next);
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						var results = exercise.scenarios[i];
 								if (results.videoURL == null) {
@@ -369,8 +345,6 @@ module.exports = function(app, passport) {
 			 						return;
 								} else {
 									var id = results.videoURL.split("?v=");
-									console.log("asdfads");
-									console.log(id);
 									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
 									return;
 								}
@@ -387,7 +361,6 @@ module.exports = function(app, passport) {
 		var sess = req.body.sessionID;
 		var sid = req.body.studentID;
 		var room = req.body.room;
-		console.log("DISPLAY SURVEY ROLE:" + req.body.role);
 		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			if (err) throw err;
 			var exerciseID = result.exerciseID;
@@ -492,7 +465,6 @@ module.exports = function(app, passport) {
 	// });
 
 	app.post('/reset', function(req, res) {
-		sCount = 0;
 		res.redirect('/');
 	});
 
@@ -512,20 +484,24 @@ module.exports = function(app, passport) {
 				if (err) { return next(err); }
 				var sessionID = req.body.activeSessionID;
 				var roomNum = req.body.roomNumber.toUpperCase();
+				var studentID = 1;
 				Session.findOne({'activeSessionID' : sessionID, 'roomNumber' : roomNum}, function(err, result) {
 					if (err) throw err;
-					var inc = result.students.length;
-					var studentObj = {"id" : inc + 1, "nextScenario" : null, "firstRoundDone": false};
-					Session.findOneAndUpdate(
-						{roomNumber: roomNum, activeSessionID: sessionID},
-						{$push: {'students' : studentObj}},
-						{safe: true, upsert: true},
+					Session.find({roomNumber: roomNum, activeSessionID: sessionID, 'students.hasLoggedIn': false},
+						{'students.$': 1, _id: 0},
 							function(err, model) {
-								if (err) throw err;
-								console.log("student object inserted successfully!")
+								console.log("studentID:" + model[0].students[0].id);
+								studentID =  model[0].students[0].id;
+								Session.findOneAndUpdate(
+									{roomNumber: roomNum, activeSessionID: sessionID, 'students.id': studentID},
+									{$set: {'students.$.hasLoggedIn' : true}},
+										function(err, results) {
+											if (err) return err;
+											return res.render('roles.ejs', {roomNumber: user.roomNumber.toUpperCase(), studentID: studentID, sessionID: sessionID});
+										}
+								);
 							}
 					);
-					return res.render('roles.ejs', {roomNumber: user.roomNumber.toUpperCase(), studentID: inc+1, sessionID: sessionID});
 				});
 			});
 		})(req, res, next);
@@ -565,7 +541,6 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		sCount = 0;
 		var exercise = new Exercise({
 			enabled: true,
 			title: req.body.exerciseName,
@@ -587,7 +562,6 @@ module.exports = function(app, passport) {
 		Exercise.nextCount(function(err, count) {
 			var exerciseID = count - 1;
 			Exercise.findOne({'_id': exerciseID}).lean().exec(function(err, result) {
-				console.log("Debugging:" + result._id);
 				res.render('displayScenarios.ejs', {scenarios: result.scenarios});
 			})
 		})
@@ -598,11 +572,10 @@ module.exports = function(app, passport) {
 		if (req.body.myVideo == null) {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
-
+				var sCount = 0;
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-					// var exCount = result.scenarios.length + 1;
-					sCount += 1;
+					sCount = result.scenarios.length + 1;
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
@@ -625,11 +598,10 @@ module.exports = function(app, passport) {
 		} else {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
-
+				var sCount = 0;
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-					// var exCount = result.scenarios.length + 1;
-					sCount += 1;
+					sCount = result.scenarios.length + 1;
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
@@ -650,7 +622,6 @@ module.exports = function(app, passport) {
 				});
 			});
 		}
-		console.log(req.body.survey);
 		res.redirect('/displayScenarios');
 	});
 
