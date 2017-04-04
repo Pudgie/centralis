@@ -165,8 +165,17 @@ div.formNoBorder textarea{
 
   .padTop input[type="radio"]:checked ~ label:before, .padTop input[type="checkbox"]:checked ~ label:before {
     padding-top: 20px;
+    color: #333;
+    background-color: #333;
    
   }
+
+  .padTop input[type="radio"]:checked ~ label, .padTop input[type="checkbox"]:checked ~ label
+  {
+    color: #333;
+    border: 1px solid #333;
+    vertical-align: middle;
+}
 
 
 
