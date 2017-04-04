@@ -7,30 +7,6 @@ module.exports = function(passport) {
   // passport session setup
   // ======================
 
-  // passport.serializeUser(function(user, done) {
-  //   if (isAdmin(user)) {
-  //     console.log("is admin");
-  //     admin = true;
-  //     done(null, user.id);
-  //   } else {
-  //     console.log("not admin");
-  //     admin = false;
-  //     done(null, user.id);
-  //   }
-  // });
-  // //deserialize the user
-  // passport.deserializeUser(function(id, done) {
-  //   if (admin) {
-  //     Admin.findById(id, function(err, user) {
-  //       done(err, user);
-  //     });
-  //   } else {
-  //     Session.findById(id, function(err, user) {
-  //       done(err, user);
-  //     });
-  //   }
-  // });
-
   passport.serializeUser(function(user, done) {
     done(null, user.id);
   });
