@@ -18,7 +18,6 @@ module.exports = function(app, passport) {
 	var MAX_PEOPLE = 15; // can be changed
 
 
-
 	app.get('/', function(req, res) {
 		//res.sendFile(path.resolve(url + 'index.html'));
 		res.render('main.ejs', {message: req.flash('loginMessage')});
@@ -187,14 +186,6 @@ module.exports = function(app, passport) {
 
 	app.get('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.query.sessionID;
-		// Session.findOneAndUpdate(
-		// 	{"activeSessionID": sessionIDToRemove},
-		// 	{$inc: {currRound: 1}},
-		// 	function(err, model) {
-		// 		if (err) throw err;
-		// 		console.log("Incremented successfully");
-		// 	}
-		// );
 		res.render('finishAdmin.ejs', {sessionID: sessionIDToRemove});
 	});
 
@@ -474,7 +465,6 @@ module.exports = function(app, passport) {
 	// });
 
 	app.post('/reset', function(req, res) {
-		sCount = 0;
 		res.redirect('/');
 	});
 
@@ -551,7 +541,6 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
-		sCount = 0;
 		var exercise = new Exercise({
 			enabled: true,
 			title: req.body.exerciseName,
@@ -583,11 +572,10 @@ module.exports = function(app, passport) {
 		if (req.body.myVideo == null) {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
-
+				var sCount = 0;
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-					// var exCount = result.scenarios.length + 1;
-					sCount += 1;
+					sCount = result.scenarios.length + 1;
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
@@ -610,11 +598,10 @@ module.exports = function(app, passport) {
 		} else {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
-
+				var sCount = 0;
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-					// var exCount = result.scenarios.length + 1;
-					sCount += 1;
+					sCount = result.scenarios.length + 1;
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
@@ -635,7 +622,6 @@ module.exports = function(app, passport) {
 				});
 			});
 		}
-		console.log(req.body.survey);
 		res.redirect('/displayScenarios');
 	});
 
