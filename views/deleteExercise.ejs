@@ -28,27 +28,13 @@
 
 <body class="noneMain">
 	<ul>
-	          <li class= "left"><a class="logo">Centralis</a></li>
-	          <li class="dropdown" style="float:right; margin-top:5px;">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bars fa-2x"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/admin"> Home</a>
-                        </li>
-                        <li><a href="/createExercise"> Create Exercise</a>
-                        </li>
-                        <li><a href="/selectExercise"> Select Exercise</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
+	         <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
 	</ul>
 	<h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
 		  <script >
 		              $(function(){
 		                  $(".typing").typed({
-		                    strings: ["Select the exercises you would like to delete: "],
+		                    strings: ["Select the exercise you would like to delete: "],
 		                    typeSpeed: 50
 		                  });
 		              });
@@ -62,9 +48,9 @@
 						%>
 							   <div class="funkyradio">
 							        <div class="funkyradio-warning">
-							            <input type="checkbox" name="exerciseChecks"   id="checkbox<%=ii+1%>"
+							            <input type="radio" name="exerciseChecks"   id="radio<%=ii+1%>"
 							            value = "<%= exercises[ii]._id %>"/>
-							            <label for="checkbox<%=ii+1%>"><%= exercises[ii].title %></label>
+							            <label for="radio<%=ii+1%>"><%= exercises[ii].title %></label>
 							        </div>
 							    </div>
 

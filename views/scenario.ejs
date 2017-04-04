@@ -23,27 +23,13 @@
   </head>
   <body class="noneMain">
   <ul>
-            <li class= "left"><a class="logo">Centralis</a></li>
-            <li class="dropdown" style="float:right; margin-top:5px;">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bars fa-2x"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/admin"> Home</a>
-                        </li>
-                        <li><a href="/createExercise"> Create Exercise</a>
-                        </li>
-                        <li><a href="/selectExercise"> Select Exercise</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
+            <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
   </ul>
 
     
     </br>
-    <div class="formNoBorder" style="margin-top: 60px;">
-      <p style="font-size: 20px; font-weight: bold; white-space: pre-wrap; width: 80%; text-align:center;"> <%= text %> </p>
+    <div class="displayLongText">
+      <p style="white-space: pre-wrap;"> <%= text %> </p>
       <form action="/displaySurvey" method="post">
         <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
         <input type="hidden" name="studentID" value="<%=studentID%>"/>

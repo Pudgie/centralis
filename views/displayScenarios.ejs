@@ -32,33 +32,19 @@
 
   <body class="noneMain">
   <ul>
-            <li class= "left"><a class="logo">Centralis</a></li>
-            <li class="dropdown" style="float:right; margin-top:5px;">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bars fa-2x"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/admin"> Home</a>
-                        </li>
-                        <li><a href="/createExercise"> Create Exercise</a>
-                        </li>
-                        <li><a href="/selectExercise"> Select Exercise</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
+            <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
   </ul>
   <h1 style="text-align: center; margin-top: 50px;"><strong><span class="typing"></span></strong></h1>
       <script >
                   $(function(){
                       $(".typing").typed({
-                        strings: ["Disruptions: "],
+                        strings: ["Scenarios: "],
                         typeSpeed: 50
                       });
                   });
              </script>
        <form >
-              <div class="formNoBorder">
+              <div class = "longerTextContainer">
                   <div class = "wrapper">
                     <% if (scenarios.length == 0) { %>
                       <p>None</p>
@@ -66,16 +52,20 @@
                     <% for (var i = 0; i < scenarios.length; i++) { %>
                                  <div class="funkyradio">
                                     <div class="funkyradio-warning">
-                                        <input type="radio" name="scenario"   id="radio<%=i+1%>"
-                                        value = "<%= scenarios[i]._id %>"/>
-                                        <label for="radio<%=i+1%>"><strong >Name: </strong><%=scenarios[i].name%>     <strong>Round: </strong><%=scenarios[i].round%></label>
+                                      <div class="padTop">
+                                          <input type="radio" name="scenario"   id="radio<%=i+1%>"
+                                          value = "<%= scenarios[i]._id %>"/>
+                                          <label for="radio<%=i+1%>"><strong >Name: </strong><%=scenarios[i].name%> <br />
+                                             <strong>Round: </strong><%=scenarios[i].round%></label>
+                                      </div>
+                                        
                                     </div>
                                 </div>
                              
                     <% } %>
                     
                   </div>
-                  <button id="select" type="button" class="btn btnNew" onclick="location.href = 'scenarioRedirect'">Add Disruption</button>
+                  <button id="select" type="button" class="btn btnNew" onclick="location.href = 'scenarioRedirect'">Add</button>
                   <div class= "divider"></div>
                     <button id="select" type="button" class="btn btnNew" onclick="location.href = 'homeRedirect'">Finish</button>
             </div>
