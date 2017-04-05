@@ -81,8 +81,6 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/submitResults', function(req, res) {
-		var currRound = parseInt(req.body.currRound);
-		var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
 		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 		disruptionSelection[0] = req.body.A;
@@ -98,7 +96,7 @@ module.exports = function(app, passport) {
 		disruptionSelection[10] = req.body.M;
 		disruptionSelection[11] = req.body.N;
 		for (var ii = 0; ii < rooms.length; ii++) {
-			if (disruptionSelection[ii] != null && distruptionSelection[ii] != -1) {
+			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
 				Session.findOneAndUpdate({roomNumber: String(rooms[ii]), activeSessionID: sessionID}, 
 										 {$set: {'nextScenario': disruptionSelection[ii]}},
 										 {new:true}, function(err, model) {
@@ -198,7 +196,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createSession', function(req, res) {
-		var exerciseID = req.body.exerciseButtons;
+		var exerciseID = req.body.exerciseSelection;
 		Exercise.findOne({'_id': exerciseID, 'enabled': true}).lean().exec( function(err, results) {
 			if (err) console.err(err);
 			res.render('createSession.ejs', {exerciseName: results.title, exerciseID: exerciseID});
@@ -206,7 +204,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/sessionAdmin', function(req, res) {
-		var sessionID = Math.random() * (999999 - 100000) + 100000;
+		Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
 		for (var i = 0; i < rooms.length; i++) {
 			var session = new Session ({
@@ -245,7 +243,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/deleteExercise', function(req, res) {
-		var exerciseID = req.body.exerciseChecks;
+		var exerciseID = req.body.exerciseSelection;
 		if (exerciseID) {
 			Exercise.findByIdAndUpdate(
 						exerciseID,

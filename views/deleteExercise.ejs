@@ -6,13 +6,15 @@
 <body>
 	<h1>Select the exercises you would like to delete:</h1>
 	<form action = "/deleteExercise" method = "post">
+	<select id="exerciseSelection" name="exerciseSelection" />
 		<%
 			for (var ii = 0; ii < exercises.length; ii++) {
 				%>
-					<input type = "radio" name = "exerciseChecks" value = "<%= exercises[ii]._id %>"/> <%= exercises[ii].title %> <br>
+					<option value="<%= exercises[ii]._id %>"> <%= exercises[ii].title %> </option>
 				<%
 			}
 		%>
+		<br>
 		<input type="submit" value="Select">
 	</form>
 </body>

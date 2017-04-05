@@ -20,13 +20,16 @@
 <body>
 	<form action = "/createSession" method = "post">
 		<h2><strong>Select an exercise:</strong></h2>
+		<select id="exerciseSelection" name="exerciseSelection" />
 		<%
 			for (var i = 0; i < exercises.length; i++) {
 			%>
-				<input type = "radio" id = "<%i%>" value = "<%=exercises[i]._id%>" name = "exerciseButtons" /> <%= exercises[i].title %> <br>
+				<option value="<%= exercises[i]._id %>"> <%= exercises[i].title %> </option>
 			<%
 			}
 		%>
+		</select>
+		<br>
 		<br>
 		<button type="submit" class="btn btn-primary btn-md">Select</button>
 	</form>
