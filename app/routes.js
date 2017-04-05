@@ -319,8 +319,8 @@ module.exports = function(app, passport) {
 									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 			 						return;
 								} else {
-									var id = results.videoURL.split("?v=");
-									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+									var id = results.videoURL.split("youtu.be/");
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text});
 								}
 		 					}
 	 					}
@@ -333,8 +333,8 @@ module.exports = function(app, passport) {
 									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 			 						return;
 								} else {
-									var id = results.videoURL.split("?v=");
-									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid});
+									var id = results.videoURL.split("youtu.be/");
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text});
 									return;
 								}
 		 					}
@@ -596,7 +596,7 @@ module.exports = function(app, passport) {
 						id: sCount,
 						round: req.body.round,
 						videoURL: req.body.myVideo,
-						text: null
+						text: req.body.text
 					});
 
 					// find and update exercise with current scenario
