@@ -5,7 +5,22 @@
     <title>Survey</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+   <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+   <script src="bootstrap/js/jquery.min.js"></script>
+    <script src = "/bootstrap/js/clean-blog.js"></script>
+    <!-- javascript -->
+   <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/typed.js"></script>
+
+    <!-- font -->
+   <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
       body {
         background-color: #FFCC00;
@@ -21,18 +36,27 @@
       }
     </style>
   </head>
-  <body>
-    <div id="survey">
+  <body class = "noneMain">
+  <ul>
+         <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
+  </ul>
+    <div id="survey" style="margin-top: 60px;">
       <% if (message.length > 0) { %>
         <h2 class="alert"><%= message %></h2>
+      <% } else { %>
+        <h1>Please fill out this survey</h1>
       <% } %>
+      <br/>
       <form action="/display" method="post">
           <% if (url.length > 0) { %>
              <iframe src="<%= url %>" height="800px" width="600px"></iframe>
           <% } %>
-          <button type="submit" class="btn btn-primary btn-md">Next</button>
-          <input type="hidden" name="role" value="<%=role%>"/>
+          <br/><br/>
+          <input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+          <input type="hidden" name="studentID" value="<%=studentID%>"/>
+          <input type="hidden" name="roles" value="<%=role%>"/>
           <input type="hidden" name="room" value="<%=room%>"/>
+          <button type="submit" class="btn btnNew">Next</button>
       </form>
     </div>
   </body>

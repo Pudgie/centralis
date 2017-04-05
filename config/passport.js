@@ -1,22 +1,28 @@
 var LocalStrategy = require('passport-local').Strategy;
 var Admin = require('../app/models/admin');
-var Session = require('../app/models/session')
+var Session = require('../app/models/session');
 
 module.exports = function(passport) {
   // ======================
   // passport session setup
   // ======================
 
-  //serialize the user for the session
   passport.serializeUser(function(user, done) {
     done(null, user.id);
   });
 
-  //deserialize the user
   passport.deserializeUser(function(id, done) {
-    Admin.findById(id, function(err, user) {
-      done(err, user);
-    });
+    if (isAdmin(id)) {
+      console.log("is admin")
+      Admin.findById(id, function(err, user) {
+        done(err, user);
+      });
+    } else {
+      console.log("not admin")
+      Session.findById(id, function(err, user) {
+        done(err, user);
+      });
+    }
   });
 
   //=======================
@@ -53,7 +59,7 @@ module.exports = function(passport) {
   },
   function(req, roomNumber, activeSessionID, done) { // callback with email and password
     // find a user with same email as the forms email
-    Session.findOne({'roomNumber': roomNumber, 'activeSessionID' : activeSessionID}, function(err, user) {
+    Session.findOne({'roomNumber': roomNumber.toUpperCase(), 'activeSessionID' : activeSessionID}, function(err, user) {
       if (err)
         return done(err);
       // if no user is found, return a message
@@ -67,4 +73,8 @@ module.exports = function(passport) {
     });
   }));
 
+
+  function isAdmin(id) {
+    return id == "5896c4098031945115019d74";
+  }
 };

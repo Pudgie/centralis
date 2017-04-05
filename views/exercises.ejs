@@ -10,13 +10,28 @@
   	<!-- javascript -->
  	 <script src="/bootstrap/js/bootstrap.min.js"></script>
   	<script src="/bootstrap/js/typed.js"></script>
+
+	  <!-- font -->
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
 	
   <title>Create Exercise</title>
 </head>
-<body>
-		<div class="formNoBorder">
-			<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
-		</div>
+<body class="noneMain">
+	<ul>
+
+	          <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
+
+	</ul>
+	<div >
+		<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
+		
 		<script >
                                 $(function(){
                                     $(".typing").typed({
@@ -25,8 +40,9 @@
                                     });
                                 });
                       	</script>
-
-		<form action="/createScenarios" method="post">
+                     
+		<div class= "formNoBorder" >
+			<form action="/createScenarios" method="post">
 			<h2></h2>
 			<div class="row control-group">
                             		<div class="form-group col-xs-12 floating-label-form-group controls" >	
@@ -34,10 +50,11 @@
 					<input class="inputForms" type="text" name="exerciseName" placeholder ="Exercise Name">
 				</div>
 			</div>
+
 			<div class="row control-group">
 				<div class="form-group col-xs-12 floating-label-form-group controls">
 					<label><strong>Number of Rounds:</strong></label>
-					<input class="inputForms" type="text" name="numOfRounds" placeholder ="Number of Rounds">
+					<input class="inputForms" type="number" name="numOfRounds" placeholder ="Number of Rounds">
 				</div>	
 			</div>	
 			<div class="row control-group">		
@@ -59,9 +76,13 @@
 				</div>
 			</div>
 			<br>
-			<button type="submit" class="btn btn-outline">Next</button>
-			 	
-		</form>
+			<button type="submit" class="btn btnNew">Next</button>
+			<div class="divider"></div>
+         		<button type="button" class="btn btnNew" onclick="location.href = '/admin' ">Go Back</button>
+			</form>
+		</div>
+
+	</div>
 			
 		
 

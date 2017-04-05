@@ -6,8 +6,8 @@ var sessionSchema = new Schema({
   roomNumber: String,
   activeSessionID: String,
   exerciseID: Number,
-  nextScenario: Number,
-  currRound: Number
+  currRound: Number,
+  students: []
 });
 
 

@@ -2,34 +2,39 @@
 <html lang="en">
 <head>
   <title>Admin Login</title>
-  <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!-- clean -->
+  <!-- clean -->
   <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
   <script src="bootstrap/js/jquery.min.js"></script>
   <script src = "/bootstrap/js/clean-blog.js"></script>
   <script src="/bootstrap/js/typed.js"></script>
 
+  <!-- font -->
+  <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+
       
 
   
 </head>
-<body>
-   
-            <form action="/login" method="post">
+<body class="noneMain">
+            <ul>
+                    <li class= "left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
+            </ul>
+            <form class= "login" action="/login" method="post">
                     <h3> <strong><span class ="typing">Administrator Login</span></strong> </h3>
                        <script >
                                 $(function(){
                                     $(".typing").typed({
                                       strings: ["Administrator Login"],
-                                      typeSpeed: 100
+                                      typeSpeed: 60
                                     });
                                 });
                       </script>
@@ -55,7 +60,7 @@
                     </div>
                     <button type="submit" class="btn btn-outline">Login</button>
                       <div class="divider"></div>
-                     <button type="button" class="btn btn-outline" onclick="location.href = '/logout'">Go Back</button>
+                     <button type="button" class="btn btn-outline" onclick="location.href = '/logout' ">Go Back</button>
             </form>
 
     

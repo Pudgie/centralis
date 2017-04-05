@@ -5,9 +5,24 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" >
+ 	 <script src="bootstrap/js/jquery.min.js"></script>
+  	<script src = "/bootstrap/js/clean-blog.js"></script>
+  	<!-- javascript -->
+ 	 <script src="/bootstrap/js/bootstrap.min.js"></script>
+  	<script src="/bootstrap/js/typed.js"></script>
+
+	  <!-- font -->
+	 <link href="/bootstrap/css/centralis.css" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<style>
 		body {
-			background-color: #990000;
+			
 		}
 		#mainForm {
 			background-color: white;
@@ -21,18 +36,53 @@
 		}
 	</style>
 </head>
-<body>
-  <form action="/display" method="post">
-  <tr>
-    <label for="role">Role: </label>
-    <select name="role">
-      <option value="ceo">CEO</option>
-      <option value="team">Team Member</option>
-      <option value="observer">Observer</option>
-    </select>
-    <button type="submit" class="btn btn-primary btn-md">Play</button>
-    <input type="hidden" name="room" value="<%=roomNumber%>"/>
-  </tr>
-  </form>
+
+<body class="noneMain">
+<ul>
+
+	          <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
+
+</ul>
+<h2 ><span class="typing"><strong> Select your role: </strong></span>  </h2>
+		
+		<script >
+                $(function(){
+                    $(".typing").typed({
+                      strings: ["Select your role:"],
+                      typeSpeed: 40
+                    });
+                });
+      	</script>
+	<form action="/display" method="post" class="formNoBorder">
+		<div class = "formNoBorder" >
+        <div class = "wrapper">
+                           
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="ceo" value="ceo"/>
+                    <label for="ceo">CEO</label>
+                </div>
+            </div>
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="team" value="team"/>
+                    <label for="team">Team Member</label>
+                </div>
+            </div>
+            <div class="funkyradio">
+                <div class="funkyradio-warning">
+                    <input type="radio" name="roles" id="observer" value="observer"/>
+                    <label for="observer">Observer</label>
+                </div>
+            </div>
+    		<br/>
+    	</div>
+            <button type="submit" class="btn btnNew">Select</button>
+            <input type="hidden" name="room" value="<%=roomNumber%>"/>
+		    <input type="hidden" name="studentID" value="<%=studentID%>"/>
+	 		<input type="hidden" name="sessionID" value="<%=sessionID%>"/>
+    </div>
+	</form>
+
 </body>
 </html>
