@@ -14,6 +14,7 @@ module.exports = function(app, passport) {
 	var Exercise = require('./models/exercise');
 	var Scenario = require('./models/scenario');
 	var Session = require('./models/session');
+	var RoleSurvey = require('./models/RoleSurvey');
 	var events = require('events');
 	var eventEmitter = new events.EventEmitter();
 	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
@@ -556,22 +557,56 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/createScenarios', function(req, res) {
+
+		var hasIndSurv = (req.body.hasIndividualSurvey == "true");
+		var hasTeamSurv = (req.body.hasTeamSurvey == "true");
+
 		var exercise = new Exercise({
 			enabled: true,
 			title: req.body.exerciseName,
 			numOfRounds: req.body.numOfRounds,
+			numOfRoles: req.body.numRoles,
+			teamAnswerer: null,
 			scenarios: [],
-			ceoSurvey: req.body.ceoSurvey,
-			teamMemberSurvey: req.body.teamMemberSurvey,
-			observerSurvey: req.body.observerSurvey
+			roles: [],
+			hasIndividual: hasIndSurv,
+			hasTeam: hasTeamSurv
 		});
 		exercise.save(function(err) {
 			if (err) throw err;
 			console.log('Exercise saved succesfully');
 		});
 		//res.render('createScenario.ejs');
-		res.redirect('/displayScenarios?err=false');
+		res.render('specifyRoles.ejs', {numRoles: req.body.numRoles, hasTeam: hasTeamSurv, hasIndividual: hasIndSurv});
 	});
+
+	app.post('/displayScenarios', function(req, res) {
+
+		Exercise.nextCount(function(err, count) {
+
+			var exerciseID = count - 1;
+
+			if (req.body.hasTeam == "true") {
+				Exercise.findOneAndUpdate({'_id': exerciseID},
+						{$set: {roles: req.body.roles, teamAnswerer: req.body.roles[0]}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+				});
+			}
+
+			else {
+				Exercise.findOneAndUpdate({'_id': exerciseID},
+						{$set: {roles: req.body.roles}},
+						{safe: true, upsert: true},
+							function(err, model) {
+									if (err) throw err;
+				});
+			}
+		});
+
+		res.redirect('/displayScenarios?err=false');
+	})
 
 	app.get('/displayScenarios', function(req, res) {
 
@@ -586,6 +621,7 @@ module.exports = function(app, passport) {
 
 	app.post('/getScenario', upload.single('myVideo'), function(req, res) {
 		//videoPath = videoPath + req.file.filename;
+
 		if (req.body.myVideo == null) {
 			Exercise.nextCount(function(err, count) {
 				var exerciseID = count - 1;
@@ -593,12 +629,31 @@ module.exports = function(app, passport) {
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
 					sCount = result.scenarios.length + 1;
+					var teamSurveyURL = null;
+					if (result.hasTeam) {
+						teamSurveyURL = req.body.teamSurveyLink;
+					}
+
+
+					var roleSurveyLinks = [];
+					if (result.hasIndividual) {
+						for (var ii = 0; ii < result.numOfRoles; ii++) {
+							roleSurveyLinks.push(new RoleSurvey({
+								roleName: result.roles[ii],
+								surveyURL: req.body.individualSurveyLinks[ii]
+							}))
+						}
+					}
+
+
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
 						round: req.body.round,
 						videoURL: null,
-						text: req.body.text
+						text: req.body.text,
+						teamSurvey: teamSurveyURL,
+						roleSurveys: roleSurveyLinks
 					});
 
 					// find and update exercise with current scenario
@@ -619,12 +674,30 @@ module.exports = function(app, passport) {
 				// find length of scenarios array from current exercise
 				Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
 					sCount = result.scenarios.length + 1;
+					var teamSurveyURL = null;
+					if (result.hasTeam) {
+						teamSurveyURL = req.body.teamSurveyLink;
+					}
+
+					var roleSurveyLinks = [];
+					if (result.hasIndividual) {
+						for (var ii = 0; ii < result.numOfRoles; ii++) {
+							console.log("adding survey");
+							roleSurveyLinks.push(new RoleSurvey({
+								roleName: result.roles[ii],
+								surveyURL: req.body.individualSurveyLinks[ii]
+							}))
+						}
+					}
+
 					var scenario = new Scenario({
 						name: req.body.name,
 						id: sCount,
 						round: req.body.round,
 						videoURL: req.body.myVideo,
-						text: req.body.text
+						text: req.body.text, 
+						teamSurvey: teamSurveyURL,
+						roleSurveys: roleSurveyLinks
 					});
 
 					// find and update exercise with current scenario
@@ -673,7 +746,17 @@ module.exports = function(app, passport) {
 	// });
 
 	app.get('/scenarioRedirect', function(req, res) {
-		res.render('createScenario.ejs');
+
+		Exercise.nextCount(function (err, count) {
+
+			var exerciseID = count-1;
+			Exercise.findOne({'_id': exerciseID}).lean().exec(function(err, results) {
+
+				res.render('createScenario.ejs', {roles: results.roles, hasTeam: results.hasTeam, hasIndividual: results.hasIndividual});
+
+			});
+		});
+
 	});
 
 	app.get('/homeRedir', function(req, res) {

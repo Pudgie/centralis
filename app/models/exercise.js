@@ -9,10 +9,12 @@ var exerciseSchema = new Schema({
 	enabled: Boolean,
 	title: String,
 	numOfRounds: Number,
+	numOfRoles: Number,
+	teamAnswerer: String,
 	scenarios: [],
-	ceoSurvey: String,
-	teamMemberSurvey: String,
-	observerSurvey: String
+	roles: [],
+	hasIndividual: Boolean,
+	hasTeam: Boolean
 });
 
 exerciseSchema.plugin(autoIncrement.plugin, {

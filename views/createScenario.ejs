@@ -82,8 +82,34 @@
                     </div>
                   </tr>
                   
-                
-                 
+                <% if (hasTeam) { %>
+                  <tr>
+                      <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <label><strong>Team Survey Link: </strong></label>
+                                    <input class="inputForms" type="text" name="teamSurveyLink" placeholder ="Team Survey Link">
+                                  </div>
+                        </div>
+                  </tr>
+                <% } %>
+
+                <% if (hasIndividual) {
+                  for (var ii = 0; ii < roles.length; ii++) {
+                  %>  
+
+                    <tr>
+                        <div class="row control-group">
+                                      <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                      <label><strong><%= roles[ii] %> Survey Link: </strong></label>
+                                      <input class="inputForms" type="text" name="individualSurveyLinks" placeholder ="<%= roles[ii] %> Survey Link">
+                                    </div>
+                          </div>
+                    </tr>
+
+                  <%
+                  }
+                }
+                %>
           
                  </tbody>
                 </table>

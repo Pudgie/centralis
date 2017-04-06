@@ -9,6 +9,8 @@ var scenarioSchema = new Schema({
 	round: Number,
 	videoURL: String, // for implementing video later
 	text: String,
+	teamSurvey: String,
+	roleSurveys: []
 });
 
 scenarioSchema.plugin(autoIncrement.plugin, {

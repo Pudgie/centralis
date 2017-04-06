@@ -26,7 +26,30 @@
 	            <li class="left"><a class="logo">How Would You Handle This?<img src="/images/uscmarshall.png" style="height:60px; position: absolute; right:5px; top:0px"></a></li>
 	  	</ul>
 		<div class="formNoBorder">
+			<form action="/displayScenarios" method="post">
+				<% if (hasTeam) {%> 
+					<p>Select which role will be answering the team survey in Role #1 below.</p>
+				<% } %>
+				<div class="row control-group">		
+					<div class="form-group col-xs-12 floating-label-form-group controls">
+						<label><strong>Role #1:</strong></label>
+						<input class="inputForms" type="text" name="roles" placeholder ="Role #1">
+					</div>
+				</div>
 
+				<% for (var ii = 1; ii < numRoles; ii++) {
+				%>
+				<div class="row control-group">		
+					<div class="form-group col-xs-12 floating-label-form-group controls">
+						<label><strong>Role #<%= ii+1 %>:</strong></label>
+						<input class="inputForms" type="text" name="roles" placeholder ="Role #<%= ii+1 %>">
+					</div>
+				</div>
+				<% } %>
+				<input type="hidden" name="numRoles" value="<%= numRoles %>"/>
+				<input type="hidden" name="hasTeam" value="<%= hasTeam %>"/>
+				<button type="submit" class="btn btnNew">Next</button>
+			</form>
 		</div>
 	</body>
 </html>
