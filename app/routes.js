@@ -297,7 +297,6 @@ module.exports = function(app, passport) {
 			var students = result.students;
 			for (var i = 0; i < students.length; i++) {
 				if (students[i].id == sid) {
-					console.log("students[i].id:" + students[i].id);
 					next = students[i].nextScenario;
 					break;
 				}
@@ -506,7 +505,6 @@ module.exports = function(app, passport) {
 					Session.find({roomNumber: roomNum, activeSessionID: sessionID, 'students.hasLoggedIn': false},
 						{'students.$': 1, _id: 0},
 							function(err, model) {
-								console.log("studentID:" + model[0].students[0].id);
 								studentID =  model[0].students[0].id;
 								Session.findOneAndUpdate(
 									{roomNumber: roomNum, activeSessionID: sessionID, 'students.id': studentID},
@@ -544,7 +542,6 @@ module.exports = function(app, passport) {
 
 	app.post('/finishSession', function(req, res) {
 		var sessionIDToRemove = req.body.sessionID;
-		console.log("SessionID: " + sessionIDToRemove);
 		Session.findOneAndRemove({'activeSessionID': sessionIDToRemove}, function(err, results) {
 			if (err) console.err(err);
 			console.log("Completed Session successfully and removed from DB");
@@ -682,7 +679,6 @@ module.exports = function(app, passport) {
 					var roleSurveyLinks = [];
 					if (result.hasIndividual) {
 						for (var ii = 0; ii < result.numOfRoles; ii++) {
-							console.log("adding survey");
 							roleSurveyLinks.push(new RoleSurvey({
 								roleName: result.roles[ii],
 								surveyURL: req.body.individualSurveyLinks[ii]
@@ -778,7 +774,6 @@ module.exports = function(app, passport) {
 				}
 
 				var allRoundsSet = true;
-				console.log("NumRounds: " + numRounds);
 				for (var qq = 0; qq < numRounds; qq++) {
 					if (scenarioExists[qq] == false) {
 						allRoundsSet = false;
