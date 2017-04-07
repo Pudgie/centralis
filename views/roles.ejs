@@ -22,7 +22,7 @@
 
 	<style>
 		body {
-			
+
 		}
 		#mainForm {
 			background-color: white;
@@ -44,7 +44,7 @@
 
 </ul>
 <h2 ><span class="typing"><strong> Select your role: </strong></span>  </h2>
-		
+
 		<script >
                 $(function(){
                     $(".typing").typed({
@@ -56,8 +56,15 @@
 	<form action="/display" method="post" class="formNoBorder">
 		<div class = "formNoBorder" >
         <div class = "wrapper">
-                           
-            <div class="funkyradio">
+            <% for (var i = 0; i < roles.length; i++) { %>
+              <div class="funkyradio">
+                  <div class="funkyradio-warning">
+                      <input type="radio" name="roles" id="<%=roles[i]%>" value="<%=roles[i]%>"/>
+                      <label for="<%=roles[i]%>"><%=roles[i]%></label>
+                  </div>
+              </div>
+            <% } %>
+            <!-- <div class="funkyradio">
                 <div class="funkyradio-warning">
                     <input type="radio" name="roles" id="ceo" value="ceo"/>
                     <label for="ceo">CEO</label>
@@ -74,7 +81,7 @@
                     <input type="radio" name="roles" id="observer" value="observer"/>
                     <label for="observer">Observer</label>
                 </div>
-            </div>
+            </div> -->
     		<br/>
     	</div>
             <button type="submit" class="btn btnNew">Select</button>

@@ -49,6 +49,7 @@
       <br/>
       <form action="/display" method="post">
           <% if (url.length > 0) { %>
+              <h3><%=url%></h3>
              <iframe src="<%= url %>" height="800px" width="600px"></iframe>
           <% } %>
           <br/><br/>

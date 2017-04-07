@@ -13,12 +13,10 @@ module.exports = function(passport) {
 
   passport.deserializeUser(function(id, done) {
     if (isAdmin(id)) {
-      console.log("is admin")
       Admin.findById(id, function(err, user) {
         done(err, user);
       });
     } else {
-      console.log("not admin")
       Session.findById(id, function(err, user) {
         done(err, user);
       });

@@ -25,7 +25,7 @@ module.exports = function(app, passport) {
 	  if (req.path === '/' || req.path === '/login' || req.path === '/adminlogin' || req.path === '/studentlogin')
 	    next();
 	  else
-	    ensureAuthenticated(req, res, next);
+	    loggedIn(req, res, next);
 	});
 
 	app.get('/', function(req, res) {
@@ -73,6 +73,8 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/submitResults', function(req, res) {
+		var currRound = parseInt(req.body.currRound);
+ 		var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
 		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 		disruptionSelection[0] = req.body.A;
@@ -341,7 +343,7 @@ module.exports = function(app, passport) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == 1){
 		 						var results = exercise.scenarios[i];
-								if (results.videoURL == null) {
+								if (results.videoURL == "") {
 									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 			 						return;
 								} else {
@@ -355,7 +357,7 @@ module.exports = function(app, passport) {
 						for (var i = 0; i < exercise.scenarios.length; i++) {
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						var results = exercise.scenarios[i];
-								if (results.videoURL == null) {
+								if (results.videoURL == "") {
 									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
 			 						return;
 								} else {
@@ -378,16 +380,37 @@ module.exports = function(app, passport) {
 		var room = req.body.room;
 		Session.findOne({'roomNumber': room, 'activeSessionID' : sess}).lean().exec( function(err, result) {
 			if (err) throw err;
+			var currentRound = result.currRound;
 			var exerciseID = result.exerciseID;
 			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err1, exercise) {
 				if (err1) throw err1;
-				if (req.body.role === 'ceo') {
-					res.render('survey.ejs', {url: exercise.ceoSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
-				} else if (req.body.role === 'team') {
-					res.render('survey.ejs', {url: exercise.teamMemberSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
-				} else {
-					res.render('survey.ejs', {url: exercise.observerSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.observerSurvey});
+				for (var i = 0; i < exercise.scenarios.length; i++) {
+					if (exercise.scenarios[i].round == currentRound - 1){
+						var results = exercise.scenarios[i];
+						if (exercise.hasIndividual && exercise.hasTeam) {
+							for (var i = 0; i < results.roleSurveys.length; i++) {
+								if (req.body.role === results.roleSurveys[i].roleName) {
+									res.render('survey.ejs', {individual: results.roleSurveys[i].surveyURL, team: results.teamSurvey, role: req.body.role, answerer: results.roleSurveys[0].roleName, room: req.body.room, sessionID: sess, studentID: sid});
+								}
+							}
+						} else if (exercise.hasIndividual) {
+							for (var i = 0; i < results.roleSurveys.length; i++) {
+								if (req.body.role === results.roleSurveys[i].roleName) {
+									res.render('survey2.ejs', {url: results.roleSurveys[i].surveyURL, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
+								}
+							}
+						} else {
+							res.render('survey2.ejs', {url: results.teamSurvey, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
+						}
+					}
 				}
+				// if (req.body.role === 'ceo') {
+				// 	res.render('survey.ejs', {url: exercise.ceoSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
+				// } else if (req.body.role === 'team') {
+				// 	res.render('survey.ejs', {url: exercise.teamMemberSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.teamMemberSurvey});
+				// } else {
+				// 	res.render('survey.ejs', {url: exercise.observerSurvey, role: req.body.role, room: req.body.room, sessionID: sess, studentID: sid, team: exercise.observerSurvey});
+				// }
 			});
 		});
 	});
@@ -502,20 +525,26 @@ module.exports = function(app, passport) {
 				var studentID = 1;
 				Session.findOne({'activeSessionID' : sessionID, 'roomNumber' : roomNum}, function(err, result) {
 					if (err) throw err;
-					Session.find({roomNumber: roomNum, activeSessionID: sessionID, 'students.hasLoggedIn': false},
-						{'students.$': 1, _id: 0},
-							function(err, model) {
-								studentID =  model[0].students[0].id;
-								Session.findOneAndUpdate(
-									{roomNumber: roomNum, activeSessionID: sessionID, 'students.id': studentID},
-									{$set: {'students.$.hasLoggedIn' : true}},
-										function(err, results) {
-											if (err) return err;
-											return res.render('roles.ejs', {roomNumber: user.roomNumber.toUpperCase(), studentID: studentID, sessionID: sessionID});
-										}
-								);
-							}
-					);
+					var id = result.exerciseID;
+					Exercise.findOne({"_id": id}, function(err, result) {
+						if (err) throw err;
+						var roles = result.roles;
+						console.log(roles);
+						Session.find({roomNumber: roomNum, activeSessionID: sessionID, 'students.hasLoggedIn': false},
+							{'students.$': 1, _id: 0},
+								function(err, model) {
+									studentID =  model[0].students[0].id;
+									Session.findOneAndUpdate(
+										{roomNumber: roomNum, activeSessionID: sessionID, 'students.id': studentID},
+										{$set: {'students.$.hasLoggedIn' : true}},
+											function(err, results) {
+												if (err) return err;
+												return res.render('roles.ejs', {roomNumber: user.roomNumber.toUpperCase(), studentID: studentID, sessionID: sessionID, roles: roles});
+											}
+									);
+								}
+						);
+					});
 				});
 			});
 		})(req, res, next);
@@ -691,7 +720,7 @@ module.exports = function(app, passport) {
 						id: sCount,
 						round: req.body.round,
 						videoURL: req.body.myVideo,
-						text: req.body.text, 
+						text: req.body.text,
 						teamSurvey: teamSurveyURL,
 						roleSurveys: roleSurveyLinks
 					});
@@ -818,4 +847,12 @@ function ensureAuthenticated(req, res, next) {
 	console.log(req.isAuthenticated());
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/');
+}
+
+function loggedIn(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+        res.redirect('/');
+    }
 }
