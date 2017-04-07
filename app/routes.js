@@ -383,25 +383,30 @@ module.exports = function(app, passport) {
 			var currentRound = result.currRound;
 			var exerciseID = result.exerciseID;
 			var next = req.body.next;
+			console.log("NEXT: " + next);
 			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err1, exercise) {
 				if (err1) throw err1;
 				for (var i = 0; i < exercise.scenarios.length; i++) {
 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 						var results = exercise.scenarios[i];
+						console.log(results);
 						if (exercise.hasIndividual && exercise.hasTeam) {
 							for (var i = 0; i < results.roleSurveys.length; i++) {
 								if (req.body.role === results.roleSurveys[i].roleName) {
 									res.render('survey.ejs', {individual: results.roleSurveys[i].surveyURL, team: results.teamSurvey, role: req.body.role, answerer: results.roleSurveys[0].roleName, room: req.body.room, sessionID: sess, studentID: sid});
+									return;
 								}
 							}
 						} else if (exercise.hasIndividual) {
 							for (var i = 0; i < results.roleSurveys.length; i++) {
 								if (req.body.role === results.roleSurveys[i].roleName) {
 									res.render('survey2.ejs', {url: results.roleSurveys[i].surveyURL, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
+									return;
 								}
 							}
 						} else {
 							res.render('survey2.ejs', {url: results.teamSurvey, role: req.body.role, room: req.body.room, message: "", sessionID: sess, studentID: sid});
+							return;
 						}
 					}
 				}
