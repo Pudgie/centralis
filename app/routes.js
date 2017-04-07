@@ -344,11 +344,11 @@ module.exports = function(app, passport) {
 		 					if (exercise.scenarios[i].round == 1){
 		 						var results = exercise.scenarios[i];
 								if (results.videoURL == "") {
-									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid, next: next});
 			 						return;
 								} else {
 									var id = results.videoURL.split("youtu.be/");
-									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text});
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text, next: next});
 								}
 		 					}
 	 					}
@@ -358,11 +358,11 @@ module.exports = function(app, passport) {
 		 					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 		 						var results = exercise.scenarios[i];
 								if (results.videoURL == "") {
-									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid});
+									res.render('scenario.ejs', {text: results.text, role: role, room: room, sessionID: sess, studentID: sid, next: next});
 			 						return;
 								} else {
 									var id = results.videoURL.split("youtu.be/");
-									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text});
+									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text, next: next});
 									return;
 								}
 		 					}
@@ -382,10 +382,11 @@ module.exports = function(app, passport) {
 			if (err) throw err;
 			var currentRound = result.currRound;
 			var exerciseID = result.exerciseID;
+			var next = req.body.next;
 			Exercise.findOne({'_id': exerciseID}).lean().exec( function(err1, exercise) {
 				if (err1) throw err1;
 				for (var i = 0; i < exercise.scenarios.length; i++) {
-					if (exercise.scenarios[i].round == currentRound - 1){
+					if (exercise.scenarios[i].round == currentRound - 1 && exercise.scenarios[i].id == next){
 						var results = exercise.scenarios[i];
 						if (exercise.hasIndividual && exercise.hasTeam) {
 							for (var i = 0; i < results.roleSurveys.length; i++) {
