@@ -20,7 +20,7 @@
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
-	
+
   <title>Create Exercise</title>
 </head>
 <body class="noneMain">
@@ -30,8 +30,8 @@
 
 	</ul>
 	<div >
-		<h2 ><span class="typing"><strong> Specify the exercise name and survey links: </strong></span>  </h2>
-		
+		<h2 ><span class="typing"><strong> Specify the exercise name, number of rounds, and number of roles: </strong></span>  </h2>
+
 		<script >
                                 $(function(){
                                     $(".typing").typed({
@@ -40,30 +40,30 @@
                                     });
                                 });
                       	</script>
-                     
+
 		<div class= "formNoBorder" >
-			<form action="/createScenarios" method="post">
+			<form action="/createScenarios" method="post" id="form-field" onsubmit="return checkCheckBoxes(this);">
 			<h2></h2>
 			<div class="row control-group">
-                            		<div class="form-group col-xs-12 floating-label-form-group controls" >	
+                            		<div class="form-group col-xs-12 floating-label-form-group controls" >
 					<label><strong>Exercise Name:</strong></label>
-					<input class="inputForms" type="text" name="exerciseName" placeholder ="Exercise Name">
+					<input class="inputForms" type="text" name="exerciseName" placeholder ="Exercise Name" required>
 				</div>
 			</div>
 
 			<div class="row control-group">
 				<div class="form-group col-xs-12 floating-label-form-group controls">
 					<label><strong>Number of Rounds:</strong></label>
-					<input class="inputForms" type="number" name="numOfRounds" placeholder ="Number of Rounds">
-				</div>	
-			</div>	
-			<div class="row control-group">		
-				<div class="form-group col-xs-12 floating-label-form-group controls">
-					<label><strong>Number of Roles:</strong></label>
-					<input class="inputForms" type="text" name="numRoles" placeholder ="Number of Roles">
+					<input class="inputForms" type="number" name="numOfRounds" placeholder ="Number of Rounds" required>
 				</div>
 			</div>
-			
+			<div class="row control-group">
+				<div class="form-group col-xs-12 floating-label-form-group controls">
+					<label><strong>Number of Roles:</strong></label>
+					<input class="inputForms" type="text" name="numRoles" placeholder ="Number of Roles" required>
+				</div>
+			</div>
+
 			<br>
 			<br>
 			<div class = "wrapper">
@@ -72,7 +72,7 @@
 				<div class="funkyradio">
 					<div class="funkyradio-warning">
 					           <input type="checkBox"  id= "checkbox1" name= "hasTeamSurvey" value = "true"/>
-				                        <label for="checkbox1">Has Team Survey</label>					
+				                        <label for="checkbox1">Has Team Survey</label>
 					</div>
 				</div>
 
@@ -80,7 +80,7 @@
 				<div class="funkyradio">
 					<div class="funkyradio-warning">
 					           <input type="checkBox"  id= "checkbox2" name= "hasIndividualSurvey" value = "true"/>
-				                        <label for="checkbox2">Has Individual Survey</label>					
+				                        <label for="checkbox2">Has Individual Survey</label>
 					</div>
 				</div>
 			</div>
@@ -94,9 +94,16 @@
 		</div>
 
 	</div>
-			
-		
-
-	
+	<script type="text/javascript" language="JavaScript">
+		function checkCheckBoxes(theForm) {
+			if (theForm.hasIndividualSurvey.checked == false && theForm.hasTeamSurvey.checked == false)
+			{
+				alert('Please select a checkbox.');
+				return false;
+			} else {
+				return true;
+			}
+		}
+	</script>
 </body>
 </html>
