@@ -64,24 +64,32 @@
 				</div>
 			</div>
 			
-			<p>Check one or both of the boxes below.</p>
-
-			<div class="row control-group">
-				<div class="form-group col-xs-12 floating-label-form-group controls">
-					<p style="text-align: center;">Has Team Survey:</p>
-					<input class="inputForms" type="checkBox" name="hasTeamSurvey" value="true">
-				</div>
-			</div>
-			<div class="row control-group">
-				<div class="form-group col-xs-12 floating-label-form-group controls">
-					<p style="text-align: center;">Has Individual Survey:</p>
-					<input class="inputForms" type="checkBox" name="hasIndividualSurvey" value="true">
-				</div>
-			</div>
 			<br>
+			<br>
+			<div class = "wrapper">
+				<p>Check one or both of the boxes below.</p>
+
+				<div class="funkyradio">
+					<div class="funkyradio-warning">
+					           <input type="checkBox"  id= "checkbox1" name= "hasTeamSurvey" value = "true"/>
+				                        <label for="checkbox1">Has Team Survey</label>					
+					</div>
+				</div>
+
+
+				<div class="funkyradio">
+					<div class="funkyradio-warning">
+					           <input type="checkBox"  id= "checkbox2" name= "hasIndividualSurvey" value = "true"/>
+				                        <label for="checkbox2">Has Individual Survey</label>					
+					</div>
+				</div>
+			</div>
+
+
+
 			<button type="submit" class="btn btnNew">Next</button>
 			<div class="divider"></div>
-         		<button type="button" class="btn btnNew" onclick="location.href = '/admin' ">Go Back</button>
+         			<button type="button" class="btn btnNew" onclick="location.href = '/admin' ">Go Back</button>
 			</form>
 		</div>
 
