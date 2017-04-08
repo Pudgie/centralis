@@ -27,22 +27,22 @@
 	  	</ul>
 		<div class="formNoBorder">
 			<form action="/displayScenarios" method="post">
-				<% if (hasTeam) {%> 
+				<% if (hasTeam) {%>
 					<p>Role #1 will be answering the team survey.</p>
 				<% } %>
-				<div class="row control-group">		
+				<div class="row control-group">
 					<div class="form-group col-xs-12 floating-label-form-group controls">
 						<label><strong>Role #1:</strong></label>
-						<input class="inputForms" type="text" name="roles" placeholder ="Role #1">
+						<input class="inputForms" type="text" name="roles" placeholder ="Role #1" required>
 					</div>
 				</div>
 
 				<% for (var ii = 1; ii < numRoles; ii++) {
 				%>
-				<div class="row control-group">		
+				<div class="row control-group">
 					<div class="form-group col-xs-12 floating-label-form-group controls">
 						<label><strong>Role #<%= ii+1 %>:</strong></label>
-						<input class="inputForms" type="text" name="roles" placeholder ="Role #<%= ii+1 %>">
+						<input class="inputForms" type="text" name="roles" placeholder ="Role #<%= ii+1 %>" required>
 					</div>
 				</div>
 				<% } %>
