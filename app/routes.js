@@ -685,7 +685,8 @@ module.exports = function(app, passport) {
 						{$push: {scenarios: scenario}},
 						{safe: true, upsert: true},
 							function(err, model) {
-									if (err) throw err;
+								if (err) throw err;
+								res.redirect('/displayScenarios?err=false');
 							}
 					);
 				});
@@ -729,43 +730,21 @@ module.exports = function(app, passport) {
 						{safe: true, upsert: true},
 							function(err, model) {
 								if (err) throw err;
+								res.redirect('/displayScenarios?err=false');
 							}
 					);
 				});
 			});
 		}
-		res.redirect('/displayScenarios?err=false');
 	});
 
-	// app.post('/addSurvey', function(req, res) {
-	// 	Exercise.nextCount(function(err, count) {
-	// 		var exerciseID = count - 1;
-	//
-	// 		// find length of scenarios array from current exercise
-	// 		Exercise.findOne({'_id': exerciseID}).lean().exec( function(err, result) {
-	// 			var exCount = result.scenarios.length + 1; // set this as scenario id
-	// 			console.log("exercise count: " + exCount);
-	// 			var scenario = new Scenario({
-	// 				_id: exCount,
-	// 				videoURL: req.body.videoURL,
-	// 				text: req.body.text,
-	// 				question: req.body.question,
-	// 				survey: req.body.surveys
-	// 			});
-	//
-	// 			// find and update exercise with current scenario
-	// 			Exercise.findByIdAndUpdate(
-	// 		    exerciseID,
-	// 		    {$push: {scenarios: scenario}},
-	// 		    {safe: true, upsert: true},
-	// 			    function(err, model) {
-	// 			        if (err) throw err;
-	// 			    }
-	// 			);
-	// 		});
-	// 	});
-	// 	res.render('finishCreateExercise.ejs');
-	// });
+	app.get('/clearSessions', function(req, res) {
+		Session.remove({}, function(err, results) {
+			if (err) console.err(err);
+			console.log("Removed all sessions");
+			res.redirect('/admin');
+		});
+	});
 
 	app.get('/scenarioRedirect', function(req, res) {
 
