@@ -22,7 +22,7 @@
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   
+
   </head>
   <body class="noneMain">
             <ul>
@@ -37,18 +37,18 @@
                       });
                   });
              </script>
-  
+
     <form id="formStyle" action="/getScenario" method="post" enctype="multipart/form-data">
           <div class="formNoBorder">
                 <table>
                 <tbody>
-           
+
 
                   <tr>
                       <div class="row control-group">
-                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >
                                     <label><strong>Scenario Name: </strong></label>
-                                    <input class="inputForms" type="text" name="name" placeholder ="Scenario Name">
+                                    <input class="inputForms" type="text" name="name" placeholder ="Scenario Name" required>
                                   </div>
                         </div>
                   </tr>
@@ -65,7 +65,7 @@
 
                    <tr>
                       <div class="row control-group">
-                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >
                                     <label><strong>Scenario Text: </strong></label>
                                     <textarea rows="4"  cols="80" type="text" name="text" placeholder ="Scenario Text"></textarea>
                                   </div>
@@ -75,19 +75,19 @@
 
                   <tr>
                   <div class="row control-group">
-                                <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                <div class="form-group col-xs-12 floating-label-form-group controls" >
                                 <label><strong>Round: </strong></label>
-                                <input class="inputForms" type="text" name="round" placeholder ="Round">
+                                <input class="inputForms" type="text" name="round" placeholder ="Round" required>
                               </div>
                     </div>
                   </tr>
-                  
+
                 <% if (hasTeam) { %>
                   <tr>
                       <div class="row control-group">
-                                    <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                    <div class="form-group col-xs-12 floating-label-form-group controls" >
                                     <label><strong>Team Survey Link: </strong></label>
-                                    <input class="inputForms" type="text" name="teamSurveyLink" placeholder ="Team Survey Link">
+                                    <input class="inputForms" type="text" name="teamSurveyLink" placeholder ="Team Survey Link" required>
                                   </div>
                         </div>
                   </tr>
@@ -95,13 +95,13 @@
 
                 <% if (hasIndividual) {
                   for (var ii = 0; ii < roles.length; ii++) {
-                  %>  
+                  %>
 
                     <tr>
                         <div class="row control-group">
-                                      <div class="form-group col-xs-12 floating-label-form-group controls" >  
+                                      <div class="form-group col-xs-12 floating-label-form-group controls" >
                                       <label><strong><%= roles[ii] %> Survey Link: </strong></label>
-                                      <input class="inputForms" type="text" name="individualSurveyLinks" placeholder ="<%= roles[ii] %> Survey Link">
+                                      <input class="inputForms" type="text" name="individualSurveyLinks" placeholder ="<%= roles[ii] %> Survey Link" required>
                                     </div>
                           </div>
                     </tr>
@@ -110,7 +110,7 @@
                   }
                 }
                 %>
-          
+
                  </tbody>
                 </table>
       <br><br>
@@ -119,6 +119,6 @@
        <button type="button" class="btn btnNew"  onclick="location.href = '/admin' ">Go Back</button>
     </form>
 
-  
+
   </body>
 </html>

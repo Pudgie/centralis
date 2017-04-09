@@ -59,29 +59,11 @@
             <% for (var i = 0; i < roles.length; i++) { %>
               <div class="funkyradio">
                   <div class="funkyradio-warning">
-                      <input type="radio" name="roles" id="<%=roles[i]%>" value="<%=roles[i]%>"/>
+                      <input type="radio" name="roles" id="<%=roles[i]%>" value="<%=roles[i]%>" required/>
                       <label for="<%=roles[i]%>"><%=roles[i]%></label>
                   </div>
               </div>
             <% } %>
-            <!-- <div class="funkyradio">
-                <div class="funkyradio-warning">
-                    <input type="radio" name="roles" id="ceo" value="ceo"/>
-                    <label for="ceo">CEO</label>
-                </div>
-            </div>
-            <div class="funkyradio">
-                <div class="funkyradio-warning">
-                    <input type="radio" name="roles" id="team" value="team"/>
-                    <label for="team">Team Member</label>
-                </div>
-            </div>
-            <div class="funkyradio">
-                <div class="funkyradio-warning">
-                    <input type="radio" name="roles" id="observer" value="observer"/>
-                    <label for="observer">Observer</label>
-                </div>
-            </div> -->
     		<br/>
     	</div>
             <button type="submit" class="btn btnNew">Select</button>
