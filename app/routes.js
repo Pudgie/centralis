@@ -17,7 +17,7 @@ module.exports = function(app, passport) {
 	var RoleSurvey = require('./models/roleSurvey');
 	var events = require('events');
 	var eventEmitter = new events.EventEmitter();
-	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N'];
+	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N', '201A', '201B', '201C', '201D', '201E', '201F', '201G', '201J', '201K', '201L', '201M', '201N'];
 	var MAX_PEOPLE = 15; // can be changed
 
 	// protects admin and student pages
@@ -76,20 +76,9 @@ module.exports = function(app, passport) {
 		var currRound = parseInt(req.body.currRound);
  		var exerciseID = parseInt(req.body.exerciseID);
 		var sessionID = parseInt(req.body.sessionID);
-		var disruptionSelection = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-		disruptionSelection[0] = req.body.A;
-		disruptionSelection[1] = req.body.B;
-		disruptionSelection[2] = req.body.C;
-		disruptionSelection[3] = req.body.D;
-		disruptionSelection[4] = req.body.E;
-		disruptionSelection[5] = req.body.F;
-		disruptionSelection[6] = req.body.G;
-		disruptionSelection[7] = req.body.J;
-		disruptionSelection[8] = req.body.K;
-		disruptionSelection[9] = req.body.L;
-		disruptionSelection[10] = req.body.M;
-		disruptionSelection[11] = req.body.N;
+		var disruptionSelection = [];
 		for (var ii = 0; ii < rooms.length; ii++) {
+			disruptionSelection.push(req.body.disruptionSelection[ii]);
 			if (disruptionSelection[ii] != null && disruptionSelection[ii] != -1) {
 				// MAX of 15 people per room. Can change.
 				for (var i = 1; i <= MAX_PEOPLE; i++) {
