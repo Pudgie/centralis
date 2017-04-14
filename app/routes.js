@@ -17,7 +17,7 @@ module.exports = function(app, passport) {
 	var RoleSurvey = require('./models/roleSurvey');
 	var events = require('events');
 	var eventEmitter = new events.EventEmitter();
-	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N', '201A', '201B', '201C', '201D', '201E', '201F', '201G', '201J', '201K', '201L', '201M', '201N'];
+	var rooms = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'K', 'L', 'M', 'N', '201A', '201B', '201C', '201D', '201E', '201F', '201G'];
 	var MAX_PEOPLE = 15; // can be changed
 
 	// protects admin and student pages
