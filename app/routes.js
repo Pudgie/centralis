@@ -195,53 +195,48 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/sessionAdmin', function(req, res) {
-
-		var foundSessionID = function foundSessionID(sessionID) {
-			for (var i = 0; i < rooms.length; i++) {
-				var students = [MAX_PEOPLE];
-				for (var j = 0; j < MAX_PEOPLE; j++) {
-					var studentObj = {"id" : j+1, "nextScenario" : 0, "hasLoggedIn": false};
-					students[j] = studentObj;
-				}
-
-				var session = new Session ({
-					roomNumber: rooms[i],
-					activeSessionID: sessionID,
-					exerciseID: req.body.exerciseID,
-					currRound: 1,
-					students: students
-				});
-
-				session.save(function(err) {
-					if (err) { throw err; }
-					console.log("Session saved succesfully");
-				});
-			}
-			var currRound = 1;
-			res.render('session.ejs', {exerciseID: req.body.exerciseID, sessionID: sessionID, currRound: currRound});
-		}
-
-		eventEmitter.on('foundSession', foundSessionID);
-
 		var sessionID = Math.random() * (999999 - 100000) + 100000;
 		sessionID = Math.round(sessionID);
-
-
-		Session.find().lean().exec(function (err, results) {
-			while (true) {
-				var alreadyExists = false;
-				sessionID++;
-				for (var ii = 0; ii < results.length; ii++) {
-					if (results[ii].activeSessionID == sessionID) {
-						alreadyExists = true;
-					}
-				}
-				if (!alreadyExists) {
-					eventEmitter.emit('foundSession', sessionID);
-					break;
-				}
+		for (var i = 0; i < rooms.length; i++) {
+			var students = [MAX_PEOPLE];
+			for (var j = 0; j < MAX_PEOPLE; j++) {
+				var studentObj = {"id" : j+1, "nextScenario" : 0, "hasLoggedIn": false};
+				students[j] = studentObj;
 			}
-		});
+
+			var session = new Session ({
+				roomNumber: rooms[i],
+				activeSessionID: sessionID,
+				exerciseID: req.body.exerciseID,
+				currRound: 1,
+				students: students
+			});
+
+			session.save(function(err) {
+				if (err) { throw err; }
+				console.log("Session saved succesfully");
+			});
+		}
+		var currRound = 1;
+		res.render('session.ejs', {exerciseID: req.body.exerciseID, sessionID: sessionID, currRound: currRound});
+
+		// eventEmitter.on('foundSession', foundSessionID);
+
+		// Session.find().lean().exec(function (err, results) {
+		// 	while (true) {
+		// 		var alreadyExists = false;
+		// 		sessionID++;
+		// 		for (var ii = 0; ii < results.length; ii++) {
+		// 			if (results[ii].activeSessionID == sessionID) {
+		// 				alreadyExists = true;
+		// 			}
+		// 		}
+		// 		if (!alreadyExists) {
+		// 			eventEmitter.emit('foundSession', sessionID);
+		// 			break;
+		// 		}
+		// 	}
+		// });
 
 	});
 
