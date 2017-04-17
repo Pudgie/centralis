@@ -338,6 +338,7 @@ module.exports = function(app, passport) {
 								} else {
 									var id = results.videoURL.split("youtu.be/");
 									res.render('video.ejs', {id: id[1], role: role, room: room, sessionID: sess, studentID: sid, text: results.text, next: next});
+									return;
 								}
 		 					}
 	 					}
